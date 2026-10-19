@@ -6,7 +6,7 @@ unofficial source port, signed by nobody, and must not look like a VZlab release
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parents[1]
-VERSION = (BASE / 'VERSION').read_text(encoding='ascii').strip()
+VERSION = (BASE / 'VERSION').read_text(encoding='ascii').strip() if (BASE / 'VERSION').is_file() else '0.0.0'
 COMPANY = 'titbit-modern (unofficial source port)'
 PRODUCT = 'Nuclear Titbit - titbit-modern'
 COPYRIGHT = 'Game (c) 2003 VZlab / Buka. Not affiliated with the rights holders.'
