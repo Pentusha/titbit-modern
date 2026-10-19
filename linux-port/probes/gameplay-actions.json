@@ -1,0 +1,22 @@
+[
+  {"at":2,"type":"key","key":"Escape"},
+  {"at":8,"type":"key","key":"Escape"},
+  {"at":22,"type":"click","x":250,"y":206},
+  {"at":32,"type":"click","x":250,"y":206},
+  {"at":50,"type":"capture","name":"street-before-walk"},
+  {"at":52,"type":"click","x":600,"y":650},
+  {"at":60,"type":"capture","name":"street-after-walk"},
+  {"at":62,"type":"key","key":"Escape"},
+  {"at":64,"type":"capture","name":"save-menu"},
+  {"at":65,"type":"click","x":250,"y":323},
+  {"at":67,"type":"capture","name":"save-slots"},
+  {"at":70,"type":"click","x":300,"y":60},
+  {"at":73,"type":"capture","name":"after-save"},
+  {"at":76,"type":"click","x":500,"y":620},
+  {"at":83,"type":"capture","name":"after-second-walk"},
+  {"at":86,"type":"key","key":"Escape"},
+  {"at":89,"type":"click","x":250,"y":380},
+  {"at":92,"type":"capture","name":"load-slots"},
+  {"at":94,"type":"click","x":300,"y":60},
+  {"at":108,"type":"capture","name":"after-load"}
+]

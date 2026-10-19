@@ -1,0 +1,21 @@
+{
+  "bindings": {
+    "_frame_renderer_storage": "0x5026d0",
+    "_frame_camera_view": "0x5ee694",
+    "_frame_camera_zoom": "0x5ee6d4"
+  },
+  "fieldAliases": {
+    "_frame_camera_view": {
+      "owner": "_frame_renderer_storage", "locator": "_source_location_frame_view",
+      "ownerExtent": "_source_size_frame_renderer", "extent": "_source_size_frame_view"
+    },
+    "_frame_camera_zoom": {
+      "owner": "_frame_renderer_storage", "locator": "_source_location_frame_zoom",
+      "ownerExtent": "_source_size_frame_renderer", "extent": "_source_size_frame_zoom"
+    }
+  },
+  "evidence": [
+    "Native41e8f0 uses10000x96-byte records,32x80-byte stack entries and camera68/72 trailing fields; source render_list.cpp and renderer.cpp independently restore those layouts. Constructor421590 supplies this=5026d0. The next independently bound cache5ee6dc corroborates the derived0xec00c extent.",
+    "engine-picking-candidate.json binds camera5ee694 and zoom5ee6d4; engine-platform/entry modules independently bind renderContext5026d0. Field offsets come from compiler-emitted source pointer initializers; aliases must remain within this one source-owned object."
+  ]
+}

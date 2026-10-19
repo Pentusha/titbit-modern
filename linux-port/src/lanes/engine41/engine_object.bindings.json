@@ -1,0 +1,7 @@
+{
+  "bindings": {
+    "??0EngineObject@@QAE@XZ": "0x4137b0",
+    "??0Lod@@QAE@PAVEngineObject@@@Z": "0x414150",
+    "?Draw@Lod@@UAEXXZ": "0x415020"
+  }
+}

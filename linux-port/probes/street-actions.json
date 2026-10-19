@@ -1,0 +1,10 @@
+[
+  {"at": 2, "type": "key", "key": "Escape"},
+  {"at": 8, "type": "key", "key": "Escape"},
+  {"at": 20, "type": "capture", "name": "main-menu"},
+  {"at": 22, "type": "click", "x": 250, "y": 206},
+  {"at": 25, "type": "capture", "name": "new-game-25s"},
+  {"at": 30, "type": "capture", "name": "new-game-30s"},
+  {"at": 32, "type": "click", "x": 250, "y": 206},
+  {"at": 40, "type": "capture", "name": "new-game-40s"}
+]

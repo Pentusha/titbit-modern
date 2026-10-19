@@ -1,0 +1,7 @@
+*.o
+*.a
+platform-smoke
+avi-smoke
+seer-call-smoke
+audio-capture-smoke
+core

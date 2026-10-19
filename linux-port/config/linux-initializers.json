@@ -1,0 +1,951 @@
+{
+  "version": 1,
+  "entryPoint": "titbit_linux_initialize_pod_globals",
+  "originalCount": 176,
+  "counts": {
+    "compiler-constructor": 68,
+    "skip-empty": 1,
+    "skip-template-guard": 92,
+    "call-manual": 8,
+    "skip-windows-crt": 7
+  },
+  "entries": [
+    {
+      "originalAddress": "0x402d10",
+      "action": "compiler-constructor",
+      "source": "src/native/initializers/color_ok.cpp"
+    },
+    {
+      "originalAddress": "0x402d40",
+      "action": "compiler-constructor",
+      "source": "src/native/initializers/set_rgb.cpp"
+    },
+    {
+      "originalAddress": "0x402d70",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine40/scene_global.cpp"
+    },
+    {
+      "originalAddress": "0x402db0",
+      "action": "skip-empty",
+      "reason": "No constructor effect."
+    },
+    {
+      "originalAddress": "0x402dd0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine40/picking_global.cpp"
+    },
+    {
+      "originalAddress": "0x404ce0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x4051f0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x405de0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x405e10",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x405e40",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x406730",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x406970",
+      "action": "call-manual",
+      "function": "Script_CXX_Initializer_00406970"
+    },
+    {
+      "originalAddress": "0x407f30",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x40a830",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x40b2f0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x40c370",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x40c6a0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x40e2c0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x40e2f0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine40/skin_cache.cpp"
+    },
+    {
+      "originalAddress": "0x40f360",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x40fe00",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x411d40",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x4120f0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x413780",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x413f60",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x413f90",
+      "action": "call-manual",
+      "function": "Script_CXX_Initializer_00413f90"
+    },
+    {
+      "originalAddress": "0x415d50",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x416870",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x41a700",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x41a730",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/quest_state.cpp"
+    },
+    {
+      "originalAddress": "0x41b330",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x41d9d0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x41e550",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x420310",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x420340",
+      "action": "compiler-constructor",
+      "source": "src/native/archive_globals.cpp"
+    },
+    {
+      "originalAddress": "0x421500",
+      "action": "call-manual",
+      "function": "InitializeTextureCache"
+    },
+    {
+      "originalAddress": "0x421540",
+      "action": "call-manual",
+      "function": "InitializeResourceCache"
+    },
+    {
+      "originalAddress": "0x421580",
+      "action": "call-manual",
+      "function": "FUN_00421580"
+    },
+    {
+      "originalAddress": "0x4215d0",
+      "action": "call-manual",
+      "function": "FUN_004215d0"
+    },
+    {
+      "originalAddress": "0x4266e0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x4268f0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x4277c0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x427d70",
+      "action": "call-manual",
+      "function": "FUN_00427d70"
+    },
+    {
+      "originalAddress": "0x427dc0",
+      "action": "compiler-constructor",
+      "source": "src/native/audio_device_state.cpp"
+    },
+    {
+      "originalAddress": "0x4282e0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x428a80",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x4298d0",
+      "action": "call-manual",
+      "function": "FUN_004298d0"
+    },
+    {
+      "originalAddress": "0x42a230",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x42a3f0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x42cb50",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x42cb80",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x42cd00",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x42e9d0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x42ea00",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x42ef60",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_DOMBuilder.cpp"
+    },
+    {
+      "originalAddress": "0x42f000",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_DOMBuilder.cpp"
+    },
+    {
+      "originalAddress": "0x42f160",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_DOMBuilder.cpp"
+    },
+    {
+      "originalAddress": "0x4322c0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x432de0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_DOMImpl.cpp",
+      "historicalUnit": "cpx43_DOMImpl"
+    },
+    {
+      "originalAddress": "0x432f40",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_DOMImpl.cpp",
+      "historicalUnit": "cpx43_DOMImpl"
+    },
+    {
+      "originalAddress": "0x434330",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_DOMImpl.cpp",
+      "historicalUnit": "cpx43_DOMImpl"
+    },
+    {
+      "originalAddress": "0x435fc0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_DOMImpl.cpp",
+      "historicalUnit": "cpx43_DOMImpl"
+    },
+    {
+      "originalAddress": "0x436300",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_DOMImpl.cpp",
+      "historicalUnit": "cpx43_DOMImpl"
+    },
+    {
+      "originalAddress": "0x436560",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_DOMImpl.cpp",
+      "historicalUnit": "cpx43_DOMImpl"
+    },
+    {
+      "originalAddress": "0x436b50",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_DOMImpl.cpp",
+      "historicalUnit": "cpx43_DOMImpl"
+    },
+    {
+      "originalAddress": "0x437af0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_DOMImpl.cpp",
+      "historicalUnit": "cpx43_DOMImpl"
+    },
+    {
+      "originalAddress": "0x439810",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x439850",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_DOMWriter.cpp",
+      "historicalUnit": "cpx43_DOMWriter"
+    },
+    {
+      "originalAddress": "0x4399b0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_DOMWriter.cpp",
+      "historicalUnit": "cpx43_DOMWriter"
+    },
+    {
+      "originalAddress": "0x439b10",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_DOMWriter.cpp",
+      "historicalUnit": "cpx43_DOMWriter"
+    },
+    {
+      "originalAddress": "0x439c70",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_DOMWriter.cpp",
+      "historicalUnit": "cpx43_DOMWriter"
+    },
+    {
+      "originalAddress": "0x439dd0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_DOMWriter.cpp",
+      "historicalUnit": "cpx43_DOMWriter"
+    },
+    {
+      "originalAddress": "0x43b6f0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x43bc50",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x43bf40",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x43bfa0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x43bfd0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x43c700",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x43c730",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x43c760",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_MutationEvent.cpp",
+      "historicalUnit": "cpx43_MutationEvent"
+    },
+    {
+      "originalAddress": "0x43c8c0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_MutationEvent.cpp",
+      "historicalUnit": "cpx43_MutationEvent"
+    },
+    {
+      "originalAddress": "0x43ca20",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_MutationEvent.cpp",
+      "historicalUnit": "cpx43_MutationEvent"
+    },
+    {
+      "originalAddress": "0x43cb80",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_MutationEvent.cpp",
+      "historicalUnit": "cpx43_MutationEvent"
+    },
+    {
+      "originalAddress": "0x43cce0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_MutationEvent.cpp",
+      "historicalUnit": "cpx43_MutationEvent"
+    },
+    {
+      "originalAddress": "0x43ce40",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_MutationEvent.cpp",
+      "historicalUnit": "cpx43_MutationEvent"
+    },
+    {
+      "originalAddress": "0x43cfa0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_MutationEvent.cpp",
+      "historicalUnit": "cpx43_MutationEvent"
+    },
+    {
+      "originalAddress": "0x43d4a0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x43d4d0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_NamespaceSupport.cpp",
+      "historicalUnit": "cpx43_NamespaceSupport"
+    },
+    {
+      "originalAddress": "0x43d570",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_NamespaceSupport.cpp",
+      "historicalUnit": "cpx43_NamespaceSupport"
+    },
+    {
+      "originalAddress": "0x43d6d0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine41/cpx43_NamespaceSupport.cpp",
+      "historicalUnit": "cpx43_NamespaceSupport"
+    },
+    {
+      "originalAddress": "0x43f440",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x43f470",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x43f4a0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAX2Parser.cpp",
+      "historicalUnit": "cpx43_SAX2Parser"
+    },
+    {
+      "originalAddress": "0x43f600",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAX2Parser.cpp",
+      "historicalUnit": "cpx43_SAX2Parser"
+    },
+    {
+      "originalAddress": "0x43f760",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAX2Parser.cpp",
+      "historicalUnit": "cpx43_SAX2Parser"
+    },
+    {
+      "originalAddress": "0x43f8c0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAX2Parser.cpp",
+      "historicalUnit": "cpx43_SAX2Parser"
+    },
+    {
+      "originalAddress": "0x43fa20",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAX2Parser.cpp",
+      "historicalUnit": "cpx43_SAX2Parser"
+    },
+    {
+      "originalAddress": "0x43fb80",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAX2Parser.cpp",
+      "historicalUnit": "cpx43_SAX2Parser"
+    },
+    {
+      "originalAddress": "0x43fce0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAX2Parser.cpp",
+      "historicalUnit": "cpx43_SAX2Parser"
+    },
+    {
+      "originalAddress": "0x43fe40",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAX2Parser.cpp",
+      "historicalUnit": "cpx43_SAX2Parser"
+    },
+    {
+      "originalAddress": "0x43ffa0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAX2Parser.cpp",
+      "historicalUnit": "cpx43_SAX2Parser"
+    },
+    {
+      "originalAddress": "0x440100",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAX2Parser.cpp",
+      "historicalUnit": "cpx_SAX2Parser"
+    },
+    {
+      "originalAddress": "0x440260",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAX2Parser.cpp",
+      "historicalUnit": "cpx_SAX2Parser"
+    },
+    {
+      "originalAddress": "0x4435b0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x443600",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAX2ParserBase.cpp",
+      "historicalUnit": "cpx_SAX2ParserBase"
+    },
+    {
+      "originalAddress": "0x4436a0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAX2ParserBase.cpp",
+      "historicalUnit": "cpx_SAX2ParserBase"
+    },
+    {
+      "originalAddress": "0x4453b0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x445cf0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x445d30",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAX2ParserNSP.cpp",
+      "historicalUnit": "cpx_SAX2ParserNSP"
+    },
+    {
+      "originalAddress": "0x446920",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x446960",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x446990",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAXDOMParser.cpp",
+      "historicalUnit": "cpx_SAXDOMParser"
+    },
+    {
+      "originalAddress": "0x446af0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAXDOMParser.cpp",
+      "historicalUnit": "cpx_SAXDOMParser"
+    },
+    {
+      "originalAddress": "0x446c50",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAXDOMParser.cpp",
+      "historicalUnit": "cpx_SAXDOMParser"
+    },
+    {
+      "originalAddress": "0x446db0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAXDOMParser.cpp",
+      "historicalUnit": "cpx_SAXDOMParser"
+    },
+    {
+      "originalAddress": "0x446f10",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_SAXDOMParser.cpp",
+      "historicalUnit": "cpx_SAXDOMParser"
+    },
+    {
+      "originalAddress": "0x447070",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x447600",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x447700",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x447730",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x447780",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x4477b0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_XMLDocument.cpp",
+      "historicalUnit": "cpx_XMLDocument"
+    },
+    {
+      "originalAddress": "0x447800",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x447830",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x447d90",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x4482c0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x44ed40",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x44ed70",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x4500a0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x45aef0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x45af20",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x45af50",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_XMLWriter2.cpp",
+      "historicalUnit": "cpx_XMLWriter2"
+    },
+    {
+      "originalAddress": "0x45b0b0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_XMLWriter2.cpp",
+      "historicalUnit": "cpx_XMLWriter2"
+    },
+    {
+      "originalAddress": "0x45b210",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_XMLWriter2.cpp",
+      "historicalUnit": "cpx_XMLWriter2"
+    },
+    {
+      "originalAddress": "0x45b370",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_XMLWriter2.cpp",
+      "historicalUnit": "cpx_XMLWriter2"
+    },
+    {
+      "originalAddress": "0x45b4d0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_XMLWriter2.cpp",
+      "historicalUnit": "cpx_XMLWriter2"
+    },
+    {
+      "originalAddress": "0x45b630",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_XMLWriter2.cpp",
+      "historicalUnit": "cpx_XMLWriter2"
+    },
+    {
+      "originalAddress": "0x45b790",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_XMLWriter2.cpp",
+      "historicalUnit": "cpx_XMLWriter2"
+    },
+    {
+      "originalAddress": "0x45b8f0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_XMLWriter2.cpp",
+      "historicalUnit": "cpx_XMLWriter2"
+    },
+    {
+      "originalAddress": "0x45ba50",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_XMLWriter2.cpp",
+      "historicalUnit": "cpx_XMLWriter2"
+    },
+    {
+      "originalAddress": "0x45bbb0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_XMLWriter2.cpp",
+      "historicalUnit": "cpx_XMLWriter2"
+    },
+    {
+      "originalAddress": "0x45bd10",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_XMLWriter2.cpp",
+      "historicalUnit": "cpx_XMLWriter2"
+    },
+    {
+      "originalAddress": "0x45be70",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_XMLWriter2.cpp",
+      "historicalUnit": "cpx_XMLWriter2"
+    },
+    {
+      "originalAddress": "0x45bfd0",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_XMLWriter2.cpp",
+      "historicalUnit": "cpx_XMLWriter2"
+    },
+    {
+      "originalAddress": "0x45c130",
+      "action": "compiler-constructor",
+      "source": "src/lanes/engine42/cpx_XMLWriter2.cpp",
+      "historicalUnit": "cpx_XMLWriter2"
+    },
+    {
+      "originalAddress": "0x45c290",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x483a30",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x484660",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x485010",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x4853b0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x485e40",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x486c00",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x486f30",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x487860",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x4878f0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x48aff0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x48b450",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x48ba40",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x48dfe0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x490a10",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x4922e0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x4926a0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x494830",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x494860",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x494890",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x494cf0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x494d90",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x495b90",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x495bc0",
+      "action": "skip-template-guard",
+      "reason": "Shared header guards and empty cleanup registrations; no game object construction."
+    },
+    {
+      "originalAddress": "0x4b9c47",
+      "action": "skip-windows-crt",
+      "reason": "VC6 CRT/STL lifetime is replaced by the authored Linux runtime."
+    },
+    {
+      "originalAddress": "0x4ba0ab",
+      "action": "skip-windows-crt",
+      "reason": "VC6 CRT/STL lifetime is replaced by the authored Linux runtime."
+    },
+    {
+      "originalAddress": "0x4ba19e",
+      "action": "skip-windows-crt",
+      "reason": "VC6 CRT/STL lifetime is replaced by the authored Linux runtime."
+    },
+    {
+      "originalAddress": "0x4ba47a",
+      "action": "skip-windows-crt",
+      "reason": "VC6 CRT/STL lifetime is replaced by the authored Linux runtime."
+    },
+    {
+      "originalAddress": "0x4bce29",
+      "action": "skip-windows-crt",
+      "reason": "VC6 CRT/STL lifetime is replaced by the authored Linux runtime."
+    },
+    {
+      "originalAddress": "0x4c3350",
+      "action": "skip-windows-crt",
+      "reason": "VC6 CRT/STL lifetime is replaced by the authored Linux runtime."
+    },
+    {
+      "originalAddress": "0x4c60fe",
+      "action": "skip-windows-crt",
+      "reason": "VC6 CRT/STL lifetime is replaced by the authored Linux runtime."
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+ "bindings": {
+  "?Export@Behaviour_00406a40@@UAE?AVObservedString@@XZ": "0x407050",
+  "??_7Behaviour_00406a40@@6B@": "0x4cd480",
+  "??_C@_0O@HFMJ@speedfactor?$DN?$CC?$AA@": "0x4dd6c8",
+  "??_C@_04MJEM@?$CF?44f?$AA@": "0x4dd6c0",
+  "??_C@_02KKOH@?$CC?5?$AA@": "0x4dd6bc",
+  "??_C@_0L@KDAK@position?$DN?$CC?$AA@": "0x4dd6b0",
+  "??_C@_0N@PCKF@splinename?$DN?$CC?$AA@": "0x4dd6a0",
+  "??_C@_02FBAJ@?1?$DO?$AA@": "0x4dd69c",
+  "??_C@_0M@LJHE@speedfactor?$AA@": "0x4dd708",
+  "??_C@_08BOHH@position?$AA@": "0x4dd6fc",
+  "??_C@_0L@BHHA@splinename?$AA@": "0x4dd6f0",
+  "??_C@_01FCOA@?5?$AA@": "0x4dd6d8",
+  "??_C@_02MMHC@?6?$AN?$AA@": "0x4dd5b8",
+  "??_C@_0BC@HCMD@?$DMsplineanimation?5?$AA@": "0x4dd6dc",
+  "?LoadString@ObservedString@@QAEHI@Z": "0x406520",
+  "?Render@Behaviour_00406a40@@UAEXH@Z": "0x406a80",
+  "??0SVec@@QAE@MMM@Z": "0x406ee0",
+  "??0SVec@@QAE@ABU0@@Z": "0x406f00",
+  "_g_00502480": "0x502480",
+  "__real@404ca5dc1a635ba1": "0x4cd4b0",
+  "__real@3faeb851eb851eb8": "0x4cd4a8",
+  "__real@3fc999999999999a": "0x4cd4a0",
+  "__real@4062c00000000000": "0x4cd498",
+  "__real@4056800000000000": "0x4cd490"
+ }
+}

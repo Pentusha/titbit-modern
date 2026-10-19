@@ -1,0 +1,12 @@
+{
+  "bindings": {
+    "_scene_elapsed_ms": "0x5026bc",
+    "_scene_frame_delta_ms": "0x5026c0",
+    "_previous_frame_tick": "0x5026c4",
+    "_current_frame_tick": "0x5026c8"
+  },
+  "evidence": [
+    "Native41b40 stores timeGetTime to5026c8 and5026c4, signed ftol delta to5026c0, and accumulates5026bc; source scene.cpp independently restores these accesses. Existing picking-control-module independently binds picking_clock to5026c8.",
+    "All four are original static-zero variables. The selected-object pointer5022d4 belongs inside the existing Scene object and must be a field alias, never separate storage."
+  ]
+}

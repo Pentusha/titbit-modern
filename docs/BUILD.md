@@ -145,3 +145,9 @@ $env:TITBIT_GAME = 'D:\Games\Titbit'
 и заголовков; LINK запускается заново. `/FORCE` не используется.
 `config/source-build.json` содержит рецепты сборки и символы,
 без машинного кода или данных исходного EXE.
+
+## Linux
+
+Нативная сборка выполняется отдельно из `linux-port/` средствами Clang/LLVM.
+Зависимости, внешний VC98 SDK и проверочные команды:
+[linux-port/docs/BUILD-LINUX.md](../linux-port/docs/BUILD-LINUX.md).

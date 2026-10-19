@@ -1,0 +1,20 @@
+{
+ "bindings": {
+  "?Pick@Picking@@QAEXHH@Z": "0x40fe90",
+  "?scene@@3VScene@@A": "0x5011c0",
+  "?camera@@3UM@@A": "0x5ee694",
+  "?zoom@@3MA": "0x5ee6d4",
+  "?SetPoint@Scene@@QAEXUVec@@@Z": "0x425da0",
+  "?Build@Picking@@QAEXXZ": "0x410530",
+  "?Ray@Picking@@QAEMUCopyVec@@00M@Z": "0x4104d0",
+  "?Origin@M@@QBEPAUVec@@PAU2@@Z": "0x410470",
+  "?Init3@Vec@@QAEAAU1@MMM@Z": "0x406ee0",
+  "??0CopyVec@@QAE@ABU0@@Z": "0x406f00",
+  "?Assign@Vec@@QAEAAU1@ABU1@@Z": "0x406f00",
+  "__real@44400000": "0x4cd5a4",
+  "__real@44800000": "0x4cd5a8"
+ },
+ "evidence": [
+  "call targets/ret N of 0x40fe90 (xrefs) and analysis/engine-geometry-module.json names; camera 0x5ee694..0x5ee6d0, zoom 0x5ee6d4 from its data refs"
+ ]
+}

@@ -1,0 +1,4 @@
+out/
+core
+core.*
+__pycache__/

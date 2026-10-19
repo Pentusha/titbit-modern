@@ -55,3 +55,10 @@ src/lanes/codex/resources/icon_*.ico
 TitbitStudio-projects/
 TitbitStudio.json
 dist/
+linux-port/probes/out/
+linux-port/game/
+*.o
+*.a
+*.ll
+*.bc
+*.ppm

@@ -1,0 +1,16 @@
+{
+  "bindings": {
+    "_active_stream_list": "0x5ee71c",
+    "?active_sounds@@3PAUActiveSoundEntry@@A": "0x5ee71c",
+    "?active_sound_count@@3HA": "0x5ee720",
+    "_active_stream_capacity": "0x5ee724",
+    "_active_stream_grow_by": "0x5ee728"
+  },
+  "fieldAliases": {
+    "?active_sounds@@3PAUActiveSoundEntry@@A": {"owner":"_active_stream_list", "locator":"_source_location_stream_pointer", "ownerExtent":"_source_size_stream_list", "extent":"_source_size_stream_pointer"},
+    "?active_sound_count@@3HA": {"owner":"_active_stream_list", "locator":"_source_location_stream_count", "ownerExtent":"_source_size_stream_list", "extent":"_source_size_stream_scalar"},
+    "_active_stream_capacity": {"owner":"_active_stream_list", "locator":"_source_location_stream_capacity", "ownerExtent":"_source_size_stream_list", "extent":"_source_size_stream_scalar"},
+    "_active_stream_grow_by": {"owner":"_active_stream_list", "locator":"_source_location_stream_grow", "ownerExtent":"_source_size_stream_list", "extent":"_source_size_stream_scalar"}
+  },
+  "evidence": ["Native4298e0 zeros pointer5ee71c, size5ee720, capacity5ee724 and grow5ee728. StreamList42/SetSize42a260 and independently reconstructed Pause/RestoreGameAudio agree on pointer/count fields and12-byte heap entries. The old game_audio.cpp separate variables are declarations only in the standalone build adaptation; original canonical source is preserved."]
+}

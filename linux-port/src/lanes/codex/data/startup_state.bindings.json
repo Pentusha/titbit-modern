@@ -1,0 +1,15 @@
+{
+  "bindings": {
+    "_renderer_cleanup_guard": "0x5026cc",
+    "_sound_bank_cleanup_guard": "0x5ee700",
+    "_sax_names_cleanup_guard": "0x5ee73c",
+    "_xml_dom_cleanup_guard": "0x5ee7c4",
+    "_xml_writer_cleanup_guard": "0x5ee86c",
+    "_xml_document_cleanup_guard": "0x5ee92c",
+    "_xml_parser_cleanup_guard": "0x5ee9c8",
+    "_xml_parser_cleanup_guard2": "0x5ee9c9",
+    "_stl_second_cleanup_guard": "0x5f58b8",
+    "_scene_identity_matrix": "0x502678"
+  },
+  "evidence": ["Source static_init.c, xml_strings.cpp, sax_names.cpp, crt_shared_initializers.c and stl_final_initializers.c preserve the native byte-guard operands and16-float matrix writes. See addresses alongside each actual declaration. All initial values are native static zero; the real source callbacks still perform initialization/cleanup."]
+}

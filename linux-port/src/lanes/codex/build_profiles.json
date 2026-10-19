@@ -1,0 +1,107 @@
+{
+  "import_veneers.cpp": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /GR- /GX"
+  },
+  "jpeg_decode.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Gy /Zl /Zp4"
+  },
+  "jpeg_pixels.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /GR- /GX",
+    "superseded": true
+  },
+  "ogg_bitwise.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "ogg_framing.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_bitrate.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_block.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_codebook.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_envelope.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_file.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_floor0.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_floor1.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_info.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_lookup.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_lpc.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_lsp.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_mapping0.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_mdct.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_psy.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_registry.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_res0.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_sharedbook.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_smallft.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_synthesis.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "vorbis_window.c": {
+    "compiler": "msvc6.5pp",
+    "flags": "/O2 /G5 /Ob1 /Gy /Zl /D_MT /I../../../third_party/audiere-reference/audiere/src/libogg-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/include /I../../../third_party/audiere-reference/audiere/src/libvorbis-1.0/lib"
+  },
+  "data/template_guards.asm": {
+    "compiler": "msvc6.5pp",
+    "flags": "/coff /Zm /Cx"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "bindings": {
+    "??0SrbLod@@QAE@PAULodOwner42@@@Z": "0x428940",
+    "?ToXml@Lod@@UAE?AVObservedString@@XZ": "0x4142d0",
+    "?Draw@Lod@@UAEXXZ": "0x415020",
+    "?Update@SrbLod@@UAEXH@Z": "0x428a20",
+    "?Render@SrbLod@@UAEXH@Z": "0x428390"
+  }
+}

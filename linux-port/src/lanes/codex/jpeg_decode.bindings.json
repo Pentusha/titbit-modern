@@ -1,0 +1,30 @@
+{
+  "bindings": {
+    "_FillMemoryInput": "0x49b940",
+    "_DecodeJpegMemory": "0x49bbb0",
+    "_JpegErrorExit": "0x49b890",
+    "_game_jpeg_memory_source": "0x49b8b0",
+    "_gray_to_gray": "0x49ba40",
+    "_gray_to_bgra": "0x49ba70",
+    "_gray_to_alpha": "0x49bab0",
+    "_rgb_to_gray": "0x49bae0",
+    "_rgb_to_bgra": "0x49bb20",
+    "_rgb_to_alpha": "0x49bb60",
+    "_jpeg_std_error": "0x49bec0",
+    "_jpeg_CreateDecompress": "0x49dc50",
+    "_jpeg_destroy_decompress": "0x49dd20",
+    "_jpeg_read_header": "0x49dd30",
+    "_jpeg_start_decompress": "0x49e0c0",
+    "_jpeg_read_scanlines": "0x49e280",
+    "_jpeg_finish_decompress": "0x49e000",
+    "_jpeg_resync_to_restart": "0x49c070"
+  },
+  "evidence": [
+    {
+      "provenance": "native49bbb0 calls IJG6a create456/read header, memory source49b8b0, setjmp3/longjmp and the six separately recovered pixel conversions. Flags select IDCT, not output color space; native offsets68/72/76/84/88 select dct_method/fancy/block/dither/two_pass. Error callback49b890 calls output_message at error+8 then longjmp from error+132. cdecl eight arguments and plain RET. Canonical memory/pixel sources are included unchanged."
+    },
+    {
+      "jpegProviders": "analysis/jpeg-compilation.json, exact source-built IJG6a function symbols; no target operands assumed"
+    }
+  ]
+}

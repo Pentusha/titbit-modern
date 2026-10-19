@@ -1,0 +1,7 @@
+{
+  "bindings": {
+    "_jpeg_decode_status": "0x5ef6a4",
+    "_iostream_setup_guard": "0x5f4500"
+  },
+  "evidence": ["Native DecodeJpegMemory49bbb0 writes1 and reads a DWORD at5ef6a4; its original static storage is zero initialized. Source type int has the evidenced four-byte width."]
+}

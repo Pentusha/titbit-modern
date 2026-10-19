@@ -5,3 +5,6 @@
 *.ps1 text eol=crlf
 *.png binary
 *.ico binary
+linux-port/*.sh text eol=lf
+linux-port/**/*.sh text eol=lf
+linux-port/**/Makefile text eol=lf
