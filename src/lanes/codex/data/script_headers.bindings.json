@@ -1,0 +1,10 @@
+{
+  "bindings": {
+    "_queststate_header": "0x4de098",
+    "_input_header": "0x4de09c",
+    "_scener_header": "0x4de0a0"
+  },
+  "evidence": [
+    "analysis/semantic/embedded-script-headers.json records original source text and typed scAdd_Internal_Header calls41ad40/41ad51/41ad62. Native pointer slots4de098/4de09c/4de0a0 point respectively to queststate4e0fe8/input4df5a0/scener4de0a8."
+  ]
+}

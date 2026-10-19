@@ -1,0 +1,56 @@
+#include scener
+
+export ON_CREATE;
+export ON_TIME;
+
+IFPlane * p_plane;
+int start = 0;
+int last = 0;
+
+void ON_CREATE()
+{
+	LINK * p_lnk; 
+//	self->CreateTimer(0, -1);	
+	
+	message m;
+	m.p_target = self;
+	m.message_id = EM_TIME;
+	scene.PostMessage(m);
+
+	//
+	p_lnk = self;
+
+	p_plane = p_lnk->GetChild();	
+
+}
+
+
+void ON_TIME(int timernum)
+{	
+	int dtime;	
+//	float delta;
+
+	dtime = scene.GetTime();
+	
+	last = dtime % 120;
+	
+	if(last > 60)
+	{
+	
+		p_plane->transparency = 0;
+	
+	}
+	else
+	{
+		p_plane->transparency = 0.85;
+	
+	}
+
+	
+	message m;
+	m.p_target = self;
+	m.message_id = EM_TIME;
+	scene.PostMessage(m);
+
+}
+

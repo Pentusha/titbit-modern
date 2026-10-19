@@ -1,0 +1,24 @@
+{
+ "bindings": {
+  "??1AviPlane_0040b320@@UAE@XZ": "0x40b420",
+  "??_GAviPlane_0040b320@@UAEPAXI@Z": "0x40b390",
+  "??_EAviPlane_0040b320@@UAEPAXI@Z": "0x40b390",
+  "?Export@AviPlane_0040b320@@UAE?AVObservedString@@XZ": "0x40ba10",
+  "?Update@AviPlane_0040b320@@UAEXH@Z": "0x40b470",
+  "?GetType@AviPlane_0040b320@@UAEHXZ": "0x40ba00",
+  "??_7AviPlane_0040b320@@6B@": "0x4cd540",
+  "__real@3a800000": "0x4cd554",
+  "__real@3c23d70a": "0x4cd4c8",
+  "_AVIStreamGetFrame@8": "0x4a7e06",
+  "_DrawDibDraw@52": "0x4a7e00",
+  "_DrawDibOpen@0": "0x4a7e24",
+  "??_C@_07OBON@aviname?$AA@": "0x4ddc94",
+  "??_C@_06FMMD@keying?$AA@": "0x4ddc8c",
+  "??_C@_0L@CIHP@uvposition?$AA@": "0x4ddc70",
+  "??_C@_06DBCD@uvsize?$AA@": "0x4ddc68",
+  "??_C@_0P@BLAI@texture256x256?$AA@": "0x4ddce4",
+  "??_C@_06GLIF@repeat?$AA@": "0x4ddc84",
+  "??_C@_08BOHH@position?$AA@": "0x4dd6fc",
+  "??_C@_04LLHI@size?$AA@": "0x4ddc7c"
+ }
+}

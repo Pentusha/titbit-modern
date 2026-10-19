@@ -1,0 +1,11 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+
+void ON_CREATE()
+{
+//		scene.DeleteObject(self);
+		scene.SetCursorType(0);
+}
+

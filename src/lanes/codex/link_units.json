@@ -1,0 +1,129 @@
+{
+  "exclude": [
+    "decompilation/src/lanes/engine41/cpx43_SAX2Parser.cpp",
+    "decompilation/src/lanes/engine41/xml_strings.cpp",
+    "decompilation/src/lanes/engine41/static_init43.cpp",
+    "decompilation/src/lanes/engine42/arabica_attrs.cpp"
+  ],
+  "include": [
+    "decompilation/src/lanes/engine42/cpx_AttributeListImp.cpp",
+    "decompilation/src/lanes/engine42/cpx_HandlerBase.cpp",
+    "decompilation/src/lanes/engine42/cpx_AttributesImpl.cpp"
+  ],
+  "staticInitializers": {
+    "decompilation/src/lanes/engine42/cpx_SAX2Parser.cpp": {
+      "?FEATURE_VALIDATION@CSAX2Parser@XML@CSL@@0V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": {
+        "initializer": "0x43f4a0",
+        "address": "0x5ee958",
+        "literal": "http://xml.org/sax/features/validation"
+      },
+      "?FEATURE_NAMESPACES@CSAX2Parser@XML@CSL@@0V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": {
+        "initializer": "0x43f600",
+        "address": "0x5ee978",
+        "literal": "http://xml.org/sax/features/namespaces"
+      },
+      "?FEATURE_NAMESPACE_PREFIXES@CSAX2Parser@XML@CSL@@0V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": {
+        "initializer": "0x43f760",
+        "address": "0x5ee9cc",
+        "literal": "http://xml.org/sax/features/namespace-prefixes"
+      },
+      "?FEATURE_EXT_GEN_ENTITIES@CSAX2Parser@XML@CSL@@0V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": {
+        "initializer": "0x43f8c0",
+        "address": "0x5ee9dc",
+        "literal": "http://xml.org/sax/features/external-general-entities"
+      },
+      "?FEATURE_EXT_PAR_ENTITIES@CSAX2Parser@XML@CSL@@0V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": {
+        "initializer": "0x43fa20",
+        "address": "0x5ee948",
+        "literal": "http://xml.org/sax/features/external-parameter-entities"
+      },
+      "?FEATURE_STRING_INTERNING@CSAX2Parser@XML@CSL@@0V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": {
+        "initializer": "0x43fb80",
+        "address": "0x5ee998",
+        "literal": "http://xml.org/sax/features/string-interning"
+      },
+      "?FEATURE_USE_ISO_8859_1@CSAX2Parser@XML@CSL@@0V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": {
+        "initializer": "0x43fce0",
+        "address": "0x5ee9b8",
+        "literal": "http://www.cpointc.com/xml/parser/use-iso-8859-1"
+      },
+      "?PROPERTY_DECL_HANDLER@CSAX2Parser@XML@CSL@@0V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": {
+        "initializer": "0x43fe40",
+        "address": "0x5ee988",
+        "literal": "http://xml.org/sax/handlers/DeclHandler"
+      },
+      "?PROPERTY_LEXICAL_HANDLER@CSAX2Parser@XML@CSL@@0V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": {
+        "initializer": "0x43ffa0",
+        "address": "0x5ee9a8",
+        "literal": "http://xml.org/sax/handlers/LexicalHandler"
+      },
+      "?PROPERTY_DOCUMENT_BASE@CSAX2Parser@XML@CSL@@0V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": {
+        "initializer": "0x440100",
+        "address": "0x5ee938",
+        "literal": "http://cpointc.com/xml/parser/DocumentBase"
+      },
+      "?PROPERTY_DEFAULT_HANDLER@CSAX2Parser@XML@CSL@@0V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": {
+        "initializer": "0x440260",
+        "address": "0x5ee968",
+        "literal": "http://cpointc.com/xml/parser/DefaultHandler"
+      }
+    },
+    "decompilation/src/lanes/engine41/cpx43_DOMImpl.cpp": {
+      "?EMPTY_STRING@SimpleNode@XML@CSL@@1V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": {
+        "initializer": "0x432f40",
+        "address": "0x5ee784",
+        "literal": null
+      }
+    },
+    "decompilation/src/lanes/engine41/cpx43_DOMWriter.cpp": {
+      "?SAX_LEXICALHANDLER@DOMWriter@XML@CSL@@0V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": {
+        "initializer": "0x439dd0",
+        "address": "0x5ee85c",
+        "literal": "http://xml.org/sax/handlers/LexicalHandler"
+      }
+    },
+    "decompilation/src/lanes/engine41/cpx43_NamespaceSupport.cpp": {
+      "?EMPTY_STRING@CNamespaceSupport@XML@CSL@@0V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": {
+        "initializer": "0x43d4d0",
+        "address": "0x5ee90c",
+        "literal": null
+      }
+    }
+  },
+  "evidence": [
+    "Select engine42 SAX2Parser game revision, preserving original ISO88591 flag+18, Latin1 handler+48 and actual native behavior. engine41 revision lacks the feature and interprets the same private fields differently; its full duplicate TU is excluded from the standalone build only. Original sources and historical function observations remain unchanged.",
+    "Eight manual xml_strings initializers are partial views of existing real class static strings. The standalone build uses the source compiler callbacks and one actual member storage for each instead of duplicate16-byte probe objects.",
+    "Additional AttributeListImp/HandlerBase units are the already preserved original CenterPoint source wrappers. No new dummy function or implementation archive is introduced.",
+    "The224-byte ObservedString copy constructor is compiler-identical including every relocation in canonical archive_string_copy and five inline lane providers. Only the existing COMDAT selection1 vs2 causes duplicate errors. Main build requires fresh complete provider equality before sharing the actual compiler-inline selection; differing code or symbol operands reject.",
+    "engine41 retired static_init43.cpp from the real-link provider set. Each native single/two-guard callback has only shared byte OR1 plus one/two atexit calls to a source-proved empty destructor. Full compiler root and helper/cleanup instruction graphs are validated before adding equivalent callback labels to actual C++ template output. Physical PCs may fold; native Exact is not assigned. Public template guard symbols are independently bound5f4500/5f44f4 and have one real COMDAT owner.",
+    "TITBIT_SOURCE_LINK selects only canonical archive_string_copy.cpp copy constructor; lane headers retain their historical inline bodies in byte-match configurations. No COMDAT conflict is suppressed."
+  ],
+  "identicalComdatProviders": [],
+  "localeGuardProviders": {
+    "decompilation/src/lanes/engine41/cpx43_InputSource.cpp": {
+      "guardSymbols": [
+        "??_B?1???id@?$ctype@G@std@@$D@@9@51"
+      ],
+      "nativeInitializers": [
+        "0x43bf40",
+        "0x43bfa0",
+        "0x43bfd0",
+        "0x43c700",
+        "0x43c730",
+        "0x43d4a0",
+        "0x43f440",
+        "0x43f470"
+      ]
+    },
+    "decompilation/src/lanes/engine41/cpx43_DOMWriter.cpp": {
+      "guardSymbols": [
+        "??_B?1???id@?$ctype@G@std@@$D@@9@51",
+        "??_B?1???id@?$codecvt@DDH@std@@$D@@9@51"
+      ],
+      "nativeInitializers": [
+        "0x43b6f0",
+        "0x43bc50"
+      ]
+    }
+  }
+}

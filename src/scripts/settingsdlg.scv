@@ -1,0 +1,108 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_LBUTTONDOWN;
+export ON_MOUSEOVER;
+export ON_NOTIFY;
+export ON_DESTROY;
+
+
+IFPlane * p_volumebar = NULL;
+float newvol = 0;
+int doexit = 0;
+
+void ON_CREATE()
+{
+	GAME_OBJECT * p_go;
+	LINK * p_link = NULL;
+
+	vec3_t position, size, uvposition, uvsize;
+	
+	
+	p_go  = scene.CreateTextWindow(self, "sound_volume", 0, 100, 512, 200, 60, 1, ""); 
+
+
+	position.Assign(0,10,0);
+	size.Assign(80,748,0);
+	uvposition.Assign(0.125,0.6875,0);
+	uvsize.Assign(0.0625,-0.625,0);
+	p_link = CreateIFPlane(position,size,uvposition,uvsize, "items.tga");
+	self->Attach(p_link);
+
+
+	position.Assign(570, 114, 10);
+	size.Assign(306, 43, 0);
+	uvposition.Assign(0.1953125, 0.17578125, 0);
+	uvsize.Assign(0.298828125, -0.0419921875, 0);
+
+	p_link =  CreateIFPlane(position,size,uvposition,uvsize,"items.tga");
+	self->Attach(p_link);
+
+
+	newvol = GetMasterVolume();
+	newvol *= 2.5;
+	
+	position.Assign(574 + newvol, 118, 10);
+	size.Assign(52, 35, 0);	
+	uvposition.Assign(0.193359375, 0.123046875, 0);
+	uvsize.Assign(0.05078125, -0.0341796875, 0);
+
+	p_link =  CreateIFPlane(position,size,uvposition,uvsize,"items.tga");
+	self->Attach(p_link);
+	p_volumebar = p_link;
+
+
+
+}
+
+void ON_MOUSEOVER(vec3_t mousepos)
+{
+	if(mousepos.x < 130)
+	{
+		doexit = 1;
+		scene.SetCursorType(6);
+		return;
+	}
+
+	doexit = 0;
+	scene.SetCursorType(0);
+
+	if(mousepos.x > 598 && mousepos.x < 848 && mousepos.y > 114 && mousepos.y < 157)
+	{
+		newvol = (mousepos.x - 598);
+//		newvol = newvol*100/250;	
+//		WriteLog("mouse_over_bar");		
+	}
+}
+
+
+void ON_LBUTTONDOWN()
+{
+	
+	if(doexit == 1)
+        {
+		scene.DeleteObject(self);
+		return;
+	}
+//	WriteLog("click");	
+	p_volumebar->origin.Assign(574 + newvol, 118, 1);
+	int vol2 = newvol/2.5;
+	SetMasterVolume(vol2);
+
+	
+}
+
+void ON_NOTIFY(int param)
+{
+
+}
+
+
+void ON_DESTROY()
+{
+
+	scene.SetCursorType(0);
+}
+
+

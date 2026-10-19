@@ -1,0 +1,126 @@
+//
+// Attr.h
+//
+// $Id: //depot/XML/Main/include/DOM/Attr.h#9 $
+//
+// Document Object Model (Core) Level 1
+//
+// Interface Attr
+//
+// The contents of this file are subject to the 
+// CenterPoint Public License Version 1.0 (the "License"); 
+// you may not use this file except in compliance with the 
+// License. You may obtain a copy of the License at 
+// http://www.cpointc.com/CPL
+//
+// Software distributed under the License is distributed on 
+// an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
+// express or implied. See the License for the specific 
+// language governing rights and limitations under the License.
+//
+// The Original Code is CenterPoint/XML.
+//
+// The Initial Developer of the Original Code is CenterPoint - 
+// Connective Software Engineering GmbH. Portions created by
+// CenterPoint - Connective Software Engineering GmbH. are 
+// Copyright (c) 1998-2001 CenterPoint - Connective Software
+// Engineering GmbH. All Rights Reserved.
+//
+// Contributor(s):
+//
+
+
+#ifndef DOM_Attr_H_INCLUDED
+#define DOM_Attr_H_INCLUDED
+
+
+#ifndef XMLStd_H_INCLUDED
+#include "XMLStd.h"
+#endif
+#ifndef DOM_NodeImp_H_INCLUDED
+#include "NodeImp.h"
+#endif
+#ifndef XMLString_H_INCLUDED
+#include "XMLString.h"
+#endif
+
+
+XML_BEGIN
+
+
+class Document;
+struct XMLName;
+
+
+class XPP_API Attr: public SimpleNode
+	//; The Attr interface represents an attribute in an Element object.
+{
+public:
+	virtual const XMLString& getName() const;
+		//; Returns the name of this attribute.
+
+	virtual bool getSpecified() const;
+		//: If this attribute was explicitly given a value in
+		//+ the original document, this is true; otherwise,
+		//. it is false.
+
+	virtual const XMLString& getValue() const;
+		//; Returns the value of the attribute as a string.
+
+	virtual void setValue(const XMLString& value);
+		//; Sets the value of the attribute as a string.
+
+	// Node
+	virtual const XMLString& getNodeName() const;
+	virtual const XMLString& getNodeValue() const;
+	virtual void setNodeValue(const XMLString& value);
+	virtual unsigned short getNodeType() const;
+	virtual Node* getParentNode() const;
+	virtual Node* getPreviousSibling() const;
+	virtual Node* cloneNode(bool deep) const;
+
+	// DOM Level 2
+	virtual const XMLString& getNamespaceURI() const;
+	virtual const XMLString& getLocalName() const;
+	virtual Element* getOwnerElement() const;
+
+	// IMPLEMENTATION
+	Attr(Document* pOwnerDocument, Element* pOwnerElement, const XMLString& namespaceURI, const XMLString& localName, const XMLString& qname, const XMLString& value);
+		// game version (engine41): no 'specified' flag; unspecified attributes are UnspecAttr
+
+protected:
+	Attr(const Attr& attr);
+	virtual ~Attr();
+
+	void changeOwnerDocument(Document* pOwnerDocument);
+
+private:
+	// game version (engine41): the owner element is kept in SimpleNode::m_pParent
+	const XMLName* m_pName;
+	XMLString      m_value;
+
+	friend class Document;
+	friend class Element;
+};
+
+
+class XPP_API UnspecAttr: public Attr
+	//: game version (engine41): an attribute that was not specified in the
+	//. document (getSpecified() returns false).
+{
+public:
+	UnspecAttr(Document* pOwnerDocument, Element* pOwnerElement, const XMLString& namespaceURI, const XMLString& localName, const XMLString& qname, const XMLString& value);
+
+	virtual bool getSpecified() const;
+	virtual Node* cloneNode(bool deep) const;
+
+protected:
+	UnspecAttr(const UnspecAttr& attr);
+	// no user-declared destructor: the game ~UnspecAttr is a bare jump to ~Attr
+};
+
+
+XML_END
+
+
+#endif // DOM_Attr_H_INCLUDED

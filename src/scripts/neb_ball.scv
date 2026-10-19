@@ -1,0 +1,56 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_SETFOCUS;
+export ON_KILLFOCUS;
+export ON_LBUTTONDOWN;
+export ON_NOTIFY;
+
+vec3_t pos;
+
+void ON_CREATE()
+{
+	vec3_t pos2;
+	self->GetBoneRotation(0, pos);
+
+	pos2 = pos;
+	pos2.z += 180;
+	self->SetBoneRotation(0, pos2);
+	self->Selectable(false);
+
+}
+
+
+void ON_NOTIFY(int param)
+{
+
+	self->SetBoneRotation(0, pos);
+	self->Selectable(true);
+}
+
+void ON_SETFOCUS()
+{
+	scene.SetCursorType(3);
+	
+}
+
+void ON_KILLFOCUS()
+{
+
+	scene.SetCursorType(0);
+
+}
+
+void ON_LBUTTONDOWN()
+{
+	
+	GAME_OBJECT * p_anton;
+	p_anton = scene.FindObjectByName("anton");
+	message m;
+	m.p_target = p_anton;
+	m.message_id = EM_NOTIFY;
+	m.lparam = 104;
+	scene.PostMessage(m);
+
+}

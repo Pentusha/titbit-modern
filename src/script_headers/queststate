@@ -1,0 +1,113 @@
+struct QUEST_STATE{	
+char time[32];
+float uvposx;
+float uvposy;
+int typepr;
+
+int item_nuclear_mushrooms;
+int item_disk_piece;
+int item_full_disk;
+int item_rat_tail;
+int item_clue;
+int item_piece_of_shit;
+int item_indian_poster;
+int item_pioners_tie;
+int item_money_case;
+int item_respirator;
+int item_pants;
+int item_tri_fallos;
+int item_erotic_fotos;
+int item_wear;
+int item_rubber_glove;
+int item_gas_ballon;
+int item_serp;
+int item_axe;
+int item_bottle_of_vodka;
+int item_kruzhka;
+int item_book_pis;
+int item_bucket;
+int item_rag_and_gutaline;
+int item_basement_key;
+int item_merry_shiva;
+int item_elephant;
+int item_vantuz;
+int item_gun;
+int item_note;
+int item_petrolium_can;
+int item_club_card;
+int item_bullets;
+int item_mount;
+int item_saw_benzo;
+int item_titbit;
+int item_marker;
+int item_coin;
+int item_condom;
+int item_container;
+int item_kalendarik;
+int item_dance_video;
+int item_photocam;
+int item_plastic;
+int item_tualet_paper;
+int item_id_card;
+int item_leather_cap;
+int item_boots;
+int item_belomor;
+int item_compromat_fotos;
+int item_porno_disk;
+int item_listenning_device;
+int item_reciver;
+int item_donkey_bust;
+int item_titbit_can;
+int item_plan;
+int item_skrewdriver;
+int item_scissors;
+int item_saw_circul;
+int item_red_paint_ballon;
+int item_white_rose;
+int item_air_ball;
+int item_cutters;
+int item_keydurka;
+int item_ruchka;
+
+
+int quest_aes_password;
+int quest_reppers_frend;
+int quest_broke_window;
+int quest_talk_rask_axe;
+int quest_talk_dost_axe;
+int quest_escape_from_durdom;
+int quest_get_compr_fotos;
+int quest_get_compr_tape;
+int quest_bring_fetishes;
+int quest_cut_electric_wire;
+int quest_bring_erotic_fotos;
+int quest_bring_pornodisk_to_janus;
+int quest_get_to_hippi;
+
+int quest_pull_rope1;
+int quest_atom_chem;
+int quest_freeze_giga;
+
+int quest_talk_nachal;
+int quest_talk_dj;
+int quest_spoil_city;
+int quest_wake_alien;
+int quest_get_wear;
+int quest_get_bicycle;
+int quest_check_bachok;
+int quest_get_shiva;
+int quest_talk_magic;
+
+
+
+
+int activelocation;
+int lastlocation;
+import int SaveGame(char *);						
+import int LoadGame(char *);						
+import void NewGame();								
+import void GetTimeFromFile(char *);				
+import void GetTime();								
+									
+};									
+import QUEST_STATE queststate;

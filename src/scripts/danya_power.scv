@@ -1,0 +1,89 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_NOTIFY;
+export ON_SETFOCUS;
+export ON_KILLFOCUS;
+export ON_LBUTTONDOWN;
+
+int nextanimation;
+int lastanimation;
+
+void Dialog(char * dialogname)
+{
+	vec3_t position, size;	
+	GAME_OBJECT * p_obj;
+
+	position.Assign(0, 600, -80);
+	size.Assign(1024,768,0);
+
+	p_obj = CreateGameObject(1,dialogname, position, size);
+
+	position.Assign(512, -216, 0);
+	p_obj->SetBoneCenter(0,position);
+
+	scene.Add(p_obj, 2);
+}
+
+void ON_SETFOCUS()
+{
+	if (queststate.quest_freeze_giga > -1)
+	{
+		return;
+	}
+		scene.SetCursorType(4);
+}
+
+void ON_KILLFOCUS()
+{
+
+	scene.SetCursorType(0);
+
+}
+
+void ON_LBUTTONDOWN()
+{
+	if (queststate.quest_freeze_giga > -1)
+	{
+		return;
+	}
+
+	GAME_OBJECT * p_anton;
+	p_anton = scene.FindObjectByName("anton");
+	message m;
+	m.p_target = p_anton;
+	m.message_id = EM_NOTIFY;
+	m.lparam = 103;
+	scene.PostMessage(m);
+}
+
+void ON_CREATE()
+{ 
+	lastanimation = self->CreateSkeletonAnimation("danya_talk_01.EZA", 1);
+	nextanimation = 1;
+
+	scene.SetCursorType(0);
+}
+
+void ON_NOTIFY(int param)
+{
+	if(param != lastanimation && param != 200)	//обозначает окончание диалога
+	{
+		if (nextanimation < 0) return;
+
+		if(param == 101) // если нажали идти к выходу
+		{
+			if(nextanimation == 1) nextanimation = -1;	//включаем диалог
+
+		}
+	}
+	else
+	{
+		if(nextanimation == 1)
+		{
+			lastanimation = self->CreateSkeletonAnimation("danya_talk_01.EZA", 1);
+		}
+
+	}
+}

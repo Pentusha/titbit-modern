@@ -1,0 +1,209 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_DESTROY;
+
+export ON_MOUSEOVER;
+export ON_LBUTTONDOWN;
+export ON_SETFOCUS;
+export ON_KILLFOCUS;
+
+
+LINK * p_tooltip = NULL;
+
+
+
+//LINK * p_use = NULL;
+LINK * p_look = NULL;
+LINK * p_pick = NULL;
+LINK * p_talk = NULL;
+LINK * p_dance = NULL;
+IFPlane * p_ipl = NULL;
+IFPlane * p_active = NULL;
+
+void ON_CREATE()
+{
+
+	vec3_t pos;
+	vec3_t size;
+	vec3_t uvpos;
+	vec3_t uvsize;
+	vec3_t zpos;
+	vec3_t zsize;
+	
+	
+	pos.Assign(0,0,0);
+	size.Assign(64,64,0);
+	uvpos.Assign(0.5,0.0625,0);
+	uvsize.Assign(0.0625,-0.0625,0);
+
+	//создаем пачку кнопок
+
+	p_look = CreateIFPlane(pos,size,uvpos,uvsize, "items.tga", 0.4); 
+	self->Attach(p_look);
+	
+	uvpos.x += 0.0625;
+	pos.y += 64;
+	
+	
+	zpos = pos;
+	zsize = size;
+	
+	zsize.x *= 1.5;
+	zsize.y *= 1.5;
+	zpos.x -= 16;
+	zpos.y -= 16;
+
+	
+	p_pick = CreateIFPlane(zpos,zsize,uvpos,uvsize, "items.tga"); 
+	self->Attach(p_pick);
+	p_active = p_pick;
+
+
+	uvpos.x += 0.125;
+	pos.y += 64;
+
+	p_talk = CreateIFPlane(pos,size,uvpos,uvsize, "items.tga", 0.4); 
+	self->Attach(p_talk);
+	
+	uvpos.x += 0.0625;
+	pos.y += 64;
+
+	p_dance = CreateIFPlane(pos,size,uvpos,uvsize, "items.tga", 0.4); 
+	self->Attach(p_dance);
+
+
+	
+//	WriteLog("Created");
+
+}
+
+void ON_DESTROY()
+{
+	WriteLog("Destroyed");
+}
+
+
+
+void ON_MOUSEOVER(vec3_t mousepos)
+{
+	IFPlane * p_oldipl = p_ipl;
+	
+	vec3_t localpos;
+	
+	if(p_ipl != NULL && p_ipl != p_active)
+	{
+	  p_ipl->transparency = 0.4;
+	}
+
+	self->GetBonePosition(0,localpos);
+	
+	localpos.x = mousepos.x - localpos.x;
+	localpos.y = mousepos.y - localpos.y;
+	
+/*	
+	if(localpos.y > 0 && localpos.y <= 64)
+	{
+	   p_ipl = p_use;
+	}
+	else if(localpos.y > 64 && localpos.y <= 128)
+	{
+	   p_ipl = p_look;
+	}
+	else if(localpos.y > 128 && localpos.y <= 192)
+	{
+	   p_ipl = p_pick;
+	}
+	else if(localpos.y > 192 && localpos.y < 256)
+	{
+	   p_ipl = p_talk;			
+ 	}
+	else if(localpos.y > 256 && localpos.y < 320)
+	{
+	   p_ipl = p_dance;  
+	}
+	else
+	{
+	   p_ipl = NULL;
+
+	}
+*/
+
+	if(localpos.y > 0 && localpos.y <= 64)
+	{
+	   p_ipl = p_look;
+	}
+	else if(localpos.y > 64 && localpos.y <= 128)
+	{
+	   p_ipl = p_pick;
+	}
+	else if(localpos.y > 128 && localpos.y <= 192)
+	{
+	   p_ipl = p_talk;	
+	}
+	else if(localpos.y > 192 && localpos.y < 256)
+	{
+//	   p_ipl = p_dance;  		
+ 	}
+	else
+	{
+	   p_ipl = NULL;
+
+	}
+	
+	if(p_ipl != NULL && p_ipl != p_active)
+	{
+	 p_ipl->transparency = 0.8;
+
+	}
+	
+
+
+}
+
+void ON_LBUTTONDOWN()
+{
+//	WriteLog("TEXT_CLICKED");
+	
+	if(p_active != NULL && p_ipl != NULL && p_ipl != p_active)
+	{
+		p_active->size.x = 64;
+		p_active->size.y = 64;
+		p_active->origin.x += 16;
+		p_active->origin.y += 16;
+		p_active->transparency = 0.4;
+
+		p_active = p_ipl;
+		p_active->size.x = 96;
+		p_active->size.y = 96;
+		p_active->origin.x -= 16;
+		p_active->origin.y -= 16;
+		p_active->transparency = 1;	
+
+
+//		if (p_ipl == p_use)  { queststate.typepr=0; scene.SetCursorType(1); };
+		if (p_ipl == p_look) { queststate.typepr=0; scene.SetCursorType(2); };
+		if (p_ipl == p_pick) { queststate.typepr=0; scene.SetCursorType(3); };
+		if (p_ipl == p_talk) { queststate.typepr=0; scene.SetCursorType(4); };
+		if (p_ipl == p_dance){ queststate.typepr=0; scene.SetCursorType(5); };
+		
+	}
+	
+}
+
+void ON_SETFOCUS()
+{
+
+
+}
+
+void ON_KILLFOCUS()
+{
+	
+	if(p_ipl != NULL && p_ipl != p_active)
+	{
+	  p_ipl->transparency = 0.4;
+	}
+
+}

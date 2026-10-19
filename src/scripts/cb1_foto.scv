@@ -1,0 +1,12 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+
+
+void ON_CREATE()
+{
+	if(queststate.item_photocam)
+		scene.DeleteObject(self);
+
+}

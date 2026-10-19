@@ -1,0 +1,321 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_NOTIFY;
+export ON_DESTROY; 
+
+int nextanimation;
+int lastanimation;
+
+bool takefur = false;
+bool takecondom = false;
+
+
+STREAM * p_stream = NULL;
+
+
+void ON_DESTROY()
+{
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+}
+
+void ON_CREATE()
+{
+	//фоновая музыка
+	GAME_OBJECT * p_snd;
+	 
+	p_snd = scene.FindObjectByName("sound_back");	
+	
+	if(p_snd != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 9100;
+		m.p_target = p_snd;
+		scene.PostMessage(m);
+	}
+
+	
+
+	queststate.lastlocation = queststate.activelocation;
+	queststate.activelocation = 21;
+
+	lastanimation = self->CreateSkeletonAnimation("wc_a_nach_idle.EZA", 1);
+	nextanimation = 2;
+ 
+	scene.SetCursorType(0);
+}
+
+void ON_NOTIFY(int param)
+{
+
+
+	if(param != lastanimation)
+	{
+
+		//попытались использовать предмет 	
+		if(queststate.typepr != 0 && ((queststate.typepr != 39 && param != 109) || (queststate.typepr != 20 && param != 102 && queststate.item_kruzhka != 31 && queststate.quest_talk_nachal != 1 )))
+		{
+			if(p_stream != NULL)
+			{
+				p_stream->Stop(); 	
+				DeleteStream(p_stream);
+				p_stream = NULL;
+			}
+			p_stream = CreateStream("comment_anton_2.ogg");
+			p_stream->Play(false);
+			return;
+		}
+		
+
+		if (nextanimation < 0) return;
+
+		WriteLog("Notify");
+
+		if(param == 101) // если нажали идти на выход
+		{
+			if(nextanimation == 2) nextanimation = 13;
+			if(nextanimation == 4) nextanimation = 5;
+			if(nextanimation == 9) nextanimation = 10;
+		}	
+
+
+		if( param == 102 ) // если нажали идти к начальнику
+		{
+			takefur = false;
+
+			if(nextanimation == 2) nextanimation = -2;
+			if(nextanimation == 4) nextanimation = 6;
+			if(nextanimation == 9) nextanimation = 12;
+		}	
+		if( param == 103 ) // если нажали идти к фуражке
+		{
+			takefur = true;
+			if(nextanimation == 2) nextanimation = -2;
+			if(nextanimation == 4) nextanimation = 6;
+			if(nextanimation == 9) nextanimation = 12;
+		}	
+
+
+		if(param == 104) // если нажали идти к бумаге
+		{
+			if(nextanimation == 2) nextanimation = 3;
+			if(nextanimation == 9) nextanimation = 11;
+		}
+		
+		if(param == 109) // если нажали идти к раковине
+		{
+			//если в руках кондом
+			if(queststate.typepr == 39 && queststate.item_condom == 1)
+			{
+				if(nextanimation == 2) nextanimation = 8;
+				if(nextanimation == 4) nextanimation = 7;
+			}
+			else
+			{
+				if(p_stream != NULL)
+				{
+					p_stream->Stop(); 	
+					DeleteStream(p_stream);
+					p_stream = NULL;
+				}
+				p_stream = CreateStream("comment_anton_12.ogg");
+				p_stream->Play(false);
+			}
+		}		
+	}
+	else
+	{		
+		WriteLog("animation finished");
+
+		// уходим в другие локации
+		if ( (nextanimation==-5)||(nextanimation==-10)||(nextanimation==-13) )
+		{
+			scene.Delete(3);
+			scene.Load("club_bar01.XML");
+		}
+		if (nextanimation==-2)
+		{
+			if(takefur == false)
+			{
+				if(queststate.item_kruzhka == 31 && queststate.quest_talk_nachal == 1)
+				{
+					//показываем скетч
+					vec3_t position, size;	
+					GAME_OBJECT * p_obj;
+	
+					queststate.typepr = 0;
+					position.Assign(0, 0, -80);	
+					size.Assign(1024,768,0);
+	
+					p_obj = CreateGameObject(1,"scetch_use_likvidator.scv", position, size);	
+					scene.Add(p_obj, 2);
+
+				}
+				else
+				{
+					// крупный план начальника
+		//			lastanimation = self->CreateSkeletonAnimation("wc_a_nach_idle.EZA", 1);
+		
+					vec3_t position, size;	
+					GAME_OBJECT * p_obj;
+			
+					position.Assign(0, 600, -80);
+					size.Assign(1024,768,0);
+				
+					p_obj = CreateGameObject(1,"nachalnik_dialog.scv", position, size);
+				
+					position.Assign(512, -216, 0);
+					p_obj->SetBoneCenter(0,position);
+					scene.Add(p_obj, 2);
+				}
+			}
+			else	//берем фуражку
+			{
+				queststate.item_leather_cap = 1;
+				queststate.typepr = 0;
+				scene.SetCursorType(0);
+	
+				GAME_OBJECT * p_fur;
+				p_fur = scene.FindObjectByName("furagka");
+				if(p_fur != NULL)
+				{ 	
+					scene.DeleteObject(p_fur);
+				}
+
+				//показываем скетч
+				vec3_t position, size;	
+				GAME_OBJECT * p_obj;
+	
+				queststate.typepr = 0;
+				position.Assign(0, 0, -80);	
+				size.Assign(1024,768,0);
+
+				p_obj = CreateGameObject(1,"scetch_take_furazhka.scv", position, size);	
+				scene.Add(p_obj, 2);
+
+
+			}
+
+
+			nextanimation = 2;
+		}
+		if (nextanimation==-9)
+		{
+
+			queststate.item_condom = 2;
+			
+			queststate.typepr = 0;
+			scene.SetCursorType(0);
+		
+			//показываем скетч
+			vec3_t position, size;	
+			GAME_OBJECT * p_obj;
+	
+			queststate.typepr = 0;
+			position.Assign(0, 0, -80);	
+			size.Assign(1024,768,0);
+
+			p_obj = CreateGameObject(1,"scetch_fill_condom.scv", position, size);	
+			scene.Add(p_obj, 2);
+
+
+			lastanimation = self->CreateSkeletonAnimation("wc_a_rakovina_idle.EZA", 1);
+			nextanimation = 9;
+		}
+		if (nextanimation==-4)
+		{
+			// скетчи взятия туалетной бумаги
+			
+			queststate.item_tualet_paper = 1;
+	
+			GAME_OBJECT * p_paper;
+			p_paper = scene.FindObjectByName("bumaga");
+			if(p_paper != NULL)
+			{ 	
+				scene.DeleteObject(p_paper);
+			}			
+
+			//показываем скетч
+			vec3_t position, size;	
+			GAME_OBJECT * p_obj;
+	
+			queststate.typepr = 0;
+			scene.SetCursorType(0);
+
+			position.Assign(0, 0, -80);	
+			size.Assign(1024,768,0);
+
+			p_obj = CreateGameObject(1,"scetch_paper.scv", position, size);	
+			scene.Add(p_obj, 2);
+
+			lastanimation = self->CreateSkeletonAnimation("wc_a_bumaga_idle.EZA", 1);
+			nextanimation = 4;
+		}
+
+		// если заканчивается анимация "idle" создаем ее заново
+		if(nextanimation == 2) lastanimation = self->CreateSkeletonAnimation("wc_a_nach_idle.EZA", 1);
+		if(nextanimation == 4) lastanimation = self->CreateSkeletonAnimation("wc_a_bumaga_idle.EZA", 1);
+		if(nextanimation == 9) lastanimation = self->CreateSkeletonAnimation("wc_a_rakovina_idle.EZA", 1);
+
+
+		//////////////
+		if(nextanimation == 8)
+		{
+			lastanimation = self->CreateSkeletonAnimation("wc_a_nach_rakovina.EZA", 1);
+			nextanimation = -9;
+		}
+		if(nextanimation == 7)
+		{
+			lastanimation = self->CreateSkeletonAnimation("wc_a_bumaga_rakovina.EZA", 1);
+			nextanimation = -9;
+		}
+
+		if(nextanimation == 3)
+		{
+			lastanimation = self->CreateSkeletonAnimation("wc_a_nach_bumaga.EZA", 1);
+			nextanimation = -4;
+		}
+		if(nextanimation == 11)
+		{
+			lastanimation = self->CreateSkeletonAnimation("wc_a_rakovina_bumaga.EZA", 1);
+			nextanimation = -4;
+		}
+
+		if(nextanimation == 12)
+		{
+			lastanimation = self->CreateSkeletonAnimation("wc_a_rakovina_nach.EZA", 1);
+			nextanimation = -2;
+		}
+		if(nextanimation == 6)
+		{
+			lastanimation = self->CreateSkeletonAnimation("wc_a_bumaga_nach.EZA", 1);
+			nextanimation = -2;
+		}
+
+
+
+		if(nextanimation == 5)
+		{
+			lastanimation = self->CreateSkeletonAnimation("wc_a_bumaga_exit.EZA", 1);
+			nextanimation = -5;
+		}
+		if(nextanimation == 10)
+		{
+			lastanimation = self->CreateSkeletonAnimation("wc_a_rakovina_exit.EZA", 1);
+			nextanimation = -10;
+		}
+		if(nextanimation == 13)
+		{
+			lastanimation = self->CreateSkeletonAnimation("wc_a_nach_exit.EZA", 1);
+			nextanimation = -13;
+		}
+	}	
+}

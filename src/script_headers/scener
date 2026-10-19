@@ -1,0 +1,141 @@
+struct vec3_t{										
+	float x;										
+	float y;										
+	float z;										
+	import void Assign(float , float , float );		
+};													
+struct IFPlane{									
+	int vptr;										
+	int uptr;										
+	int nptr;										
+	int lptr;										
+	int gptr;										
+	int texture_id;									
+	vec3_t size;									
+	vec3_t origin;									
+	vec3_t uvorigin;								
+	vec3_t uvsize;									
+	vec3_t color;									
+	float transparency;								
+};													
+struct ANILINK{									
+import void Attach(ANILINK *p_link);		     	
+import void Detach();					     		
+import void Delete();					     		
+};													
+struct LINK{										
+import void Attach(LINK *p_link);		     		
+import void Detach();					     		
+import LINK* GetChild();				     		
+import ANILINK* GetAniLink();				        
+import void Delete();					     		
+};													
+struct message{									
+ char targetname[32];								
+ LINK * p_target;									
+ int message_id;									
+ int lparam;										
+ int rparam;										
+ int i[6];											
+};													
+#define	EM_COLLISION	1						
+#define	EM_MOUSEOVER	2						
+#define	EM_CREATE		3						
+#define	EM_DESTROY		4 						
+#define	EM_TIME			5						
+#define	EM_LMOUSEDOWN	6						
+#define	EM_RESUME		7						
+#define	EM_LBUTTONDOWN	8						
+#define	EM_LBUTTONUP	9						
+#define	EM_SETFOCUS		10						
+#define	EM_KILLFOCUS	11						
+#define	EM_NOTIFY		12						
+struct GAME_OBJECT{								
+import bool SetBonePosition(int, vec3_t);			
+import bool SetBoneRotation(int bone_id, vec3_t pos);	
+import bool SetBoneScale(int bone_id, vec3_t scale);	
+import bool SetBoneCenter(int bone_id, vec3_t center);	
+import bool GetBonePosition(int bone_id, vec3_t & pos);	
+import bool GetBoneRotation(int bone_id, vec3_t & rot);	
+import void Attach(LINK *p_link);		     		
+import void Detach();					     		
+import void Selectable(bool sel);					
+import int CreateTimer(int interv,int repeatcount = 1);
+import ANILINK * CreateSkeletonAnimation(char *name, int repeatcount = 1);
+};													
+struct SKEL_ANI{									
+import void SetFrameRate(float fr);	     		
+import float GetFrameRate();			     		
+import float GetFrames();				     		
+import float GetCurFrame();			     		
+import float GetLastTime();			     		
+import float GetFrameTime();			     		
+import bool GetHalf();					     		
+};													
+struct SCENE{										
+import int GetTime();								
+import GAME_OBJECT * FindObjectByName(char *);		
+import LINK * CreateTextWindow(GAME_OBJECT *, char * text, int x, int y, int dx, int dy, int charsize, int align, char * scriptname);
+import LINK * CreateTextWindowi(int textid, int x, int y, int dx, int dy, int charsize, int align, char * scriptname);
+import LINK * CreateIFWindow(GAME_OBJECT *, vec3_t, vec3_t, vec3_t, vec3_t, char *, char *);
+import LINK * CreateAviWindow(vec3_t position, vec3_t size, vec3_t uvposition, vec3_t uvsize, bool b_keying, char *aviname, char *scriptname);
+import void PostMessage(message & m);				
+import void Delete(int cl_type = 0xFF);			
+import void Load(char *);							
+import void DeleteObject(LINK *p_link);			
+import void Add(GAME_OBJECT * p_obj, int objclass);		
+import void SetCursorType(int);					
+import int GetCursorType();						
+};													
+import SCENE scene;								
+import void WriteLog(char *);						
+import double sin(double);							
+import int rand();									
+struct CAMERA{										
+import void RotateAD(vec3_t, vec3_t, float);		
+import void MoveFVD(float);		
+import void SetCamera(GAME_OBJECT *);				
+import void PlaceCamera(float, vec3_t, vec3_t);	
+import double GetCamera(vec3_t &, vec3_t &);
+};													
+import CAMERA camera;								
+struct SOUND{										
+import void Play();								
+import void Stop();								
+import void Free();								
+import void SetRate(int _freq);					
+import void SetVolume(int _vol);					
+import void SetPanning(int _pan);					
+import void SetLoop(bool _b_loop);					
+import void SetParam(int _freq, int _vol, int _pan, bool _b_loop);	
+import void Pause();								
+import void Resume();								
+import void ChangeParam(int _freq, int _volume, int _pan);	
+};													
+struct STREAM{										
+import void Play(bool loop = true);								
+import void Stop();								
+import void Pause();								
+import void Resume();								
+import void UpVolume();							
+import void DownVolume();							
+import void SetVolume(int);						
+import void SetSync(int synctype, GAME_OBJECT * p_sync); 
+};													
+import LINK * CreateIFPlane(vec3_t position, vec3_t size, vec3_t uvposition, vec3_t uvsize, char *texturename, float transp = 1);
+import LINK * CreateAVIPlane(vec3_t pos, vec3_t size, vec3_t uvpos, vec3_t uvsize, bool keying, const char * name, int rep = 1); 
+import GAME_OBJECT * CreateGameObject(int bonecount, char *scriptname, vec3_t pos, vec3_t size); 
+import SOUND * CreateSound(char * name);			
+import void DeleteSound(SOUND * p_ss);				
+import STREAM * CreateStream(char * name);			
+import void DeleteStream(STREAM * p_ss);			
+import void FreezeSounds();			
+import void UnFreezeSounds();			
+import void SetMasterVolume(int volume);			
+import int GetMasterVolume();			
+import LINK* TextWindowCreate(char *text, char *fontname, vec3_t pos, vec3_t size, int charsize, int align);
+export self;										
+GAME_OBJECT * self;								
+import void GameSpeed(float speed);				
+import void CloseApp();							
+import void ShellExecute(char *);					

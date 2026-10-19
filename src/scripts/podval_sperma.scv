@@ -1,0 +1,36 @@
+#include scener
+#include queststate
+
+export ON_SETFOCUS;
+export ON_KILLFOCUS;
+export ON_LBUTTONDOWN;
+
+
+void ON_SETFOCUS()
+{
+	if(queststate.item_pioners_tie == 1 || queststate.item_pioners_tie == 0)
+		scene.SetCursorType(1);
+	
+}
+
+void ON_KILLFOCUS()
+{
+
+	if(queststate.item_pioners_tie == 1 || queststate.item_pioners_tie == 0)
+		scene.SetCursorType(0);
+
+}
+
+void ON_LBUTTONDOWN()
+{	
+	if(queststate.item_pioners_tie == 1 || queststate.item_pioners_tie == 0)
+	{
+	GAME_OBJECT * p_anton;
+	p_anton = scene.FindObjectByName("anton");
+	message m;
+	m.p_target = p_anton;
+	m.message_id = EM_NOTIFY;
+	m.lparam = 108;
+	scene.PostMessage(m);
+	}
+}

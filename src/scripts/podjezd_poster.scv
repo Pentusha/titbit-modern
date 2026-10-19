@@ -1,0 +1,12 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+
+void ON_CREATE()
+{
+
+	if(queststate.item_indian_poster != 0)
+		scene.DeleteObject(self);
+	
+}

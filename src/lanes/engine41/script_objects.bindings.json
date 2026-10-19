@@ -1,0 +1,12 @@
+{
+ "bindings": {
+  "??0ScriptHolder@@QAE@XZ": "0x41a770",
+  "??0EngineObject@@QAE@XZ": "0x4137b0",
+  "??0Skeleton@@QAE@XZ": "0x41da00",
+  "??0VfsFile@@QAE@XZ": "0x4203d0",
+  "?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEPBDXZ": "0x40a2f0",
+  "?GetType@SceneObject_0041b380@@UAEHXZ": "0x41d9c0",
+  "?Update@SceneObject_0041b380@@UAEXH@Z": "0x41b930",
+  "?Render@SceneObject_0041b380@@UAEXH@Z": "0x41bb20"
+ }
+}

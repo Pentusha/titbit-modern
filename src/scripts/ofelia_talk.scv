@@ -1,0 +1,85 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_SETFOCUS;
+export ON_KILLFOCUS;
+export ON_LBUTTONDOWN;
+export ON_DESTROY;
+
+
+void ON_DESTROY()
+{
+	GAME_OBJECT * p_tape;
+	p_tape = scene.FindObjectByName("flash");
+	if(p_tape != NULL)
+	{ 
+		scene.DeleteObject(p_tape);
+	}
+}
+
+
+void ON_CREATE()
+{
+	//фоновая музыка
+	GAME_OBJECT * p_obj;
+ 
+	p_obj = scene.FindObjectByName("sound_back");	
+
+	if(p_obj != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		if(queststate.quest_cut_electric_wire == 1)
+		m.lparam = 17100;
+		else
+		m.lparam = 1060;
+
+		m.p_target = p_obj;
+		scene.PostMessage(m);
+	}	
+	
+	queststate.lastlocation = queststate.activelocation;
+	queststate.activelocation = 27;
+		
+}
+
+void ON_SETFOCUS()
+{
+	if(queststate.quest_cut_electric_wire != 1)
+		scene.SetCursorType(4);	
+		
+}
+
+void ON_KILLFOCUS()
+{
+
+	if(queststate.quest_cut_electric_wire != 1)
+		scene.SetCursorType(0);	
+
+
+}
+
+void ON_LBUTTONDOWN()
+{
+	
+	if(queststate.quest_cut_electric_wire == 1)
+		return;
+
+
+	vec3_t position, size;	
+	GAME_OBJECT * p_obj;
+
+	position.Assign(0, 600, -80);
+	size.Assign(1024,768,0);
+
+	p_obj = CreateGameObject(1,"ofelia_dialog1.scv", position, size);
+
+	position.Assign(512, -216, 0);
+	p_obj->SetBoneCenter(0,position);
+
+	scene.Add(p_obj, 2);
+
+
+}
+

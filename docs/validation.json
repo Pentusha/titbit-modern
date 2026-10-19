@@ -1,0 +1,204 @@
+{
+  "date": "2026-10-19",
+  "os": [
+    "10",
+    "10.0.26100"
+  ],
+  "python": "3.11.15",
+  "builds": {
+    "modern": {
+      "sha256": "7c57debd203fd4d92c664d7aa8a0068b097e12c893610732d8c65bd6f1b18d26",
+      "sourceUnits": 337,
+      "linkExit": 0,
+      "freshCompilation": true,
+      "runtime": "installed VC98 LIBC.LIB + LIBCP.LIB",
+      "libraries": [
+        {
+          "name": "KERNEL32.LIB",
+          "sha256": "cd4a546f71481319aeee455aa0fb51698a094f9d3e6d8339acf445489a263c68"
+        },
+        {
+          "name": "USER32.LIB",
+          "sha256": "0a3c34c4daec09c1b9fd163d5d0b2ee9a6cbe0b3e863ae81a1fae3b9f936fd19"
+        },
+        {
+          "name": "GDI32.LIB",
+          "sha256": "dc99cf3da3e3e6b2efeee7724a6cb400a615f8e2dde9ebf6df6b3bf3eb3d7c1b"
+        },
+        {
+          "name": "OLE32.LIB",
+          "sha256": "f31f06ecaf4d8c5e9990cd65f752e9cc7466bf3694555c3914219cbfaf2026a9"
+        },
+        {
+          "name": "WINMM.LIB",
+          "sha256": "bb098679a802afdbc6fdaac03dfe1ea81453a36f6d4768b1c1cd092b1dbe9342"
+        },
+        {
+          "name": "COMCTL32.LIB",
+          "sha256": "dc4ced17b4735f570361f44b1739ee91f90f69a3705143f10154a3590891213e"
+        },
+        {
+          "name": "SHELL32.LIB",
+          "sha256": "53150052405bbce4f264226a7bd86d3496bafe8c4bc2252835415826d996bd53"
+        },
+        {
+          "name": "OPENGL32.LIB",
+          "sha256": "5e5f8629055aad0b2fc72e57654834929d939858a2611f3d416f22e66535af26"
+        },
+        {
+          "name": "GLU32.LIB",
+          "sha256": "d3bdf8135eaee14ad5e3010460f4f7e211c3aad4def9bac13e2fa5c0d3a7f81e"
+        },
+        {
+          "name": "DINPUT.LIB",
+          "sha256": "11c1d709925382575421e5fc7055cc90ba1fd634613a9738cfa0430ee0ddeb96"
+        },
+        {
+          "name": "ADVAPI32.LIB",
+          "sha256": "88e77c6590be2a9139c0015c1f07965d7c261cc552de4209d6e8e8d86c4c11c4"
+        },
+        {
+          "name": "VFW32.LIB",
+          "sha256": "0c2c6ebfeded71da862f8b8d772590ae0dc55d826b9871b0a1052ea333ff2c24"
+        },
+        {
+          "name": "LIBC.LIB",
+          "sha256": "a0fd53587e409caca8e7a7bc650399ddc982746cdc1280c094357051cca45977"
+        },
+        {
+          "name": "LIBCP.LIB",
+          "sha256": "373d21c8dd779c937df41e7a2ddc111a22e2d57236b7c97fd5f783e7fb573736"
+        }
+      ],
+      "gameInitializers": 136
+    },
+    "original": {
+      "sha256": "a65f951d1e1520b12f85401d6f515e71b6fd7181dd6d01784be0abc1c2fafb61",
+      "sourceUnits": 330,
+      "linkExit": 0,
+      "freshCompilation": true,
+      "runtime": "installed VC98 LIBC.LIB + LIBCP.LIB",
+      "libraries": [
+        {
+          "name": "KERNEL32.LIB",
+          "sha256": "cd4a546f71481319aeee455aa0fb51698a094f9d3e6d8339acf445489a263c68"
+        },
+        {
+          "name": "USER32.LIB",
+          "sha256": "0a3c34c4daec09c1b9fd163d5d0b2ee9a6cbe0b3e863ae81a1fae3b9f936fd19"
+        },
+        {
+          "name": "GDI32.LIB",
+          "sha256": "dc99cf3da3e3e6b2efeee7724a6cb400a615f8e2dde9ebf6df6b3bf3eb3d7c1b"
+        },
+        {
+          "name": "OLE32.LIB",
+          "sha256": "f31f06ecaf4d8c5e9990cd65f752e9cc7466bf3694555c3914219cbfaf2026a9"
+        },
+        {
+          "name": "WINMM.LIB",
+          "sha256": "bb098679a802afdbc6fdaac03dfe1ea81453a36f6d4768b1c1cd092b1dbe9342"
+        },
+        {
+          "name": "COMCTL32.LIB",
+          "sha256": "dc4ced17b4735f570361f44b1739ee91f90f69a3705143f10154a3590891213e"
+        },
+        {
+          "name": "SHELL32.LIB",
+          "sha256": "53150052405bbce4f264226a7bd86d3496bafe8c4bc2252835415826d996bd53"
+        },
+        {
+          "name": "OPENGL32.LIB",
+          "sha256": "5e5f8629055aad0b2fc72e57654834929d939858a2611f3d416f22e66535af26"
+        },
+        {
+          "name": "GLU32.LIB",
+          "sha256": "d3bdf8135eaee14ad5e3010460f4f7e211c3aad4def9bac13e2fa5c0d3a7f81e"
+        },
+        {
+          "name": "DINPUT.LIB",
+          "sha256": "11c1d709925382575421e5fc7055cc90ba1fd634613a9738cfa0430ee0ddeb96"
+        },
+        {
+          "name": "ADVAPI32.LIB",
+          "sha256": "88e77c6590be2a9139c0015c1f07965d7c261cc552de4209d6e8e8d86c4c11c4"
+        },
+        {
+          "name": "VFW32.LIB",
+          "sha256": "0c2c6ebfeded71da862f8b8d772590ae0dc55d826b9871b0a1052ea333ff2c24"
+        },
+        {
+          "name": "LIBC.LIB",
+          "sha256": "a0fd53587e409caca8e7a7bc650399ddc982746cdc1280c094357051cca45977"
+        },
+        {
+          "name": "LIBCP.LIB",
+          "sha256": "373d21c8dd779c937df41e7a2ddc111a22e2d57236b7c97fd5f783e7fb573736"
+        }
+      ],
+      "gameInitializers": 136
+    }
+  },
+  "smoke": {
+    "scenario": "newgame",
+    "cleanExportCopy": true,
+    "hiddenDesktop": true,
+    "windowed": true,
+    "outcome": "alive",
+    "log": [
+      "   7.2s checkpoint 01-logos",
+      "  32.3s until menu: reached",
+      "  35.4s checkpoint 02-menu",
+      "  37.8s checkpoint 03-menu-hover",
+      "  39.1s click 250,207",
+      "  45.3s checkpoint 04-newgame-5s",
+      " 118.6s until street: reached",
+      " 122.8s checkpoint 05-first-scene",
+      " 124.0s click 512,600",
+      " 130.4s checkpoint 06-click-ground",
+      " 131.6s click 700,650",
+      " 138.1s checkpoint 07-click-right",
+      " 139.4s click 330,640",
+      " 146.0s checkpoint 08-click-left",
+      " 157.6s checkpoint 09-end"
+    ],
+    "screenGuard": {
+      "samples": 689,
+      "clean": true,
+      "events": [],
+      "displayMode": [
+        2560,
+        1440,
+        32,
+        75
+      ]
+    }
+  },
+  "editor": {
+    "unitTests": 28,
+    "failures": 0,
+    "assetCoverage": {
+      "EZA": 455,
+      "MEAT": 314,
+      "MAT": 161,
+      "XML": 70
+    },
+    "gameCameraSelectionBoxVisible": true,
+    "cameraRoundTripPreservesBox": true,
+    "lastUnitTestSeconds": 40.663,
+    "cleanVenvInstall": true,
+    "cleanVenvHttpSmoke": {
+      "catalogScenes": 70,
+      "scene": "club_disko02.XML",
+      "sceneObjects": 10,
+      "httpStatus": 200,
+      "separatePort": 4319
+    },
+    "requestedScreenshot": "docs/images/studio.png"
+  },
+  "limits": [
+    "Not a whole-EXE byte-exact result",
+    "Not a clean OS installation test",
+    "Not a full-game walkthrough or all Windows/GPU configurations test"
+  ]
+}

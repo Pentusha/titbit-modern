@@ -1,0 +1,120 @@
+#include scener
+#include queststate
+
+
+export ON_CREATE;
+export ON_DESTROY;
+export ON_TIME;
+export ON_NOTIFY;
+
+
+LINK * p_avi;
+
+
+STREAM * p_stream = NULL;
+
+
+void ON_NOTIFY(int param)
+{
+	vec3_t uvpos, uvsize, position, size;
+
+	position.Assign(0, 0, 0);
+	size.Assign(1024, 768, 0);
+	uvpos.Assign(0, 1, 0);
+	uvsize.Assign(1, -1, 0);
+	
+	p_avi = CreateAVIPlane(position, size, uvpos, uvsize, false, "happyend.avi");
+	self->Attach(p_avi);	
+
+	self->CreateTimer(86400, 1);
+//	self->CreateTimer(400, 1);
+
+	p_stream = CreateStream("happyend.ogg");	
+	p_stream->Play(false);	
+
+
+
+}
+
+void ON_TIME(int timernum)
+{
+	queststate.activelocation = 1000;
+	GAME_OBJECT * p_obj;
+	p_obj = scene.FindObjectByName("mainmenu");	
+
+	if(p_obj != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 0;
+		m.p_target = p_obj;
+		scene.PostMessage(m);
+	}
+
+
+	scene.DeleteObject(self);
+
+}
+
+
+
+void ON_DESTROY()
+{
+
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+	queststate.activelocation = 0;
+	WriteLog("Destroyed");
+
+
+	vec3_t position, size, uvposition, uvsize;
+	GAME_OBJECT * p_obj;
+
+	position.Assign(0,0,-304);
+	size.Assign(1024,768,0);
+	uvposition.Assign(0.613,0.85,0);
+	uvsize.Assign(0.382,-0.354,0);
+	p_obj = CreateGameObject(1, "titry.scv", position, size);
+	scene.Add(p_obj, 2);
+
+}
+
+void ON_CREATE()
+{
+	queststate.activelocation = 0;
+	
+	queststate.typepr = 0;
+	scene.SetCursorType(0);
+
+	//фоновая музыка
+	GAME_OBJECT * p_obj;
+ 
+	p_obj = scene.FindObjectByName("sound_back");	
+
+	if(p_obj != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 0;
+		m.p_target = p_obj;
+		scene.PostMessage(m);
+	}
+
+		
+
+
+	message m;	
+	m.message_id = EM_NOTIFY;
+	m.lparam = 0;
+	m.p_target = self;
+	scene.PostMessage(m);
+
+
+
+}
+

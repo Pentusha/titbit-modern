@@ -1,0 +1,56 @@
+#include scener
+
+
+export ON_CREATE;
+export ON_NOTIFY;
+export ON_TIME;
+
+int step = 0;
+
+
+void Step()
+{
+
+	step = step + 1;
+
+	if(step==1)
+	{
+		self->CreateTimer(1000, 1);
+
+	}	
+	if(step == 2)
+	{
+	
+		vec3_t position, size;	
+		GAME_OBJECT * p_obj;
+		position.Assign(0, 600, -80);
+		size.Assign(1024,768,0);
+
+		p_obj = CreateGameObject(1,"nurse_dialog.scv", position, size);
+	
+		position.Assign(512, -216, 0);
+		p_obj->SetBoneCenter(0,position);
+
+		scene.Add(p_obj, 2);
+	}
+
+}
+
+void ON_TIME(int timernum)
+{
+	
+		//запускаем анимацию входа
+		self->CreateSkeletonAnimation("durka_med_enter.eza", 1);
+
+
+}
+
+void ON_NOTIFY(int param)
+{
+	Step();
+}
+
+void ON_CREATE()
+{
+
+}

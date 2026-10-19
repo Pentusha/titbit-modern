@@ -1,0 +1,85 @@
+#include scener
+#include queststate
+
+export ON_SETFOCUS;
+export ON_KILLFOCUS;
+export ON_LBUTTONDOWN;
+export ON_DESTROY;
+
+
+
+
+STREAM * p_stream = NULL;
+
+void ON_DESTROY()
+{
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+}
+
+
+void ON_SETFOCUS()
+{
+	if(queststate.item_basement_key == 0)
+		scene.SetCursorType(4);	
+		
+}
+
+void ON_KILLFOCUS()
+{
+
+	if(queststate.item_basement_key == 0)
+		scene.SetCursorType(0);	
+
+}
+
+void ON_LBUTTONDOWN()
+{
+
+
+	vec3_t position, size;	
+	GAME_OBJECT * p_obj;
+
+
+	//взяли ключик - говорить больше не о чем
+	if(queststate.item_basement_key != 0)
+	return;
+
+	if(queststate.typepr == 25)
+	{
+		queststate.typepr = 0;
+		scene.SetCursorType(0);	
+		
+	}
+	else if(queststate.typepr != 0)
+	{
+		if(p_stream != NULL)
+		{
+			p_stream->Stop(); 	
+			DeleteStream(p_stream);
+			p_stream = NULL;
+		}
+			p_stream = CreateStream("comment_anton_3.ogg");
+			p_stream->Play(false);	
+			return;
+	}
+
+	position.Assign(0, 600, -80);
+	size.Assign(1024,768,0);
+
+	p_obj = CreateGameObject(1,"mikh_dialog.scv", position, size);
+	
+
+	position.Assign(512, -216, 0);
+	p_obj->SetBoneCenter(0,position);
+
+	scene.Add(p_obj, 2);
+
+
+}
+

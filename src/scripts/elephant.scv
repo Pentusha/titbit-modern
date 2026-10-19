@@ -1,0 +1,47 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_SETFOCUS;
+export ON_KILLFOCUS;
+export ON_LBUTTONDOWN;
+export ON_DESTROY;
+
+void ON_DESTROY()
+{
+
+	scene.SetCursorType(0);
+	queststate.typepr = 0;
+
+}
+
+void ON_CREATE()
+{
+
+//	if(queststate.item_elephant != 0)
+//		scene.DeleteObject(self);
+	
+}
+
+void ON_SETFOCUS()
+{
+	scene.SetCursorType(3);
+	
+}
+
+void ON_KILLFOCUS()
+{
+
+	scene.SetCursorType(0);
+
+}
+
+void ON_LBUTTONDOWN()
+{
+	
+	queststate.typepr = 26;
+	queststate.uvposx = 0;
+	queststate.uvposy = 0.875;
+	scene.SetCursorType(0);
+
+}

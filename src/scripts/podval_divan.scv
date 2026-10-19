@@ -1,0 +1,34 @@
+#include scener
+#include queststate 
+
+export ON_SETFOCUS;
+export ON_KILLFOCUS;
+export ON_LBUTTONDOWN;
+
+void ON_SETFOCUS()
+{
+if( queststate.quest_aes_password >= 4)
+	scene.SetCursorType(6);	
+		
+}
+
+void ON_KILLFOCUS()
+{
+
+if( queststate.quest_aes_password >= 4)
+	scene.SetCursorType(0);	
+
+}
+
+
+void ON_LBUTTONDOWN()
+{
+	GAME_OBJECT * p_anton;
+
+	p_anton = scene.FindObjectByName("anton");
+	message m;
+	m.p_target = p_anton;
+	m.message_id = EM_NOTIFY;
+	m.lparam = 110;
+	scene.PostMessage(m);
+}

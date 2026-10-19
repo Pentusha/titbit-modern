@@ -1,0 +1,23 @@
+{
+ "bindings": {
+  "??1GameObject_0040e630@@UAE@XZ": "0x40e6b0",
+  "??_GGameObject_0040e630@@UAEPAXI@Z": "0x40e690",
+  "??_EGameObject_0040e630@@UAEPAXI@Z": "0x40e690",
+  "??_7GameObject_0040e630@@6BSkeleton_0041da00@@@": "0x4cd570",
+  "??_7GameObject_0040e630@@6BScriptHolder_0041a770@@@": "0x4cd584",
+  "??1ScriptHolder_0041a770@@UAE@XZ": "0x41a7c0",
+  "??1Skeleton_0041da00@@UAE@XZ": "0x41da50",
+  "?Replace@ObservedString@@QAEHPBD0@Z": "0x40eff0",
+  "??_C@_04KKDK@?4scv?$AA@": "0x4dddb8",
+  "??_EGameObject_0040e630@@WEE@AEPAXI@Z": "0x40f390",
+  "??_7GameObject_0040e630@@6BSkeleton@@@": "0x4cd570",
+  "??_7GameObject_0040e630@@6BScriptHolder@@@": "0x4cd584",
+  "??1ScriptHolder@@UAE@XZ": "0x41a7c0",
+  "??1Skeleton@@UAE@XZ": "0x41da50",
+  "??0ScriptHolder@@QAE@XZ": "0x41a770",
+  "??0Skeleton@@QAE@XZ": "0x41da00",
+  "??0SkeletonAnimation@@QAE@PAVEngineObject@@@Z": "0x4269f0",
+  "??0Timer@@QAE@HHHH@Z": "0x42ca70",
+  "?LoadString@ObservedString@@QAEHI@Z": "0x406520"
+ }
+}

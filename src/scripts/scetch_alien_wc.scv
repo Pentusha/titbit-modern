@@ -1,0 +1,165 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_TIME;
+
+IFPlane * p_link1 = NULL;	
+IFPlane * p_link2 = NULL;	
+IFPlane * p_link3 = NULL;	
+IFPlane * p_link4 = NULL;	
+IFPlane * p_link5 = NULL;	
+IFPlane * p_link6 = NULL;	
+
+
+int step = 0;
+int timer;
+STREAM * p_stream = NULL;
+
+
+void StepScetch()
+{
+	
+	GAME_OBJECT * p_obj;
+	LINK * p_link = NULL;	
+
+	vec3_t position, size, uvposition, uvsize, rot;	
+
+	
+
+	size.Assign(400,300,0);
+	uvposition.Assign(0,1,0);
+	uvsize.Assign(1,-1,0);
+
+
+//	position.Assign(300, 140, 0);	
+
+
+	position.Assign(0 ,0, 0);
+
+	if(step == 0)
+	{
+		p_link = CreateIFPlane(position,size,uvposition, uvsize, "wc_sk_01.jpg",3);
+		p_link1 = p_link;
+	}
+	if(step == 1)
+	{
+		p_stream = CreateStream("alien_vedro_voda_2.ogg");
+		p_stream->Play(false);	
+		p_stream->SetSync(0, self);
+
+		p_link = CreateIFPlane(position,size,uvposition, uvsize, "wc_sk_02.jpg",3);	
+		p_link2 = p_link;	
+	}
+	if(step == 2)
+	{
+
+		p_link = CreateIFPlane(position,size,uvposition, uvsize, "wc_sk_03.jpg",3);
+		p_link3 = p_link;
+	}
+	if(step == 3)
+	{
+		p_link = CreateIFPlane(position,size,uvposition, uvsize, "wc_sk_04.jpg",3);	
+		p_link4 = p_link;	
+	}
+	if(step == 4)
+	{
+		p_link = CreateIFPlane(position,size,uvposition, uvsize, "wc_sk_05.jpg",3);	
+		p_link5 = p_link;	
+	}
+	if(step == 5)
+	{
+		p_link = CreateIFPlane(position,size,uvposition, uvsize, "wc_sk_06.jpg",2.5);	
+		p_link6 = p_link;	
+	}
+	if(step == 8)
+	{
+	
+		if(p_stream != NULL)
+		{
+			p_stream->Stop(); 	
+			DeleteStream(p_stream);
+			p_stream = NULL;
+		}
+
+		scene.DeleteObject(self);
+
+		queststate.typepr = 0;
+		queststate.item_bucket = -1;	//помечаем ведро как использованное
+
+	
+		scene.Delete(3);//удаляем все не интерфейсные объекты
+		scene.Load("psixpalata.XML");
+
+
+		return;
+	}
+
+
+	if(p_link != NULL)
+	{
+		float rz = rand() % 1000;
+		rz = rz / 500;
+		rot.Assign(0,0,  5*(rz - 1) );
+
+		float rx = rand() % 624;
+
+		float ry = rand() % 468;
+
+		position.Assign(rx, ry, 0);	
+		p_obj = CreateGameObject(1,"", position, size);
+		self->Attach(p_obj);
+	
+		p_obj->Attach(p_link);
+		p_obj->SetBoneRotation(0, rot);
+	}
+
+	step = step + 1;
+	
+	
+}
+
+void ON_TIME(int timernum)
+{
+	if(timernum == timer)
+	{
+		StepScetch();
+		return;
+	}
+
+	if(p_link1 != NULL)
+		p_link1->transparency -= 0.05;
+	if(p_link2 != NULL)
+		p_link2->transparency -= 0.05;
+	if(p_link3 != NULL)
+		p_link3->transparency -= 0.05;
+	if(p_link4 != NULL)
+		p_link4->transparency -= 0.05;
+	if(p_link5 != NULL)
+		p_link5->transparency -= 0.05;
+	if(p_link6 != NULL)
+		p_link6->transparency -= 0.05;
+
+
+}
+void ON_CREATE()
+{
+	vec3_t position, size, uvposition, uvsize;	
+	LINK * p_obj;				
+	
+	position.Assign(0,0,-1);
+	size.Assign(1024,768,0);
+	uvposition.Assign(0.5825,0.24,0);
+	uvsize.Assign(0.0375,-0.05,0);
+
+	p_obj = CreateIFPlane(position, size, uvposition, uvsize, "items.tga", 1);
+	self->Attach(p_obj);
+
+	//создаем вечный таймер по количеству кадров с периодом активации 5 сек
+	timer = self->CreateTimer(1500, -1);	
+	self->CreateTimer(50, -1);	
+
+	StepScetch();	
+}
+
+

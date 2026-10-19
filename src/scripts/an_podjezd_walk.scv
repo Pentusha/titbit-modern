@@ -1,0 +1,205 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_NOTIFY;
+export ON_DESTROY;
+
+int nextanimation;
+int lastanimation;
+
+STREAM * p_stream = NULL;
+
+void ON_DESTROY()
+{
+
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+}
+
+
+void ON_CREATE()
+{ 
+	//фоновая музыка
+	GAME_OBJECT * p_snd;
+	 
+	p_snd = scene.FindObjectByName("sound_back");	
+	
+	if(p_snd != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 3050;
+		m.p_target = p_snd;
+		scene.PostMessage(m);
+	}
+
+
+	queststate.lastlocation = queststate.activelocation;
+	queststate.activelocation = 6;
+	
+
+	if(queststate.lastlocation == 8)
+	{
+		lastanimation = self->CreateSkeletonAnimation("pod_an_spd_idle.EZA", 2);
+		nextanimation = 3;
+	}
+	if(queststate.lastlocation == 7)
+	{
+		lastanimation = self->CreateSkeletonAnimation("pod_an_dkv13_idle.EZA", 2);
+		nextanimation = 2;
+	}
+	if(queststate.lastlocation == 1)
+	{
+		lastanimation = self->CreateSkeletonAnimation("pod_an_gr_idle.EZA", 2);
+		nextanimation = 1;
+	}
+	
+	scene.SetCursorType(0);
+}
+
+void ON_NOTIFY(int param)
+{
+	GAME_OBJECT * p_item; 
+
+	WriteLog("not");
+
+
+	if(param != lastanimation)
+	{
+
+		if(nextanimation < 0)
+			return;
+
+		WriteLog("Notify");
+
+		if(param == 101)
+		{
+			//идем к репперам
+			if(nextanimation == 3)
+				nextanimation = 7;
+			if(nextanimation == 2)
+				nextanimation = 5;
+			if(nextanimation == 1)
+				nextanimation = -1;
+
+		}
+		if(param == 102)
+		{
+			//идем к кв 13
+
+			if(nextanimation == 1)
+				nextanimation = 4;
+			if(nextanimation == 3)
+				nextanimation = 8;
+			if(nextanimation == 2)
+				nextanimation = -2;
+		}
+		if(param == 103)
+		{
+			//идем к сексподвалу
+	
+			if(nextanimation == 1)
+				nextanimation = 6;
+			if(nextanimation == 3)
+				nextanimation = -3;
+			if(nextanimation == 2)
+				nextanimation = 9;
+
+		}
+		
+		if(param == 104)
+		{
+	
+			if(p_stream != NULL)
+			{
+			p_stream->Stop(); 	
+			DeleteStream(p_stream);
+			p_stream = NULL;
+			}
+			p_stream = CreateStream("comment_anton_2.ogg");
+			p_stream->Play(false);	
+			
+		}
+
+
+	
+	}
+	else
+	{
+		
+		if(nextanimation == -1)
+		{
+				scene.Delete(3);
+				scene.Load("getto_rappers_n.XML");
+		}
+		if(nextanimation == -2)
+		{
+			scene.Delete(3);
+			scene.Load("podjezd_door13_n.xml");
+		}
+		if(nextanimation == -3)
+		{
+			scene.Delete(3);
+			scene.Load("podjezd_podval_n.XML");
+		}
+		if(nextanimation == 1)
+		{
+			lastanimation = self->CreateSkeletonAnimation("pod_an_gr_idle.EZA", 2);
+	
+		}
+		if(nextanimation == 2)
+		{
+			lastanimation = self->CreateSkeletonAnimation("pod_an_dkv13_idle.EZA", 2);
+
+		}
+		if(nextanimation == 3)
+		{
+			lastanimation = self->CreateSkeletonAnimation("pod_an_spd_idle.EZA", 2);
+
+		}
+		if(nextanimation == 4)
+		{
+			lastanimation = self->CreateSkeletonAnimation("pod_an_gr_dkv13.EZA", 1);
+			nextanimation = -2;
+		}
+
+		if(nextanimation == 5)
+		{
+			lastanimation = self->CreateSkeletonAnimation("pod_an_dkv13_gr.EZA", 1);
+			nextanimation = -1;
+		}
+		if(nextanimation == 6)
+		{
+			lastanimation = self->CreateSkeletonAnimation("pod_an_gr_spd.EZA", 1);
+			nextanimation = -3;
+		}
+		if(nextanimation == 7)
+		{
+			lastanimation = self->CreateSkeletonAnimation("pod_an_spd_gr.EZA", 1);
+			nextanimation = -1;
+		}
+
+
+
+		if(nextanimation == 8)
+		{
+			lastanimation = self->CreateSkeletonAnimation("pod_an_spd_dkv13.EZA", 1);
+			nextanimation = -2;
+
+		}
+		if(nextanimation == 9)
+		{
+			lastanimation = self->CreateSkeletonAnimation("pod_an_dkv13_spd.EZA", 1);
+			nextanimation = -3;
+		}
+
+
+	}
+	
+	
+}

@@ -1,0 +1,41 @@
+#include scener
+#include queststate
+
+export ON_NOTIFY;
+export ON_TIME;
+
+vec3_t pos;
+
+int ftime;
+
+void ON_NOTIFY(int param)
+{
+	self->CreateTimer(1, -1);	 
+	
+	self->GetBonePosition(0, pos);
+	ftime = scene.GetTime();
+}
+
+void ON_TIME(int timernum)
+{	
+	
+	int dtime;	
+	float delta;
+
+	dtime = scene.GetTime();
+	
+	dtime -= ftime;
+	ftime += dtime;
+
+	delta = dtime;
+	delta = delta / 15;
+	pos.x -= delta*0.72;
+	pos.z -= delta*0.72;
+	
+	self->SetBonePosition(0, pos);	
+
+//	if(pos.x < -200)
+//		scene.DeleteObject(self);
+
+}
+

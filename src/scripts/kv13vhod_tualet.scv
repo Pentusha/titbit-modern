@@ -1,0 +1,40 @@
+#include scener
+
+export ON_SETFOCUS;
+export ON_KILLFOCUS;
+export ON_LBUTTONDOWN;
+
+
+LINK * p_obj= NULL;
+
+
+void ON_SETFOCUS()
+{
+	scene.SetCursorType(6);
+		
+}
+
+void ON_KILLFOCUS()
+{
+
+	scene.SetCursorType(0);
+
+}
+
+void ON_LBUTTONDOWN()
+{
+
+
+//	scene.Delete(3);//удаляем все не интерфейсные объекты
+//	scene.Load("kv13_tualet.XML");
+
+
+	GAME_OBJECT * p_anton;
+	p_anton = scene.FindObjectByName("anton");
+	message m;
+	m.p_target = p_anton;
+	m.message_id = EM_NOTIFY;
+	m.lparam = 114;
+	scene.PostMessage(m);
+
+}

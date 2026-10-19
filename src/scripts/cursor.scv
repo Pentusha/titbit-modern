@@ -1,0 +1,134 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_DESTROY;
+export ON_LBUTTONDOWN;
+export ON_NOTIFY;
+
+#define postexx0 0
+#define postexx1 0.0625
+#define postexx2 0.125
+#define postexx3 0.1875
+#define postexx4 0.25
+#define postexx5 0.3125
+#define postexx6 0.375
+#define postexx7 0.4375
+#define postexx8 0.5
+#define postexx9 0.5625
+#define postexx10 0.625
+#define postexx11 0.6875
+#define postexx12 0.75
+#define postexx13 0.8125
+#define postexx14 0.875
+#define postexx15 0.9375
+#define postexx16 0.9375
+
+#define postexy0 1
+#define postexy1 0.9375
+#define postexy2 0.875
+#define postexy3 0.8125
+#define postexy4 0.75
+#define postexy5 0.6875
+#define postexy6 0.625
+#define postexy7 0.5625
+#define postexy8 0.5
+#define postexy9 0.4375
+#define postexy10 0.375
+#define postexy11 0.3125
+#define postexy12 0.25
+#define postexy13 0.1875
+#define postexy14 0.125
+#define postexy15 0.0625
+
+IFPlane * p_ipl1 = NULL;
+IFPlane * p_ipl2 = NULL;
+LINK * p_link1 = NULL;
+LINK * p_link2 = NULL;
+
+void CREATE_ITEMS()
+{
+	vec3_t pos;
+	vec3_t size;
+	vec3_t uvpos;
+	vec3_t uvsize;
+	
+	
+	size.Assign(64,64,0);
+
+	uvsize.Assign(0.0625,-0.0625,0);
+
+	//создаем курсор и иже с ним
+
+
+	pos.Assign(15,-5, 0);
+	uvpos.Assign(postexx14,0.0625,0);
+	p_link1 = CreateIFPlane(pos,size,uvpos,uvsize, "items.tga");
+	self->Attach(p_link1);
+
+	pos.Assign(0,0,0);
+	uvpos.Assign(0,0.0625,0);
+	p_link2 = CreateIFPlane(pos,size,uvpos,uvsize, "items.tga");
+	self->Attach(p_link2);
+
+	p_ipl2 = p_link2;
+
+
+}
+
+void ON_CREATE()
+{
+	CREATE_ITEMS();
+
+}
+
+void ON_DESTROY()
+{
+
+}
+
+void ON_LBUTTONDOWN()
+{
+}
+
+void ON_NOTIFY(int param)
+{
+	IFPlane * p_ipl;
+	LINK * p_link;
+	p_link = self;
+
+	p_ipl = p_link->GetChild();
+
+	if(p_ipl != 0)
+	{
+		p_ipl->uvorigin.Assign(postexx14,0.0625,0);
+		if (param==1) p_ipl->uvorigin.Assign(postexx1,0.0625,0);
+		if (param==2) p_ipl->uvorigin.Assign(postexx2,0.0625,0);
+		if (param==3) p_ipl->uvorigin.Assign(postexx3,0.0625,0);
+		if (param==4) p_ipl->uvorigin.Assign(postexx4,0.0625,0);
+		if (param==5) p_ipl->uvorigin.Assign(postexx5,0.0625,0);
+		if (param==6) p_ipl->uvorigin.Assign(postexx6,0.0625,0);
+		if (param==7) p_ipl->uvorigin.Assign(postexx7,0.0625,0);
+
+		p_ipl2->uvorigin.Assign(0,0.0625,0);
+
+		if (queststate.typepr!=0)
+		{
+			p_ipl->uvorigin.Assign(queststate.uvposx,queststate.uvposy,0);
+		
+			if(param == 1)		
+			{
+				p_ipl2->uvorigin.Assign(postexx7,0.0625,0);	
+			}
+		}
+	}	
+}
+
+
+
+
+
+
+
+
+

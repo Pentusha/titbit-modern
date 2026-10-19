@@ -1,0 +1,228 @@
+#include scener
+#include queststate
+#include input
+
+export ON_CREATE;
+export ON_TIME;
+export ON_DESTROY;
+
+vec3_t pos;
+
+int lasttime;
+int step = 0;
+int pass = 1;
+int trying = 0;	//количество попыток
+
+IFPlane * p_pl1;
+IFPlane * p_pl2;
+IFPlane * p_pl3;
+
+STREAM * p_stream = NULL;
+
+
+void ON_DESTROY()
+{
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+}
+
+
+
+void strcpy(char * p_ch1, char * p_ch2)
+{
+	int f = 0;
+	while(p_ch2[f]!=0)
+	{
+		p_ch1[f] = p_ch2[f];
+		f++;
+	}
+	p_ch1[f] = 0;
+}
+
+
+void ON_CREATE()
+{
+
+	vec3_t position, size, uvposition, uvsize;	
+	LINK * p_link;				
+
+	//фоновая музыка
+	GAME_OBJECT * p_obj;
+	
+	p_obj = scene.FindObjectByName("sound_back");	
+	
+	if(p_obj != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 15070;
+		m.p_target = p_obj;
+		scene.PostMessage(m);
+	}
+
+	
+	queststate.lastlocation = queststate.activelocation;
+	queststate.activelocation = 32;
+
+	self->CreateTimer(1, -1);	 
+
+	lasttime = scene.GetTime();
+	
+	position.Assign(-420, 350, 20);
+	size.Assign(250, -250, 0);
+	uvposition.Assign(0.958, 0.985, 0);
+	uvsize.Assign(0.03,-0.03,0);
+
+	//создаем 3 плашки со звездочками
+	
+	p_link = CreateIFPlane(position, size, uvposition, uvsize, "vorota_h.tga");
+	self->Attach(p_link);
+	p_pl1 = p_link;
+	
+	position.x += 250;
+	
+	p_link = CreateIFPlane(position, size, uvposition, uvsize, "vorota_h.tga");
+	self->Attach(p_link);
+	p_pl2 = p_link;
+
+	position.x += 250;
+	
+	p_link = CreateIFPlane(position, size, uvposition, uvsize, "vorota_h.tga");
+	self->Attach(p_link);
+	p_pl3 = p_link;
+
+	p_pl1->transparency = 0.5;
+	p_pl2->transparency = 0.5;
+	p_pl3->transparency = 0.5;
+
+
+	WriteLog("created");
+}
+
+void ON_TIME(int timernum)
+{	
+	int dtime;	
+	bool hit = false;
+
+
+	dtime = scene.GetTime();
+
+
+	if((dtime - lasttime) > 200)
+	{	//выжидаем задержку, чтобы избежать залипания кнопок
+		
+		if(step == 0)	//ждем нажатия кнопки G 
+		{
+			if(keys[DIK_Q] || keys[DIK_W] || keys[DIK_E] || keys[DIK_R] || keys[DIK_T] || keys[DIK_Y] || keys[DIK_U] || keys[DIK_I] || keys[DIK_O] || keys[DIK_P] || keys[DIK_A] || keys[DIK_S] || keys[DIK_D] || keys[DIK_F] || keys[DIK_H] || keys[DIK_J] || keys[DIK_K] || keys[DIK_L] || keys[DIK_Z] || keys[DIK_X] || keys[DIK_C] || keys[DIK_V] || keys[DIK_B] || keys[DIK_N] || keys[DIK_M])
+			{		
+				hit = true;	
+				p_pl1->transparency = 1;
+				pass = 0;					
+			}
+			if(keys[DIK_G])
+			{
+				hit = true;
+				p_pl1->transparency = 1;
+			}
+		}
+		
+		if(step == 1)	//ждем нажатия кнопки O 
+		{
+			if(keys[DIK_Q] || keys[DIK_W] || keys[DIK_E] || keys[DIK_R] || keys[DIK_T] || keys[DIK_Y] || keys[DIK_U] || keys[DIK_I] || keys[DIK_G] || keys[DIK_P] || keys[DIK_A] || keys[DIK_S] || keys[DIK_D] || keys[DIK_F] || keys[DIK_H] || keys[DIK_J] || keys[DIK_K] || keys[DIK_L] || keys[DIK_Z] || keys[DIK_X] || keys[DIK_C] || keys[DIK_V] || keys[DIK_B] || keys[DIK_N] || keys[DIK_M])
+			{		
+				p_pl2->transparency = 1;
+				hit = true;
+				pass = 0;	
+			}
+			if(keys[DIK_O])
+			{
+				p_pl2->transparency = 1;
+				hit = true;
+			}
+		}
+
+		if(step == 2)	//ждем нажатия кнопки D 
+		{
+			if(keys[DIK_Q] || keys[DIK_W] || keys[DIK_E] || keys[DIK_R] || keys[DIK_T] || keys[DIK_Y] || keys[DIK_U] || keys[DIK_I] || keys[DIK_G] || keys[DIK_P] || keys[DIK_A] || keys[DIK_S] || keys[DIK_O] || keys[DIK_F] || keys[DIK_H] || keys[DIK_J] || keys[DIK_K] || keys[DIK_L] || keys[DIK_Z] || keys[DIK_X] || keys[DIK_C] || keys[DIK_V] || keys[DIK_B] || keys[DIK_N] || keys[DIK_M])
+			{		
+				p_pl3->transparency = 1;
+				pass = 0;
+				hit = true;
+			}
+			if(keys[DIK_D])
+			{
+				p_pl3->transparency = 1;
+				hit = true;
+
+			}
+		}	
+	
+		if(hit)
+		{
+			step ++;		
+			lasttime = dtime;
+		}
+
+
+	} 
+	
+	if(step == 3 && pass == 1)
+	{	//угадали пароль
+		scene.DeleteObject(self);
+		
+
+
+		message m;
+		m.message_id = EM_NOTIFY;	
+
+		m.p_target = scene.FindObjectByName("door_01");
+		scene.PostMessage(m);
+
+		m.p_target = scene.FindObjectByName("door_02");
+		scene.PostMessage(m);
+
+		m.p_target = scene.FindObjectByName("door_03");
+		scene.PostMessage(m);
+
+		m.p_target = scene.FindObjectByName("door_04");
+		scene.PostMessage(m);
+
+		m.p_target = scene.FindObjectByName("door_05");
+		scene.PostMessage(m);
+
+		m.p_target = scene.FindObjectByName("door_06");
+		scene.PostMessage(m);
+
+	
+
+	}
+	if(step == 3 && pass == 0)//не угадали
+	{
+		step = 0;
+		p_pl1->transparency = 0.5;
+		p_pl2->transparency = 0.5;
+		p_pl3->transparency = 0.5;
+		pass = 1;
+		
+		trying ++;
+		if(trying == 2)
+		{
+			if(p_stream != NULL)
+			{
+				p_stream->Stop(); 	
+				DeleteStream(p_stream);
+				p_stream = NULL;
+			}
+				p_stream = CreateStream("comment_cat_8.ogg");
+				p_stream->Play(false);	
+		}
+
+	}
+	
+}
+

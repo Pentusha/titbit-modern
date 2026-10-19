@@ -1,0 +1,185 @@
+#include scener
+#include queststate
+
+export ON_LBUTTONDOWN;
+export ON_CREATE;
+export ON_NOTIFY;
+export ON_DESTROY;
+
+int step = 0;
+LINK * p_text = NULL;
+STREAM * p_stream = NULL;
+GAME_OBJECT * p_pers = NULL;
+ANILINK * p_guba = NULL;
+
+void ON_DESTROY()
+{
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+}
+
+
+void StepDialog()
+{
+	vec3_t position, size;
+	
+	if(step == -1)
+		return;
+	
+	position.Assign(0, 0, 90);
+	size.Assign(1024, 120, 0);
+	
+	
+	if(p_text != NULL)	
+		p_text->Delete();
+	
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+	
+	if( p_guba != NULL)
+	{
+		p_guba->Delete();
+		p_guba = NULL;
+		vec3_t rot;
+		rot.Assign(-4,-90,-86);
+		p_pers->SetBoneRotation(7, rot);
+		
+	}
+
+	
+	
+	step = step + 1;
+	
+	
+	if(step == 1) 
+	{	
+		p_stream = CreateStream("flat13satan_gerasim.ogg");	
+		p_stream->Play(false);	
+		p_stream->SetSync(0, self);
+
+		p_guba = p_pers->CreateSkeletonAnimation("gerasim_rot.EZA", -1);	
+	}
+	if(step == 2) 
+	{	
+		p_text = TextWindowCreate("flat13satan_dostoevski_41", "font", position,size, 29, 2);
+		p_stream = CreateStream("flat13satan_dostoevski_41.ogg");
+		p_stream->Play(false);
+		p_stream->SetSync(0, self);	
+		self->Attach(p_text);		
+	}
+	if(step == 3) {	step = -1;	}					
+	
+	if(step == -1)
+	{
+
+	//фоновая музыка
+	GAME_OBJECT * p_snd;
+ 
+	p_snd = scene.FindObjectByName("sound_back");	
+
+	if(p_snd != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 100;
+		m.p_target = p_snd;
+		scene.PostMessage(m);
+	}
+
+		scene.DeleteObject(self); 
+		
+		GAME_OBJECT * p_anton;
+		p_anton = scene.FindObjectByName("anton");
+		message m;
+		m.p_target = p_anton;
+		m.message_id = EM_NOTIFY;
+		m.lparam = 200;
+		scene.PostMessage(m);
+
+		position.Assign(1.942817,-1.16859,-1.796198);
+		size.Assign(-90.2229,3.1581,-0.0124);
+		camera.PlaceCamera(41.2, position, size);		
+		
+		LINK * p_link = p_pers;
+		ANILINK* p_ani = p_link->GetAniLink();
+		if(p_ani != NULL)
+			p_ani->Delete();
+		p_pers->CreateSkeletonAnimation("gerasim_idle.EZA", -1);	
+
+
+	}					
+	
+	
+	
+	
+}
+
+void ON_NOTIFY(int param)
+{
+	StepDialog();
+}
+
+void ON_CREATE()
+{
+	vec3_t position, size, uvposition, uvsize;	
+	LINK * p_obj;				
+	
+	//фоновая музыка
+	GAME_OBJECT * p_snd;
+ 
+	p_snd = scene.FindObjectByName("sound_back");	
+
+	if(p_snd != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 25;
+		m.p_target = p_snd;
+		scene.PostMessage(m);
+	}
+
+	position.Assign(0,0,-1);
+	size.Assign(1024,168,0);
+	uvposition.Assign(0.52,0.24,0);
+	uvsize.Assign(0.0375,-0.05,0);
+	
+	
+	p_obj = scene.FindObjectByName("gerasim");
+	p_pers = p_obj;
+
+	ANILINK* p_ani = p_obj->GetAniLink();
+	if(p_ani != NULL)
+		p_ani->Delete();
+	p_pers->CreateSkeletonAnimation("gerasim_talk.EZA", -1);	
+	
+	
+	p_obj = CreateIFPlane(position, size, uvposition, uvsize, "items.tga", 1);
+	self->Attach(p_obj);
+
+	
+	StepDialog();	
+	
+	
+	position.Assign(1.2444,-1.4047,1.0219);
+	size.Assign(-87.3816,15.143,0.6843);
+	camera.PlaceCamera(41.2, position, size);
+
+	
+	
+}
+
+
+void ON_LBUTTONDOWN()
+{
+	StepDialog();		
+}
+

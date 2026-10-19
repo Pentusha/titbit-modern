@@ -1,0 +1,396 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_NOTIFY;
+
+int nextanimation;
+int lastanimation;
+
+bool	talkutug = false;
+bool    takecan = false;
+
+
+void Dialog(char * dialogname)
+{
+	vec3_t position, size;	
+	GAME_OBJECT * p_obj;
+
+	position.Assign(0, 600, -80);
+	size.Assign(1024,768,0);
+
+	p_obj = CreateGameObject(1,dialogname, position, size);
+		
+	position.Assign(512, -216, 0);
+	p_obj->SetBoneCenter(0,position);
+
+	scene.Add(p_obj, 2);
+
+}
+
+
+
+void ON_CREATE()
+{ 
+
+	//фоновая музыка
+	GAME_OBJECT * p_obj;
+
+	p_obj = scene.FindObjectByName("sound_back");	
+
+	if(p_obj != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 8100;
+		m.p_target = p_obj;
+		scene.PostMessage(m);
+	}
+
+
+	queststate.lastlocation = queststate.activelocation;
+	queststate.activelocation = 17;
+
+	if (queststate.item_tualet_paper == -1)
+	{
+		queststate.activelocation = 42;
+	}
+	
+
+	if(queststate.lastlocation == 19)
+	{	
+		lastanimation = self->CreateSkeletonAnimation("se_a_enter_idle.EZA", 2);
+		nextanimation = 3;
+	}
+	else if(queststate.lastlocation == 34)
+	{	
+		lastanimation = self->CreateSkeletonAnimation("se_a_map_idle.EZA", 2);
+		nextanimation = 2;
+	}
+	else if(queststate.lastlocation == 22)
+	{	
+		lastanimation = self->CreateSkeletonAnimation("se_a_pod_idle.EZA", 2);
+		nextanimation = 1;
+
+		//показываем скетч на взятие записки
+
+		vec3_t position, size;	
+		GAME_OBJECT * p_obj;
+	
+		queststate.typepr = 0;
+		scene.SetCursorType(0);	
+		position.Assign(0, 0, -80);	
+		size.Assign(1024,768,0);
+
+		p_obj = CreateGameObject(1,"scetch_take_note.scv", position, size);	
+		scene.Add(p_obj, 2);
+
+	}
+	else if(queststate.lastlocation == 18)
+	{
+		lastanimation = self->CreateSkeletonAnimation("se_a_pod_idle.EZA", 2);
+		nextanimation = 1;
+	}
+	else 
+	{
+		lastanimation = self->CreateSkeletonAnimation("se_a_pod_idle.EZA", 2);
+		nextanimation = 16;
+		talkutug = true;
+	}
+
+
+
+	scene.SetCursorType(0);
+}
+
+void ON_NOTIFY(int param)
+{
+	if(param != lastanimation && param != 200)	//обозначает окончание диалога
+	{
+
+		if (nextanimation < 0) return;
+
+		if(param == 101) // если нажали идти в подворотню
+		{
+			if(nextanimation == 1) nextanimation = -1;	//подворотня
+			if(nextanimation == 2) nextanimation = 6;	//выход на карту города
+			if(nextanimation == 3) nextanimation = 15;	//вход в клуб
+			if(nextanimation == 4) nextanimation = 9;	//алекс
+//			if(nextanimation == 17) nextanimation = 24;	//пластинка	
+
+		}
+		if(param == 102) // если нажали идти на карту
+		{
+			if(nextanimation == 1) nextanimation = 5;	//подворотня
+			if(nextanimation == 2) nextanimation = -2;	//выход на карту города
+			if(nextanimation == 3) nextanimation = 11;	//вход в клуб
+			if(nextanimation == 4) nextanimation = 8;	//алекс
+//			if(nextanimation == 17) nextanimation = 19;	//пластинка	
+		}
+		if(param == 106)//говорим с Утюгом
+		{
+			talkutug = true;
+			if(nextanimation == 1) nextanimation = 16;	//подворотня
+			if(nextanimation == 2) nextanimation = 12;	//выход на карту города
+			if(nextanimation == 3) nextanimation = -3;	//вход в клуб
+			if(nextanimation == 4) nextanimation = 13;	//алекс
+//			if(nextanimation == 17) nextanimation = 21;	//пластинка	
+		}
+		if(param == 104) // если нажали идти в клуб
+		{	
+			if(queststate.item_club_card != -1)
+//			if(queststate.item_club_card == 0)
+
+				talkutug = true;	//пока не добазарились с утюгом в клуб нельзя
+			else
+				talkutug = false;
+		
+			if(nextanimation == 1) nextanimation = 16;	//подворотня
+			if(nextanimation == 2) nextanimation = 12;	//выход на карту города
+			if(nextanimation == 3) nextanimation = -3;	//вход в клуб
+			if(nextanimation == 4) nextanimation = 13;	//алекс
+//			if(nextanimation == 17) nextanimation = 21;	//пластинка	
+		}
+		if(param == 103) // если нажали идти к алексу
+		{
+			takecan = false;
+			if(nextanimation == 1) nextanimation = 10;	//подворотня
+			if(nextanimation == 2) nextanimation = 7;	//выход на карту города
+			if(nextanimation == 3) nextanimation = 14;	//вход в клуб
+			if(nextanimation == 4) nextanimation = -4;	//алекс
+//			if(nextanimation == 17) nextanimation = 23;	//пластинка	
+		}
+		if(param == 107) // если нажали идти к канистре
+		{
+			takecan = true;
+			if(nextanimation == 1) nextanimation = 10;	//подворотня
+			if(nextanimation == 2) nextanimation = 7;	//выход на карту города
+			if(nextanimation == 3) nextanimation = 14;	//вход в клуб
+			if(nextanimation == 4) nextanimation = -4;	//алекс
+//			if(nextanimation == 17) nextanimation = 23;	//пластинка	
+		}
+		if(param == 105) // если нажали идти к пластинке
+		{
+			if(nextanimation == 1) nextanimation = 25;	//подворотня
+			if(nextanimation == 2) nextanimation = -17;	//выход на карту города
+			if(nextanimation == 3) nextanimation = 20;	//вход в клуб
+			if(nextanimation == 4) nextanimation = 22;	//алекс
+//			if(nextanimation == 17) nextanimation = -17;	//пластинка	
+		}
+
+	}
+	else
+	{
+		
+//		WriteLog("animation finished");
+
+
+		if(nextanimation == -1)
+		{
+			scene.Delete(3);
+			if(queststate.quest_escape_from_durdom == 1)
+			{
+				scene.Load("podvorotnia2.XML");
+			}
+			else	
+			{
+				scene.Load("podvorotnia1.XML");
+			}	
+//			nextanimation = 1;
+
+		}
+		if(nextanimation == -2)
+		{
+			scene.Delete(3);
+			scene.Load("map.XML");
+		}
+		if(nextanimation == -3)
+		{
+			if(talkutug)
+			{	//говорим с утюгом
+				Dialog("utug_dialog.scv");
+				nextanimation = 3;
+			}
+			else
+			{
+				//проходим в клуб
+				scene.Delete(3);
+				if(queststate.quest_escape_from_durdom == 1)
+				{
+					scene.Load("club_bar01.XML");
+				}
+				else	
+				{
+					scene.Load("club_bar011.XML");
+				}	
+							
+			}
+			
+			
+		}
+		if(nextanimation == -4)
+		{
+			if(takecan)
+			{	//берем канистру
+	
+			}
+			else
+			{	//говорим с алексом
+				Dialog("alex_dialog.scv");
+				//
+				//берем канистру
+				queststate.item_petrolium_can = 1;
+				
+				nextanimation = 4;
+				
+			}
+		}
+
+		if(nextanimation == -17)
+		{
+			//берем пластинку
+//			nextanimation = 17;
+			nextanimation = 2;
+			queststate.item_disk_piece = (queststate.item_disk_piece | 8); 
+
+
+			GAME_OBJECT * p_plast;
+			p_plast = scene.FindObjectByName("vxodplastinka");
+			scene.DeleteObject(p_plast);
+		
+			//показываем скетч
+
+			vec3_t position, size;	
+			GAME_OBJECT * p_obj;
+	
+			queststate.typepr = 0;
+			scene.SetCursorType(0);	
+
+			position.Assign(0, 0, -80);	
+			size.Assign(1024,768,0);
+
+			p_obj = CreateGameObject(1,"scetch_plast.scv", position, size);	
+			scene.Add(p_obj, 2);
+		}
+	
+
+		if(nextanimation == 1) lastanimation = self->CreateSkeletonAnimation("se_a_pod_idle.EZA", 1);
+		if(nextanimation == 2) lastanimation = self->CreateSkeletonAnimation("se_a_map_idle.EZA", 1);
+		if(nextanimation == 3) lastanimation = self->CreateSkeletonAnimation("se_a_enter_idle.EZA", 1);
+		if(nextanimation == 4) lastanimation = self->CreateSkeletonAnimation("se_a_alex_idle.EZA", 1);
+//		if(nextanimation == 17) lastanimation = self->CreateSkeletonAnimation("se_a_plast_idle.EZA", 1);
+
+
+		if(nextanimation == 5) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_pod_map.EZA", 1);
+			nextanimation = -2;		
+		}
+		if(nextanimation == 6) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_map_pod.EZA", 1);
+			nextanimation = -1;		
+		}
+		if(nextanimation == 7) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_map_alex.EZA", 1);
+			nextanimation = -4;		
+		}
+		if(nextanimation == 8) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_alex_map.EZA", 1);
+			nextanimation = -2;		
+		}
+		if(nextanimation == 9) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_alex_pod.EZA", 1);
+			nextanimation = -1;		
+		}
+		if(nextanimation == 10) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_pod_alex.EZA", 1);
+			nextanimation = -4;		
+		}
+		if(nextanimation == 11) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_enter_map.EZA", 1);
+			nextanimation = -2;		
+		}
+		if(nextanimation == 12) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_map_enter.EZA", 1);
+			nextanimation = -3;		
+		}
+		if(nextanimation == 13) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_alex_enter.EZA", 1);
+			nextanimation = -3;		
+		}
+		if(nextanimation == 14) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_enter_alex.EZA", 1);
+			nextanimation = -4;		
+		}
+		if(nextanimation == 15) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_enter_pod.EZA", 1);
+			nextanimation = -1;		
+		}
+		if(nextanimation == 16) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_pod_enter.EZA", 1);
+			nextanimation = -3;		
+		}
+		if(nextanimation == 17) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_plast_idle.EZA", 1);
+		}
+		if(nextanimation == 18) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_map_plast.EZA", 1);
+			nextanimation = -17;		
+		}
+/*		
+		if(nextanimation == 19) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_plast_map.EZA", 1);
+			nextanimation = -2;		
+		}
+*/
+		if(nextanimation == 20) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_enter_plast.EZA", 1);
+			nextanimation = -17;		
+		}
+/*
+		if(nextanimation == 21) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_plast_enter.EZA", 1);
+			nextanimation = -3;		
+		}
+*/
+		if(nextanimation == 22) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_alex_plast.EZA", 1);
+			nextanimation = -17;		
+		}
+/*
+		if(nextanimation == 23) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_plast_alex.EZA", 1);
+			nextanimation = -4;		
+		}
+		if(nextanimation == 24) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_plast_pod.EZA", 1);
+			nextanimation = -1;		
+		}
+*/
+		if(nextanimation == 25) 
+		{
+			lastanimation = self->CreateSkeletonAnimation("se_a_pod_plast.EZA", 1);
+			nextanimation = -17;		
+		}
+
+	}	
+}

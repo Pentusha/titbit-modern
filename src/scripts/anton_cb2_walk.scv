@@ -1,0 +1,183 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_NOTIFY;
+export ON_DESTROY; 
+
+
+
+int nextanimation;
+int lastanimation;
+
+
+STREAM * p_stream = NULL;
+
+
+void ON_DESTROY()
+{
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+}
+
+
+void ON_CREATE()
+{ 
+
+	//фоновая музыка
+	GAME_OBJECT * p_snd;
+	 
+	p_snd = scene.FindObjectByName("sound_back");	
+	
+	if(p_snd != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 5010;
+		m.p_target = p_snd;
+		scene.PostMessage(m);
+	}
+
+
+	queststate.lastlocation = queststate.activelocation;
+	queststate.activelocation = 20;
+	
+	if(queststate.lastlocation == 19 )
+	{	
+		lastanimation = self->CreateSkeletonAnimation("cb2_a_exit_idle.EZA", 1);
+		nextanimation = 1;
+	}
+//	if(queststate.lastlocation == 22 )
+	else
+	{	
+		lastanimation = self->CreateSkeletonAnimation("cb2_a_ya_idle.EZA", 1);
+		nextanimation = 3;
+	}
+
+	scene.SetCursorType(0);
+}
+
+void ON_NOTIFY(int param)
+{
+
+
+	
+
+
+
+	if(param != lastanimation && param != 200)	//обозначает окончание диалога
+	{
+
+		//попытались использовать предмет 	
+		if(queststate.typepr != 0 && queststate.typepr != 46 && param != 103)
+		{
+			if(p_stream != NULL)
+			{
+				p_stream->Stop(); 	
+				DeleteStream(p_stream);
+				p_stream = NULL;
+			}
+			p_stream = CreateStream("comment_anton_2.ogg");
+			p_stream->Play(false);
+			return;
+		}
+
+
+		if (nextanimation < 0) return;
+
+		if(param == 101) // если нажали на выход
+		{
+			if(nextanimation == 1) nextanimation = -1;	//выход
+			if(nextanimation == 3) nextanimation = 4;	//кабинет
+
+		}
+		if(param == 102)
+		{
+			//ныкаем фотик
+		
+			GAME_OBJECT * p_fur;
+			p_fur = scene.FindObjectByName("sumka_foto");
+			if(p_fur != NULL)
+			{ 	
+				scene.DeleteObject(p_fur);
+			}
+			
+			queststate.item_photocam = 1;
+
+			//показываем скетч
+			vec3_t position, size;	
+			GAME_OBJECT * p_obj;
+
+			queststate.typepr = 0;
+			scene.SetCursorType(0);
+
+			position.Assign(0, 0, -80);	
+			size.Assign(1024,768,0);
+
+			p_obj = CreateGameObject(1,"scetch_take_fotik.scv", position, size);	
+			scene.Add(p_obj, 2);
+				
+		}
+		
+		if(param == 103) // если нажали на кабинет
+		{
+			//проверим есть ли у нас карта для доступа в кабинет
+			if(queststate.item_id_card == 0)
+			{
+				return;
+			}											
+			queststate.item_id_card = -1;
+			if(nextanimation == 1) nextanimation = 2;	//выход
+			if(nextanimation == 3) nextanimation = -3;	//кабинет
+
+		}
+	
+	}
+	else
+	{
+		
+		
+		if(nextanimation == -1)
+		{	//выходим в бар
+			nextanimation = 1;
+			scene.Delete(3);
+			scene.Load("club_bar01.XML");
+		}
+		if(nextanimation == -3)
+		{
+			//проходим в кабинет Януса
+			
+			scene.Delete(3);
+			scene.Load("club_kab01.XML");
+
+		}
+				
+		
+		if(nextanimation ==1)
+		{
+			lastanimation = self->CreateSkeletonAnimation("cb2_a_exit_idle.EZA", 1);
+		}
+		if(nextanimation ==2)
+		{
+			lastanimation = self->CreateSkeletonAnimation("cb2_a_exit_ya.EZA", 1);
+			nextanimation =-3;
+		}
+		if(nextanimation ==3)
+		{
+			lastanimation = self->CreateSkeletonAnimation("cb2_a_ya_idle.EZA", 1);
+		}
+		
+		if(nextanimation == 4)
+		{
+			lastanimation = self->CreateSkeletonAnimation("cb2_a_ya_exit.EZA", 1);
+			nextanimation = -1;
+		}
+		
+
+	}	
+}

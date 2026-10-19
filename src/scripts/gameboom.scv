@@ -1,0 +1,90 @@
+#include scener
+#include queststate
+
+
+export ON_CREATE;
+export ON_DESTROY;
+export ON_TIME;
+
+STREAM * p_stream = NULL;
+
+
+LINK * p_avi;
+
+void ON_TIME(int timernum)
+{
+	queststate.activelocation = 1000;
+	GAME_OBJECT * p_obj;
+ 
+	p_obj = scene.FindObjectByName("mainmenu");	
+
+	if(p_obj != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 0;
+		m.p_target = p_obj;
+		scene.PostMessage(m);
+	}
+	scene.DeleteObject(self);
+}
+
+
+
+void ON_DESTROY()
+{
+
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+
+	queststate.activelocation = 0;
+	WriteLog("Destroyed");
+
+}
+
+void ON_CREATE()
+{
+	queststate.activelocation = 0;
+	
+	queststate.typepr = 0;
+	scene.SetCursorType(0);
+
+	//фоновая музыка
+	GAME_OBJECT * p_obj;
+ 
+	p_obj = scene.FindObjectByName("sound_back");	
+
+	if(p_obj != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 0;
+		m.p_target = p_obj;
+		scene.PostMessage(m);
+	}
+
+		
+
+	vec3_t uvpos, uvsize, position, size;
+	p_obj = scene.FindObjectByName("PlaneVideo");
+	position.Assign(-5.47, 5, 1);
+	size.Assign(10.86, -7.9, 0);
+	uvpos.Assign(0, 1, 0);
+	uvsize.Assign(1, -1, 0);
+	
+	p_avi = CreateAVIPlane(position, size, uvpos, uvsize, false, "gameboom.avi");
+	p_obj->Attach(p_avi);	
+	
+	p_stream = CreateStream("gameboom.ogg");	
+	p_stream->Play(false);	
+
+
+	self->CreateTimer(14720, 1);
+
+}
+

@@ -1,0 +1,93 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_NOTIFY;
+export ON_DESTROY;
+
+
+
+STREAM * p_stream = NULL;
+int nextanimation;
+int lastanimation;
+
+
+
+void ON_DESTROY()
+{
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+}
+
+
+void ON_CREATE()
+{ 
+	queststate.lastlocation = queststate.activelocation;
+	queststate.activelocation = 13;
+
+
+	scene.SetCursorType(0);
+}
+
+void ON_NOTIFY(int param)
+{
+
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+	if(param == 1)
+	{
+		//сообщаем о том, что тут занято
+	
+		p_stream = CreateStream("comment_anton_7.ogg");
+	
+	}
+	if(param == 2)
+	{
+	
+	
+		p_stream = CreateStream("comment_anton_11.ogg");
+	
+	}
+	if(param == 3)
+	{
+	
+	
+		p_stream = CreateStream("comment_anton_10.ogg");
+	
+	}
+	if(param == 4)
+	{
+	
+		p_stream = CreateStream("comment_anton_2.ogg");
+	
+	}
+	if(param == 5)
+	{
+	
+		p_stream = CreateStream("comment_anton_4.ogg");
+	
+	}
+	if(param == 6)
+	{
+
+		p_stream = CreateStream("comment_anton_12.ogg");
+	}
+
+
+	if(p_stream != NULL)
+	{
+		p_stream->Play(false);	
+//		p_stream->SetSync(0, self);
+	}
+
+}

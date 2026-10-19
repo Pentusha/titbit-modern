@@ -1,0 +1,158 @@
+#include scener
+#include queststate
+
+export ON_LBUTTONDOWN;
+export ON_CREATE;
+export ON_NOTIFY;
+
+
+int step = 0;
+LINK * p_text = NULL;
+STREAM * p_stream = NULL;
+GAME_OBJECT * p_pers = NULL;
+GAME_OBJECT * p_anton = NULL;
+ANILINK * p_guba = NULL;
+ANILINK * p_antguba = NULL;
+
+
+void StepDialog()
+{
+	vec3_t position, size;
+	
+	if(step == -1)
+		return;
+	
+	position.Assign(0, 0, 90);
+	size.Assign(1024, 120, 0);
+	
+	
+	if(p_text != NULL)
+	{	
+		p_text->Delete();
+		p_text = NULL;
+	}	
+
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+	
+	if( p_guba != NULL)
+	{
+		p_guba->Delete();
+		p_guba = NULL;
+		vec3_t rot;
+		rot.Assign(-90,-90,-1);
+		p_pers->SetBoneRotation(7, rot);
+		
+	}
+	if( p_antguba != NULL)
+	{
+		p_antguba->Delete();
+		p_antguba = NULL;
+		
+	}
+	step = step + 1;
+	
+if(step == 1) {	p_text = TextWindowCreate("lab_danya_21", "font", position,size, 29, 2);	p_stream = CreateStream("lab_danya_21.ogg");	p_stream->Play(false);	p_stream->SetSync(0, self);	self->Attach(p_text);		}
+if(step == 2) {	p_text = TextWindowCreate("lab_anton_22", "font", position,size, 29, 2);	p_stream = CreateStream("lab_anton_22.ogg");	p_stream->Play(false);	p_stream->SetSync(0, self);	self->Attach(p_text);		
+
+		p_antguba = p_anton->CreateSkeletonAnimation("anton_rot.EZA", -1);	
+
+}
+if(step == 3) {	p_text = TextWindowCreate("lab_danya_23", "font", position,size, 29, 2);	p_stream = CreateStream("lab_danya_23.ogg");	p_stream->Play(false);	p_stream->SetSync(0, self);	self->Attach(p_text);		}
+if(step == 4) {	step = -1;	}					
+
+	if(step == -1)
+	{
+		scene.DeleteObject(self); 
+		
+		//фоновая музыка
+		GAME_OBJECT * p_snd;
+ 
+		p_snd = scene.FindObjectByName("sound_back");	
+	
+		if(p_snd != NULL)
+		{
+			message m;	
+			m.message_id = EM_NOTIFY;
+			m.lparam = 60;
+			m.p_target = p_snd;
+			scene.PostMessage(m);
+		}
+			//показываем скетч
+	
+//		vec3_t position, size;	
+		GAME_OBJECT * p_obj;
+	
+		queststate.typepr = 0;
+		position.Assign(0, 0, -80);	
+		size.Assign(1024,768,0);
+
+		p_obj = CreateGameObject(1,"scetch_magic_fight.scv", position, size);	
+		scene.Add(p_obj, 2);
+
+					
+	}					
+	
+	
+}
+
+void ON_NOTIFY(int param)
+{
+	StepDialog();
+}
+
+void ON_CREATE()
+{
+	vec3_t position, size, uvposition, uvsize;	
+	LINK * p_obj;				
+	
+	//фоновая музыка
+	GAME_OBJECT * p_snd;
+ 
+	p_snd = scene.FindObjectByName("sound_back");	
+
+	if(p_snd != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 0;
+		m.p_target = p_snd;
+		scene.PostMessage(m);
+	}
+
+
+	position.Assign(0,0,-1);
+	size.Assign(1024,168,0);
+	uvposition.Assign(0.52,0.24,0);
+	uvsize.Assign(0.0375,-0.05,0);
+	
+	
+	p_obj = scene.FindObjectByName("danya");
+	p_pers = p_obj;
+	ANILINK* p_ani = p_obj->GetAniLink();
+
+
+	p_obj = scene.FindObjectByName("anton");
+	p_anton = p_obj;
+	
+	p_obj = CreateIFPlane(position, size, uvposition, uvsize, "items.tga", 1);
+	self->Attach(p_obj);
+
+
+	StepDialog();	
+
+
+
+}
+
+
+void ON_LBUTTONDOWN()
+{
+	StepDialog();		
+}
+
+

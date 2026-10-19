@@ -1,0 +1,56 @@
+#include scener
+
+export ON_CREATE;
+export ON_SETFOCUS;
+export ON_KILLFOCUS; 
+export ON_LBUTTONDOWN;
+
+
+
+IFPlane * p_pl;
+
+void ON_CREATE()
+{
+
+
+
+	LINK * lnk;
+	lnk = self;
+	p_pl = lnk->GetChild();
+	p_pl->transparency = 0;
+
+}
+
+
+
+void ON_SETFOCUS()
+{
+	
+	p_pl->transparency = 1;
+}
+
+void ON_KILLFOCUS()
+{
+	p_pl->transparency = 0;
+
+}
+
+
+void ON_LBUTTONDOWN()
+{
+//	CloseApp();
+
+	vec3_t position, size, uvposition, uvsize;
+	GAME_OBJECT * p_obj;
+
+
+	position.Assign(0,0,-204);
+	size.Assign(1024,768,0);
+	
+	p_obj = CreateGameObject(1,"sure_quit.scv", position, size);
+	scene.Add(p_obj, 2);
+	
+
+}
+
+

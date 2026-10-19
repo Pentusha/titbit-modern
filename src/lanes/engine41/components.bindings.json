@@ -1,0 +1,19 @@
+{
+  "bindings": {
+    "??0Behaviour@@QAE@PAVEngineObject_004137b0@@@Z": "0x415e40",
+    "??_GBehaviour@@UAEPAXI@Z": "0x415e10",
+    "??_EBehaviour@@UAEPAXI@Z": "0x415e10",
+    "?Render@Behaviour@@UAEXH@Z": "0x415e60",
+    "??_7Behaviour@@6B@": "0x4cd5ec",
+    "??1Behaviour@@UAE@XZ": "0x415e30",
+    "??0Behaviour@@QAE@PAVEngineObject@@@Z": "0x415e40",
+    "??0MotionVec@@QAE@MMM@Z": "0x406ee0",
+    "??0MotionVec@@QAE@ABU0@@Z": "0x406f00",
+    "??4MotionVec@@QAEAAU0@ABU0@@Z": "0x406f00",
+    "__real@3e000000": "0x4cd610",
+    "__real@bccccccd": "0x4cd60c",
+    "__real@3ccccccd": "0x4cd608",
+    "__real@3a83126f": "0x4cd450",
+    "__real@3ff4cccccccccccd": "0x4cd600"
+  }
+}

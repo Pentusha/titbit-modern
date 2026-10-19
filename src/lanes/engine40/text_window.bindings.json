@@ -1,0 +1,22 @@
+{
+ "bindings": {
+  "?Export@Texture_0040f3a0@@UAE?AVObservedString@@XZ": "0x40f960",
+  "?GetType@Texture_0040f3a0@@UAEHXZ": "0x40f950",
+  "??_7Texture_0040f3a0@@6B@": "0x4cd588",
+  "?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEPBDXZ": "0x40a2f0",
+  "??_C@_0P@OGMI@parent_bone_id?$AA@": "0x4ddb6c",
+  "??_C@_0M@GMOM@texturename?$AA@": "0x4dddc4",
+  "??_C@_08BOHH@position?$AA@": "0x4dd6fc",
+  "??_C@_0L@CIHP@uvposition?$AA@": "0x4ddc70",
+  "??_C@_06DBCD@uvsize?$AA@": "0x4ddc68",
+  "??_C@_04LLHI@size?$AA@": "0x4ddc7c",
+  "??_C@_0O@HOEF@?$DMtext_window?5?$AA@": "0x4ddbfc",
+  "??_C@_0BB@PMKL@parent_bone_id?$DN?$CC?$AA@": "0x4ddbe8",
+  "??_C@_02KKOH@?$CC?5?$AA@": "0x4dd6bc",
+  "??_C@_0O@GPFA@texturename?$DN?$CC?$AA@": "0x4dddd0",
+  "??_C@_0P@BFGC@?$DM?1text_window?$DO?$AA@": "0x4ddb7c",
+  "??_C@_02JAFN@?$CFi?$AA@": "0x4ddbe4",
+  "??_C@_01FAFK@?$DO?$AA@": "0x4ddb8c",
+  "??_C@_02MMHC@?6?$AN?$AA@": "0x4dd5b8"
+ }
+}

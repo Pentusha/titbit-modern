@@ -1,0 +1,19 @@
+{
+ "bindings": {
+  "??_7Event@XML@CSL@@6B@": "0x4ce2fc",
+  "?autoRelease@DOMObject@XML@CSL@@UAEXPAVDOMAutoReleasePool@23@@Z": "0x432350",
+  "??_EEvent@XML@CSL@@UAEPAXI@Z": "0x43bca0",
+  "??_GEvent@XML@CSL@@UAEPAXI@Z": "0x43bca0",
+  "??1Event@XML@CSL@@UAE@XZ": "0x43be80",
+  "??0Event@XML@CSL@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PAVEventTarget@12@_N2@Z": "0x43bcc0",
+  "??1?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@XZ": "0x4334c0",
+  "?setTargetNP@Event@XML@CSL@@QAEXPAVEventTarget@23@@Z": "0x43bf10",
+  "?setCurrentPhaseNP@Event@XML@CSL@@QAEXW4PhaseType@123@@Z": "0x43bf20",
+  "?setCurrentTargetNP@Event@XML@CSL@@QAEXPAVEventTarget@23@@Z": "0x43bf30",
+  "$L9649": "0x4c9aa3",
+  "??0DOMObject@XML@CSL@@QAE@XZ": "0x432310",
+  "??1DOMObject@XML@CSL@@UAE@XZ": "0x432340",
+  "?getBubbles@Event@XML@CSL@@QBE_NXZ": "0x43bee0",
+  "?isCanceledNP@Event@XML@CSL@@QBE_NXZ": "0x43bef0"
+ }
+}

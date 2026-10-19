@@ -1,0 +1,249 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_NOTIFY;
+
+int nextanimation;
+int lastanimation;
+
+void ON_CREATE()
+{ 		
+	//фоновая музыка
+	GAME_OBJECT * p_snd;
+	 
+	p_snd = scene.FindObjectByName("sound_back");	
+	
+	if(p_snd != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 3050;
+		m.p_target = p_snd;
+		scene.PostMessage(m);
+	}
+
+	queststate.lastlocation = queststate.activelocation;
+	queststate.activelocation = 2;
+	
+	nextanimation = 13;
+
+	if(queststate.lastlocation == 4)
+	{
+		lastanimation = self->CreateSkeletonAnimation("gc_an_idle_gsk.EZA", 2);
+		nextanimation = 13;
+	}
+	if(queststate.lastlocation == 9)
+	{
+		lastanimation = self->CreateSkeletonAnimation("gc_an_idle_rld.EZA", 2);
+		nextanimation = 14;
+	}
+	if(queststate.lastlocation == 1)
+	{
+		lastanimation = self->CreateSkeletonAnimation("gc_an_idle_gr.EZA", 2);
+		nextanimation = 15;
+	}
+	if(queststate.lastlocation == 3)
+	{
+		lastanimation = self->CreateSkeletonAnimation("gc_an_idle_gb.EZA", 2);
+		nextanimation = 16;
+	}
+	
+ 
+	scene.SetCursorType(0);
+}
+
+void ON_NOTIFY(int param)
+{
+	GAME_OBJECT * p_item; 
+
+	WriteLog("not");
+
+
+	if(param != lastanimation)
+	{
+
+		if(nextanimation < 0)
+			return;
+
+		WriteLog("Notify");
+
+		if(param == 101)
+		{
+			WriteLog("going to gc");
+
+			if(nextanimation == 13)
+				nextanimation = -13;
+			if(nextanimation == 14)
+				nextanimation = 4;
+			if(nextanimation == 15)
+				nextanimation = 8;
+			if(nextanimation == 16)
+				nextanimation = 12;
+		}
+		if(param == 102)
+		{
+			WriteLog("going to rld");
+			if(nextanimation == 13)
+				nextanimation = 3;
+			if(nextanimation == 14)
+				nextanimation = -14;
+			if(nextanimation == 15)
+				nextanimation = 7;
+			if(nextanimation == 16)
+				nextanimation = 11;
+		}
+		if(param == 103)
+		{
+			WriteLog("going to gr");
+
+			if(nextanimation == 13)
+				nextanimation = 2;
+			if(nextanimation == 14)
+				nextanimation = 6;
+			if(nextanimation == 15)
+				nextanimation = -15;
+			if(nextanimation == 16)
+				nextanimation = 10;
+		}
+		if(param == 104)
+		{
+			WriteLog("going to gb");
+
+			if(nextanimation == 13)
+				nextanimation = 1;
+			if(nextanimation == 14)
+				nextanimation = 5;
+			if(nextanimation == 15)
+				nextanimation = 9;
+			if(nextanimation == 16)
+				nextanimation = -16;
+		}
+
+
+	
+	}
+	else
+	{
+		
+		WriteLog("animation finished");
+
+		if(nextanimation == -13)
+		{
+				scene.Delete(3);
+				scene.Load("getto_skamejka_n.XML");
+		}
+		if(nextanimation == -14)
+		{
+			scene.Delete(3);
+			scene.Load("red_light_distr_n.XML");
+		}
+		if(nextanimation == -15)
+		{
+			scene.Delete(3);
+			scene.Load("getto_rappers_n.XML");
+		}
+		if(nextanimation == -16)
+		{
+			scene.Delete(3);
+			scene.Load("getto_bomj_n.XML");			
+		}
+
+		if(nextanimation == 13)
+		{
+			lastanimation = self->CreateSkeletonAnimation("gc_an_idle_gsk.EZA", 1);
+			nextanimation = 13;
+		}
+		if(nextanimation == 14)
+		{
+			lastanimation = self->CreateSkeletonAnimation("gc_an_idle_rld.EZA", 1);
+			nextanimation = 14;
+		}
+		if(nextanimation == 15)
+		{
+			lastanimation = self->CreateSkeletonAnimation("gc_an_idle_gr.EZA", 1);
+			nextanimation = 15;
+		}
+		if(nextanimation == 16)
+		{
+			lastanimation = self->CreateSkeletonAnimation("gc_an_idle_gb.EZA", 1);
+			nextanimation = 16;
+		}
+
+		if(nextanimation == 1)
+		{
+			lastanimation = self->CreateSkeletonAnimation("gc_an_gsk_gb.EZA", 1);
+			nextanimation = -16;
+		}
+		if(nextanimation == 2)
+		{
+			lastanimation = self->CreateSkeletonAnimation("gc_an_gsk_gr.EZA", 1);
+			nextanimation = -15;
+		}
+		if(nextanimation == 3)
+		{
+			lastanimation = self->CreateSkeletonAnimation("gc_an_gsk_rld.EZA", 1);
+			nextanimation = -14;
+		}
+
+
+
+		if(nextanimation == 4)
+		{
+			lastanimation = self->CreateSkeletonAnimation("gc_an_rld_gsk.EZA", 1);
+			nextanimation = -13;
+
+		}
+		if(nextanimation == 5)
+		{
+			lastanimation = self->CreateSkeletonAnimation("gc_an_rld_gb.EZA", 1);
+			nextanimation = -16;
+		}
+		if(nextanimation == 6)
+		{
+			lastanimation = self->CreateSkeletonAnimation("gc_an_rld_gr.EZA", 1);
+			nextanimation = -15;
+		}
+
+
+		if(nextanimation == 7)
+		{
+			lastanimation = self->CreateSkeletonAnimation("gc_an_gr_rld.EZA", 1);
+			nextanimation = -14;
+		}
+		if(nextanimation == 8)
+		{
+			lastanimation = self->CreateSkeletonAnimation("gc_an_gr_gsk.EZA", 1);
+			nextanimation = -13;
+		}
+		if(nextanimation == 9)
+		{
+			lastanimation = self->CreateSkeletonAnimation("gc_an_gr_gb.EZA", 1);
+			nextanimation = -16;
+		}
+
+
+		if(nextanimation == 10)
+		{
+			lastanimation = self->CreateSkeletonAnimation("gc_an_gb_gr.EZA", 1);
+			nextanimation = -15;
+
+		}
+		if(nextanimation == 11)
+		{
+			lastanimation = self->CreateSkeletonAnimation("gc_an_gb_rld.EZA", 1);
+			nextanimation = -14;
+
+		}
+		if(nextanimation == 12)
+		{
+			lastanimation = self->CreateSkeletonAnimation("gc_an_gb_gsk.EZA", 1);
+			nextanimation = -13;
+
+		}
+
+
+	}
+	
+	
+}

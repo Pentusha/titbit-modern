@@ -1,0 +1,71 @@
+#include scener
+
+export ON_CREATE;
+export ON_SETFOCUS;
+export ON_KILLFOCUS; 
+export ON_TIME;
+
+void ON_CREATE()
+{
+
+//	scene.Delete(3);//удаляем все не интерфейсные объекты
+//	scene.DeleteObject(self);
+//	scene.Load("D:\\HoloSpace3D\\quest\\scenes\\getto_center.XML");
+
+	self->CreateTimer(0, -1);	
+
+
+}
+
+
+
+void ON_SETFOCUS()
+{
+	vec3_t scale;
+	scale.Assign(1.5,1.5,1.5);
+	self->SetBoneScale(0, scale);
+
+}
+
+void ON_KILLFOCUS()
+{
+	vec3_t scale;
+	scale.Assign(1,1,1);
+	self->SetBoneScale(0, scale);
+}
+
+
+void ON_TIME(int timernum)
+{	
+	
+	int loctime;
+	vec3_t pos;
+	float delta;
+
+
+	pos.Assign(512, 384, -100);
+			
+	loctime = scene.GetTime();
+	loctime -= 6000;
+
+	
+	delta = loctime%8000;
+	
+	delta *= 6.28/8000;	
+
+	delta  = sin(delta);
+	
+	pos.x += delta*400;
+
+	delta = loctime%8000;
+	delta = delta*6.28/8000+1.57;	
+	
+	delta  = sin(delta);
+	
+	pos.y += delta*300;
+
+	
+	self->SetBonePosition(0, pos);
+		
+}
+

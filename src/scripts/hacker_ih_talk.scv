@@ -1,0 +1,52 @@
+#include scener
+#include queststate
+
+export ON_SETFOCUS;
+export ON_KILLFOCUS;
+export ON_LBUTTONDOWN;
+
+int dialognum = 1;
+
+void ON_SETFOCUS()
+{
+	if (queststate.item_porno_disk == -1 && queststate.item_compromat_fotos != 0)
+		return;
+
+	if(queststate.quest_cut_electric_wire != 1)
+	scene.SetCursorType(4);	
+		
+}
+
+void ON_KILLFOCUS()
+{
+	if (queststate.item_porno_disk == -1 && queststate.item_compromat_fotos != 0)
+		return;
+
+
+	if(queststate.quest_cut_electric_wire != 1)
+	scene.SetCursorType(0);	
+
+
+}
+
+void ON_LBUTTONDOWN()
+{
+	if (queststate.item_porno_disk == -1 && queststate.item_compromat_fotos != 0)
+		return;
+
+	if(queststate.quest_cut_electric_wire == 1)
+		return;
+
+	if(queststate.quest_cut_electric_wire != 1)
+	{
+		GAME_OBJECT * p_anton;
+
+		p_anton = scene.FindObjectByName("anton");
+		message m;
+		m.p_target = p_anton;
+		m.message_id = EM_NOTIFY;
+		m.lparam = 102;
+		scene.PostMessage(m);
+	}
+}
+

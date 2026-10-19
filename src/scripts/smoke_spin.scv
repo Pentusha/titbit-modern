@@ -1,0 +1,32 @@
+#include scener
+
+export ON_CREATE;
+export ON_TIME;
+
+vec3_t pos;
+
+int lasttime;
+
+void ON_CREATE()
+{
+	//создаем вечный таймер с периодом активации 0 мсек
+	self->CreateTimer(0, -1);	
+	
+	self->GetBoneRotation(0, pos);
+
+
+}
+
+
+void ON_TIME(int timernum)
+{	
+	int dtime;
+	float delta;
+	dtime = scene.GetTime();
+	delta = (dtime - lasttime);
+	lasttime = dtime;
+	pos.z = pos.z + delta*0.001;
+	self->SetBoneRotation(0, pos);
+		
+}
+

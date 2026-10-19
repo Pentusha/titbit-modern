@@ -1,0 +1,22 @@
+{
+  "bindings": {
+    "_walk_area_cache": "0x502480",
+    "_walk_cache_count": "0x502484",
+    "_walk_cache_data": "0x502488",
+    "_walk_cache_cleanup_guard": "0x50247c",
+    "_mesh_record_cache": "0x5024a0",
+    "_mesh_cache_count": "0x5024a4",
+    "_mesh_cache_data": "0x5024a8",
+    "_mesh_cache_cleanup_guard": "0x50249c"
+  },
+  "fieldAliases": {
+    "_walk_cache_count": {"owner": "_walk_area_cache", "locator": "_source_location_walk_count", "ownerExtent": "_source_size_cache", "extent": "_source_size_cache_count"},
+    "_walk_cache_data": {"owner": "_walk_area_cache", "locator": "_source_location_walk_data", "ownerExtent": "_source_size_cache", "extent": "_source_size_cache_data"},
+    "_mesh_cache_count": {"owner": "_mesh_record_cache", "locator": "_source_location_mesh_count", "ownerExtent": "_source_size_cache", "extent": "_source_size_cache_count"},
+    "_mesh_cache_data": {"owner": "_mesh_record_cache", "locator": "_source_location_mesh_data", "ownerExtent": "_source_size_cache", "extent": "_source_size_cache_data"}
+  },
+  "evidence": [
+    "Native walk cache At/Reserve/Load407880/407eb0 plus initializer406980 establish grow/count/data offsets0/4/8 and base502480. Guarded destructor4069b0 uses byte50247c and the SAME count/data fields502484/502488.",
+    "Native mesh/animation cache accessors and guarded destructor413fd0 independently establish the same12-byte layout at5024a0, count5024a4, data5024a8 and guard50249c. The two authored caller class names are views of one allocation, not two globals. Record strides0x138b8 and0x78 describe heap elements, not enlarged cache owners."
+  ]
+}

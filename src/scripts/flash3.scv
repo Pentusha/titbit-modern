@@ -1,0 +1,63 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_TIME;
+
+IFPlane * p_plane;
+int start = 0;
+int last = 0;
+
+void ON_CREATE()
+{
+	LINK * p_lnk; 
+//	self->CreateTimer(0, -1);	
+	
+	message m;
+	m.p_target = self;
+	m.message_id = EM_TIME;
+	scene.PostMessage(m);
+
+	//
+	p_lnk = self;
+
+	p_plane = p_lnk->GetChild();	
+
+}
+
+
+void ON_TIME(int timernum)
+{	
+	int dtime;	
+	vec3_t color;
+	float delta;
+
+	if(queststate.quest_cut_electric_wire == 1)
+	{
+		dtime = scene.GetTime();
+		
+		last = dtime % 1440;
+	
+		delta = last;
+		delta *= 6.28/1440;
+		delta = 0.5 + sin(delta)*0.5;
+//	p_plane->transparency = 0.25 + delta*0.5;
+		
+		p_plane->transparency = 0.5 + delta*0.5;
+		delta = 0.7 - delta*0.6;
+	
+
+		color.Assign(delta,delta*0,delta*0);
+		p_plane->color = color;
+	}
+	else
+	{
+		p_plane->transparency = 0;
+	}		
+	message m;
+	m.p_target = self;
+	m.message_id = EM_TIME;
+	scene.PostMessage(m);
+
+}
+

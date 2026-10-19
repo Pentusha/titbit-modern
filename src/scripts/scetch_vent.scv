@@ -1,0 +1,119 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_TIME;
+
+IFPlane * p_link1 = NULL;	
+
+
+
+int step = 0;
+int timer;
+
+void Dialog(char * dialogname)
+{
+	vec3_t position, size;
+	GAME_OBJECT * p_obj;
+
+	
+	position.Assign(0, 550, -80);
+
+	size.Assign(1024,1024,0);
+
+	p_obj = CreateGameObject(1,dialogname, position, size);
+
+	position.Assign(512, -206, 0);
+	p_obj->SetBoneCenter(0,position);
+
+	scene.Add(p_obj, 2);
+}
+
+
+void StepScetch()
+{
+	
+	GAME_OBJECT * p_obj;
+	LINK * p_link = NULL;	
+
+	vec3_t position, size, uvposition, uvsize, rot;	
+
+	
+
+	size.Assign(400,300,0);
+	uvposition.Assign(0,1,0);
+	uvsize.Assign(1,-1,0);
+
+	position.Assign(0 ,0, 0);
+
+	if(step == 0)
+	{
+		p_link = CreateIFPlane(position,size,uvposition, uvsize, "reaktor_sk_01.jpg",1.5);
+		p_link1 = p_link;
+	}
+	if(step == 1)
+	{
+		scene.DeleteObject(self);
+		
+		Dialog("danya_dialog.scv");
+		step = 2;
+		return;
+	}
+
+
+	if(p_link != NULL)
+	{
+		float rz = rand() % 1000;
+		rz = rz / 500;
+		rot.Assign(0,0,  5*(rz - 1) );
+
+		float rx = rand() % 624;
+
+		float ry = rand() % 468;
+
+		position.Assign(rx, ry, 0);	
+		p_obj = CreateGameObject(1,"", position, size);
+		self->Attach(p_obj);
+	
+		p_obj->Attach(p_link);
+		p_obj->SetBoneRotation(0, rot);
+	}
+
+	step = step + 1;
+	
+	
+}
+
+void ON_TIME(int timernum)
+{
+	if(timernum == timer)
+	{
+		StepScetch();
+		return;
+	}
+
+	if(p_link1 != NULL)
+		p_link1->transparency -= 0.05;
+
+}
+void ON_CREATE()
+{
+	vec3_t position, size, uvposition, uvsize;	
+	LINK * p_obj;				
+	
+	position.Assign(0,0,-1);
+	size.Assign(1024,768,0);
+	uvposition.Assign(0.5825,0.24,0);
+	uvsize.Assign(0.0375,-0.05,0);
+
+	p_obj = CreateIFPlane(position, size, uvposition, uvsize, "items.tga", 1);
+	self->Attach(p_obj);
+
+	//создаем вечный таймер по количеству кадров с периодом активации 5 сек
+	timer = self->CreateTimer(1500, -1);	
+	self->CreateTimer(50, -1);	
+
+	StepScetch();	
+}
+
+

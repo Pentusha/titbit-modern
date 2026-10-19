@@ -1,0 +1,82 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_SETFOCUS;
+export ON_KILLFOCUS;
+export ON_LBUTTONDOWN;
+export ON_DESTROY;
+
+
+STREAM * p_stream = NULL;
+
+
+void ON_DESTROY()
+{
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+}
+
+
+
+void ON_CREATE()
+{
+
+//	if(queststate.item_elephant != 0)
+//		scene.DeleteObject(self);
+	
+}
+
+void ON_SETFOCUS()
+{
+	scene.SetCursorType(1);
+	
+}
+
+void ON_KILLFOCUS()
+{
+
+	scene.SetCursorType(0);
+
+}
+
+void ON_LBUTTONDOWN()
+{
+	//если в руке слоник - разбиваем окно)
+	if(queststate.typepr == 26)
+	{
+		vec3_t position, size;	
+		GAME_OBJECT * p_obj;
+	
+		queststate.typepr = 0;
+		position.Assign(0, 0, -80);
+		size.Assign(1024,768,0);
+
+		p_obj = CreateGameObject(1,"scetch_mikh_window.scv", position, size);
+		
+		scene.Add(p_obj, 2);
+	
+		
+	}
+	else
+	{
+		if(p_stream != NULL)
+		{
+			p_stream->Stop(); 	
+			DeleteStream(p_stream);
+			p_stream = NULL;
+		}
+
+		p_stream = CreateStream("comment_anton_6.ogg");
+		p_stream->Play(false);	
+		p_stream->SetSync(0, self);
+
+	}
+	
+	
+}

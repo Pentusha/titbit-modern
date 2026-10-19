@@ -1,0 +1,195 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_NOTIFY;
+
+int nextanimation;
+int lastanimation;
+
+void Dialog(char * dialogname)
+{
+	vec3_t position, size;
+	GAME_OBJECT * p_obj;
+
+	if (queststate.quest_spoil_city == 3)
+	{
+		position.Assign(0, 505, -80);
+	}
+	else
+	{
+		position.Assign(0, 550, -80);
+	}
+	size.Assign(1024,1024,0);
+
+	p_obj = CreateGameObject(1,dialogname, position, size);
+
+	position.Assign(512, -206, 0);
+	p_obj->SetBoneCenter(0,position);
+
+	scene.Add(p_obj, 2);
+}
+
+void ON_CREATE()
+{
+	queststate.item_note = -1;
+
+	//фоновая музыка
+	GAME_OBJECT * p_obj;
+	p_obj = scene.FindObjectByName("sound_back");
+
+	if(p_obj != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 29100;
+		m.p_target = p_obj;
+		scene.PostMessage(m);
+	}
+
+	queststate.lastlocation = queststate.activelocation;
+	queststate.activelocation = 38;
+
+		lastanimation = self->CreateSkeletonAnimation("pow_a_luk_idle.EZA", 1);
+		nextanimation = 1;
+
+	if (queststate.quest_freeze_giga == 1)
+	{
+			GAME_OBJECT * p_gigahertz;
+			p_gigahertz = scene.FindObjectByName("gigahertz");
+			message m1;
+			m1.p_target = p_gigahertz;
+			m1.message_id = EM_NOTIFY;
+			m1.lparam = 103;
+			scene.PostMessage(m1);
+	}
+	if (queststate.quest_freeze_giga == 2)
+	{
+			GAME_OBJECT * p_gigahertz;
+			p_gigahertz = scene.FindObjectByName("gigahertz");
+			message m1;
+			m1.p_target = p_gigahertz;
+			m1.message_id = EM_NOTIFY;
+			m1.lparam = 103;
+			scene.PostMessage(m1);
+			lastanimation = self->CreateSkeletonAnimation("pow_a_luk_rub.EZA", 1);
+			nextanimation = -4;
+	}
+
+	scene.SetCursorType(0);
+
+	if (queststate.quest_freeze_giga == 0)
+	{
+		Dialog("danya_dialog.scv");
+	}
+}
+
+void ON_NOTIFY(int param)
+{
+	if(param != lastanimation && param != 200)	//обозначает окончание диалога
+	{
+		if (nextanimation < 0) return;
+
+		if(param == 101) // если нажали идти к выходу
+		{
+			if(nextanimation == 1) nextanimation = -1;	//переход к reactor02 (канистра)
+		}
+		if(param == 121) // если нажали идти к люку
+		{
+			if(nextanimation == 1) nextanimation = -2;
+		}
+		if(param == 103) // если нажали разговор с Даней
+		{
+			lastanimation = self->CreateSkeletonAnimation("pow_a_rub_idle.EZA", 1);
+			nextanimation = 5;
+			Dialog("danya_dialog.scv");
+		}
+		if(param == 104) // если нажали на вентиль
+		{
+			nextanimation = 4;
+		}
+	}
+	else
+	{
+		if(nextanimation == -1)
+		{
+			scene.Delete(3);
+			scene.Load("reactor02.XML");
+		}
+		if(nextanimation == -2)
+		{
+			scene.Delete(3);
+			scene.Load("getto_bomj.XML");
+		}
+		if(nextanimation == -3)
+		{
+			nextanimation = 3;
+		}
+		if(nextanimation == -4)
+		{
+			queststate.quest_freeze_giga = -1;
+			GAME_OBJECT * p_partical;
+			vec3_t pos;
+			pos.x = -1.3921;
+			pos.y = 0.5359;
+			pos.z = 1.0012;
+
+			p_partical = scene.FindObjectByName("Particle");
+			p_partical->SetBonePosition(0, pos);
+
+			GAME_OBJECT * p_gigahertz;
+			p_gigahertz = scene.FindObjectByName("gigahertz");
+			message m1;
+			m1.p_target = p_gigahertz;
+			m1.message_id = EM_NOTIFY;
+			m1.lparam = 101;
+			scene.PostMessage(m1);
+
+			GAME_OBJECT * p_freeze;
+			p_freeze = scene.FindObjectByName("gigahertz_freeze");
+			message m;
+			m.p_target = p_freeze;
+			m.message_id = EM_NOTIFY;
+			m.lparam = 101;
+			scene.PostMessage(m);
+
+			lastanimation = self->CreateSkeletonAnimation("pow_a_rub_idle.EZA", 1);
+			nextanimation = 5;
+
+			//показываем скетч
+			vec3_t positionv, sizev;
+			GAME_OBJECT * p_objv;
+
+			queststate.typepr = 0;
+			positionv.Assign(0, 0, -80);
+			sizev.Assign(1024,768,0);
+
+			p_objv = CreateGameObject(1,"scetch_vent.scv", positionv, sizev);
+			scene.Add(p_objv, 2);
+
+
+			if (queststate.quest_freeze_giga > -2)
+			{
+//				Dialog("danya_dialog.scv");
+			}
+		}
+		if(nextanimation == 1)
+		{
+			lastanimation = self->CreateSkeletonAnimation("pow_a_luk_idle.EZA", 1);
+		}
+		if(nextanimation == 3)
+		{
+			lastanimation = self->CreateSkeletonAnimation("pow_a_luk_idle.EZA", 1);
+			nextanimation = 1;
+		}
+		if(nextanimation == 4)
+		{
+			lastanimation = self->CreateSkeletonAnimation("pow_a_luk_rub.EZA", 1);
+			nextanimation = -4;
+		}
+		if(nextanimation == 5)
+		{
+			lastanimation = self->CreateSkeletonAnimation("pow_a_rub_idle.EZA", 1);
+		}
+	}
+}

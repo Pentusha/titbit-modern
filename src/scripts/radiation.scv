@@ -1,0 +1,47 @@
+#include scener
+
+export ON_CREATE;
+export ON_TIME;
+
+int time;
+
+void ON_CREATE()
+{
+	//создаем вечный таймер с периодом активации 0 мсек
+	self->CreateTimer(0, -1);	
+
+	time = scene.GetTime();
+	
+
+}
+
+
+void ON_TIME(int timernum)
+{	
+	
+	vec3_t newpos;
+	int dtime;	
+	float delta;	
+
+	dtime = scene.GetTime();
+	
+	delta = dtime%100;
+	delta = 1 + 0.03*sin(delta*6.28/100);
+	
+	newpos.Assign(delta*1.5,delta*1.5, 1);
+	self->SetBoneScale(0,newpos);
+
+
+//	self->GetBoneRotation(0,newpos);	
+
+//	newpos.x -= delta;
+//	newpos.y -= delta;
+//	newpos.z -= delta;
+	newpos.Assign(0, 0, (dtime%3 - 2)*3);
+	
+	self->SetBoneRotation(0,newpos);
+
+
+		
+}
+

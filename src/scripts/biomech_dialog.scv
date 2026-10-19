@@ -1,0 +1,340 @@
+#include scener
+#include queststate
+
+export ON_LBUTTONDOWN;
+export ON_CREATE;
+export ON_NOTIFY;
+export ON_DESTROY;
+
+
+int step = 0;
+LINK * p_text = NULL;
+STREAM * p_stream = NULL;
+GAME_OBJECT * p_pers = NULL;
+GAME_OBJECT * p_anton = NULL;
+ANILINK * p_guba = NULL;
+ANILINK * p_antguba = NULL;
+
+void ON_DESTROY()
+{
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+}
+
+
+void StepDialog()
+{
+	vec3_t position, size;
+	bool handled = false;
+	
+	if(step == -1)
+		return;
+	
+	position.Assign(0, 0, 90);
+	size.Assign(1024, 120, 0);
+	
+	
+	if(p_text != NULL)	
+		p_text->Delete();
+	
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+	
+	if( p_guba != NULL)
+	{
+		p_guba->Delete();
+		p_guba = NULL;
+		vec3_t rot;
+		rot.Assign(-90,-90,-1);
+		p_pers->SetBoneRotation(7, rot);
+		
+	}
+	if( p_antguba != NULL)
+	{
+		p_antguba->Delete();
+		p_antguba = NULL;
+		
+	}
+	
+	
+	step = step + 1;
+	if(queststate.item_plastic == 0)	//пока не получили от диджея кусочек пластика
+	{
+		handled = true;
+		if(step == 1) 
+		{
+			p_text = TextWindowCreate("podvorotnya_anton_21", "font", position,size, 29, 2);
+			p_stream = CreateStream("podvorotnya_anton_21.ogg");
+			p_stream->Play(false);
+			p_stream->SetSync(0, self);
+			self->Attach(p_text);	
+		}
+		if(step == 2) 
+		{	
+			p_text = TextWindowCreate("podvorotnya_biomech_22", "font", position,size, 29, 2);
+			p_stream = CreateStream("podvorotnya_biomech_22.ogg");
+			p_stream->Play(false);	
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);
+		}
+		if(step == 3)
+		{
+			p_text = TextWindowCreate("podvorotnya_anton_23", "font", position,size, 29, 2);
+			p_stream = CreateStream("podvorotnya_anton_23.ogg");	
+			p_stream->Play(false);	
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);	
+		}
+		if(step == 4) 
+		{
+			p_text = TextWindowCreate("podvorotnya_biomech_24", "font", position,size, 29, 2);	
+			p_stream = CreateStream("podvorotnya_biomech_24.ogg");	
+			p_stream->Play(false);	
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);	
+		}
+		if(step == 5) {	step = -1;	}					
+	}
+	if(queststate.item_plastic == 1)	//получили от диджея кусочек пластика
+	{
+		handled = true;
+	
+		if(step == 1)
+		{
+			p_text = TextWindowCreate("podvorotnya_anton_31", "font", position,size, 29, 2);
+			p_stream = CreateStream("podvorotnya_anton_31.ogg");
+			p_stream->Play(false);	
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);
+		}
+		if(step == 2) 
+		{	
+			p_text = TextWindowCreate("podvorotnya_biomech_32", "font", position,size, 29, 2);
+			p_stream = CreateStream("podvorotnya_biomech_32.ogg");
+			p_stream->Play(false);
+			p_stream->SetSync(0, self);
+			self->Attach(p_text);	
+		}
+		if(step == 3)
+		{
+			p_text = TextWindowCreate("podvorotnya_anton_33", "font", position,size, 29, 2);
+			p_stream = CreateStream("podvorotnya_anton_33.ogg");
+			p_stream->Play(false);
+			p_stream->SetSync(0, self);
+			self->Attach(p_text);	
+		}
+		if(step == 4) 
+		{
+			p_text = TextWindowCreate("podvorotnya_biomech_34", "font", position,size, 29, 2);
+			p_stream = CreateStream("podvorotnya_biomech_34.ogg");
+			p_stream->Play(false);
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);	
+		}
+		if(step == 5) 
+		{
+			p_text = TextWindowCreate("podvorotnya_anton_35", "font", position,size, 29, 2);
+			p_stream = CreateStream("podvorotnya_anton_35.ogg");	
+			p_stream->Play(false);
+			p_stream->SetSync(0, self);
+			self->Attach(p_text);	
+		}
+		if(step == 6)
+		{	
+			p_text = TextWindowCreate("podvorotnya_biomech_36", "font", position,size, 29, 2);
+			p_stream = CreateStream("podvorotnya_biomech_36.ogg");	
+			p_stream->Play(false);	
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);	
+		}
+		if(step == 7) {	step = -1; queststate.item_plastic = -1;	}								
+	}
+
+
+	if(queststate.item_plastic == -2 && queststate.item_rubber_glove == -1)	
+	{
+		handled = true;
+	
+		if(step == 1) 
+		{
+			p_text = TextWindowCreate("podvorotnya_anton_41", "font", position,size, 29, 2);
+			p_stream = CreateStream("podvorotnya_anton_41.ogg");
+			p_stream->Play(false);
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);
+		
+position.Assign(-0.8861,-0.4712,-9.3862);
+size.Assign(-75.125,-26.8716,-6.8459);
+camera.PlaceCamera(8, position, size);
+
+		}
+		if(step == 2) 
+		{
+			p_text = TextWindowCreate("podvorotnya_biomech_42", "font", position,size, 29, 2);
+			p_stream = CreateStream("podvorotnya_biomech_42.ogg");
+			p_stream->Play(false);
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);		
+		}
+		if(step == 3) 
+		{
+			p_text = TextWindowCreate("podvorotnya_anton_43", "font", position,size, 29, 2);
+			p_stream = CreateStream("podvorotnya_anton_43.ogg");
+			p_stream->Play(false);
+			p_stream->SetSync(0, self);
+			self->Attach(p_text);
+		}
+		if(step == 4) 
+		{
+			p_text = TextWindowCreate("podvorotnya_biomech_44", "font", position,size, 29, 2);
+			p_stream = CreateStream("podvorotnya_biomech_44.ogg");	
+			p_stream->Play(false);
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);	
+
+			//показываем скетч
+//			vec3_t position, size;	
+			GAME_OBJECT * p_obj;
+	
+			position.Assign(0, 0, -80);	
+			size.Assign(1024,768,0);
+
+			p_obj = CreateGameObject(1,"scetch_bio_titbit.scv", position, size);	
+			scene.Add(p_obj, 2);
+
+
+		}
+		if(step == 5) {	step = -1; queststate.item_titbit = 1; queststate.item_plastic = -1;	}					
+
+
+	}
+	
+	if(!handled)
+		step = -1;
+	
+
+	if(step == -1)
+	{
+		scene.DeleteObject(self); 
+	
+		//фоновая музыка
+		GAME_OBJECT * p_snd;
+ 
+		p_snd = scene.FindObjectByName("sound_back");	
+	
+		if(p_snd != NULL)
+		{
+			message m;	
+			m.message_id = EM_NOTIFY;
+			m.lparam = 100;
+			m.p_target = p_snd;
+			scene.PostMessage(m);
+		}
+	
+		GAME_OBJECT * p_anton;
+		p_anton = scene.FindObjectByName("anton");
+		message m;
+		m.p_target = p_anton;
+		m.message_id = EM_NOTIFY;
+		m.lparam = 200;
+		scene.PostMessage(m);
+		
+		position.Assign(0.7356,-1.079,-9.1863);
+		size.Assign(-86.0928,-40.1014,-2.5191);
+		camera.PlaceCamera(41.865, position, size);
+			
+		if(queststate.item_rubber_glove != -1)
+		{
+			LINK * p_link = p_pers;
+			ANILINK* p_ani = p_link->GetAniLink();
+			if(p_ani != NULL)
+				p_ani->Delete();
+			p_pers->CreateSkeletonAnimation("biomech_idle.EZA", -1);
+		}
+	}					
+	
+	
+}
+
+void ON_NOTIFY(int param)
+{
+	StepDialog();
+}
+
+void ON_CREATE()
+{
+	vec3_t position, size, uvposition, uvsize;	
+	LINK * p_obj;				
+
+	//фоновая музыка
+	GAME_OBJECT * p_snd;
+ 
+	p_snd = scene.FindObjectByName("sound_back");	
+
+	if(p_snd != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 25;
+		m.p_target = p_snd;
+		scene.PostMessage(m);
+	}
+
+	
+	position.Assign(0,0,-1);
+	size.Assign(1024,168,0);
+	uvposition.Assign(0.52,0.24,0);
+	uvsize.Assign(0.0375,-0.05,0);
+	
+	
+	p_obj = scene.FindObjectByName("biomech");
+	p_pers = p_obj;
+	
+	if(queststate.item_rubber_glove != -1)
+	{
+		ANILINK* p_ani = p_obj->GetAniLink();
+		if(p_ani != NULL)
+			p_ani->Delete();
+		p_pers->CreateSkeletonAnimation("biomech_talk.EZA", -1);	
+	}
+	
+	p_obj = scene.FindObjectByName("anton");
+	p_anton = p_obj;
+	
+	p_obj = CreateIFPlane(position, size, uvposition, uvsize, "items.tga", 1);
+	self->Attach(p_obj);
+	
+	//	queststate.quest_broke_window = true;
+	//	queststate.quest_check_bachok = true;
+	//	queststate.quest_get_shiva = false;
+	
+	
+	
+
+	
+	position.Assign(-1.152,-1.672,-9.4284);
+	size.Assign(-90.5321,-15.6664,0.1437);
+	camera.PlaceCamera(8, position, size);
+
+	StepDialog();	
+	
+	
+	
+	
+}
+
+
+void ON_LBUTTONDOWN()
+{
+	StepDialog();		
+}
+

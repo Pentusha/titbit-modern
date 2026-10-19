@@ -1,0 +1,20 @@
+{
+ "bindings": {
+  "??_7CInputSource@XML@CSL@@6B@": "0x4ce308",
+  "??_ECInputSource@XML@CSL@@UAEPAXI@Z": "0x43c050",
+  "??_GCInputSource@XML@CSL@@UAEPAXI@Z": "0x43c050",
+  "??1CInputSource@XML@CSL@@UAE@XZ": "0x43c070",
+  "?SetPublicId@CInputSource@XML@CSL@@UAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z": "0x43c110",
+  "?SetSystemId@CInputSource@XML@CSL@@UAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z": "0x43c240",
+  "?GetPublicId@CInputSource@XML@CSL@@UBE?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ": "0x43c370",
+  "?GetSystemId@CInputSource@XML@CSL@@UBE?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ": "0x43c4a0",
+  "?SetByteStream@CInputSource@XML@CSL@@UAEXPAV?$basic_istream@DU?$char_traits@D@std@@@std@@@Z": "0x440520",
+  "?GetByteStream@CInputSource@XML@CSL@@UBEPAV?$basic_istream@DU?$char_traits@D@std@@@std@@XZ": "0x440550",
+  "?SetCharacterStream@CInputSource@XML@CSL@@UAEXPAV?$basic_istream@DU?$char_traits@D@std@@@std@@@Z": "0x44e610",
+  "?GetCharacterStream@CInputSource@XML@CSL@@UBEPAV?$basic_istream@DU?$char_traits@D@std@@@std@@XZ": "0x440560",
+  "?SetEncoding@CInputSource@XML@CSL@@UAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z": "0x43c5d0",
+  "?GetEncoding@CInputSource@XML@CSL@@UBE?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ": "0x44de60",
+  "??0CInputSource@XML@CSL@@QAE@XZ": "0x43c000",
+  "??1?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@XZ": "0x4334c0"
+ }
+}

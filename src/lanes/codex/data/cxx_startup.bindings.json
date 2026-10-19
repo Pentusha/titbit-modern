@@ -1,0 +1,11 @@
+{
+  "bindings": {
+    "_engine_global_initializers": "0x4dd004",
+    "_engine_c_initializers": "0x4dd2cc",
+    "_engine_preterminators": "0x4dd2e4",
+    "_engine_terminators": "0x4dd2f4"
+  },
+  "evidence": [
+    "Original typed _cinit array order is preserved as source function references. Every callback must bind to source-emitted implementation; missing providers remain LINK failures. No raw native pointer bytes, skipped callbacks or duplicate automatic registrations."
+  ]
+}

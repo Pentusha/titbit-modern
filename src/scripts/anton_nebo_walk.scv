@@ -1,0 +1,291 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_DESTROY; 
+export ON_NOTIFY; 
+
+int nextanimation;
+int lastanimation;
+
+
+STREAM * p_stream = NULL;
+
+
+void ON_DESTROY()
+{
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+	
+}
+
+
+
+void ON_CREATE()
+{ 
+	//фоновая музыка
+	GAME_OBJECT * p_obj;
+	
+	p_obj = scene.FindObjectByName("sound_back");	
+	
+	if(p_obj != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 15100;
+		m.p_target = p_obj;
+		scene.PostMessage(m);
+	}
+	
+	queststate.lastlocation = queststate.activelocation;
+	queststate.activelocation = 33;
+	
+	if(queststate.quest_pull_rope1 == 0)
+	{		
+		lastanimation = self->CreateSkeletonAnimation("neb_a_enter.EZA", 1);
+		nextanimation = -2;
+	}
+	else
+	{
+
+		lastanimation = self->CreateSkeletonAnimation("neb_a_idle.EZA", 1);
+		nextanimation = 1;
+	}
+	scene.SetCursorType(0);
+}
+
+void ON_NOTIFY(int param)
+{
+	
+	GAME_OBJECT * p_item = NULL;
+	
+	if(param != lastanimation && param != 200)	//обозначает окончание диалога
+	{
+		
+		if (nextanimation < 0) return;
+		
+		if(queststate.typepr != 0)
+		{
+			if(queststate.typepr == 64 && param == 102)
+			{
+
+			}
+			else
+				
+			{
+				if(p_stream != NULL)
+				{
+					p_stream->Stop(); 	
+					DeleteStream(p_stream);
+					p_stream = NULL;
+				}
+				p_stream = CreateStream("comment_anton_2.ogg");
+				p_stream->Play(false);
+				return;
+			}
+		}
+		
+		if(param == 102) // если нажали на провод
+		{
+			if(queststate.item_cutters == 1 && queststate.typepr == 64)
+			{
+				if(nextanimation == 1) nextanimation = 5;	//провод
+				if(nextanimation == 3) nextanimation = 4;	//шнур
+			}
+
+		}
+		if(param == 101) // если нажали на шнур
+		{
+			if(nextanimation == 1) nextanimation = 2;	//провод
+			if(nextanimation == 3) nextanimation = -3;	//шнур
+		}
+		
+		if(param == 103) // берем розу
+		{
+			queststate.item_white_rose = 1;
+			p_item = scene.FindObjectByName("neboRoza");
+		}
+		if(param == 104) // берем шарик
+		{
+			queststate.item_air_ball = 1;
+			p_item = scene.FindObjectByName("neboSharik");
+		}
+		if(param == 105) // берем кусачки
+		{
+			queststate.item_cutters = 1;
+			p_item = scene.FindObjectByName("neboKucachki");
+		}
+		if(param == 106) // берем огнетушитель
+		{
+			queststate.item_red_paint_ballon = 1;
+			p_item = scene.FindObjectByName("neboBalon");
+		}
+		
+		
+		
+	}
+	else
+	{
+		
+		if(nextanimation == -1)
+		{	//режем провод
+			nextanimation = 1;
+			
+			param = -1;
+			queststate.item_cutters = -1;
+			p_item = scene.FindObjectByName("neboProvod");
+
+			if(p_stream != NULL)
+			{
+				p_stream->Stop(); 	
+				DeleteStream(p_stream);
+				p_stream = NULL;
+			}
+				p_stream = CreateStream("comment_cat_9.ogg");
+				p_stream->Play(false);	
+
+
+		}
+		if(nextanimation == -3)
+		{	//дергаем за верёвочку		
+			message m;
+		
+			if(queststate.item_cutters == -1 || queststate.quest_pull_rope1 < 2)
+			{
+				queststate.quest_pull_rope1 ++;
+				p_item = scene.FindObjectByName("neboShnur");
+			}
+
+			param = -3;
+
+			if(queststate.quest_pull_rope1 == 1)
+			{
+			
+				m.message_id = EM_NOTIFY;	
+
+				m.p_target = scene.FindObjectByName("neboRoza");
+				scene.PostMessage(m);
+
+				m.p_target = scene.FindObjectByName("neboBalon");
+				scene.PostMessage(m);
+
+
+			}
+			if(queststate.quest_pull_rope1 == 2)
+			{
+			
+				m.message_id = EM_NOTIFY;	
+
+				m.p_target = scene.FindObjectByName("neboSharik");
+				scene.PostMessage(m);
+
+				m.p_target = scene.FindObjectByName("neboKucachki");
+				scene.PostMessage(m);
+			}
+
+
+
+						
+			nextanimation = 3;
+		}
+		if(nextanimation == -2)
+		{	//говорим с богом
+			
+			vec3_t position, size;	
+			GAME_OBJECT * p_obj;
+			position.Assign(0, 600, -80);
+			size.Assign(1024,768,0);
+			
+			p_obj = CreateGameObject(1,"god_dialog.scv", position, size);
+			
+			position.Assign(512, -216, 0);
+			p_obj->SetBoneCenter(0,position);
+			
+			scene.Add(p_obj, 2);
+			
+			nextanimation = 1;
+		}
+		
+		
+		
+		if(nextanimation ==1)
+		{
+			lastanimation = self->CreateSkeletonAnimation("neb_a_idle.EZA", 1);
+		}
+		if(nextanimation ==2)
+		{
+			lastanimation = self->CreateSkeletonAnimation("neb_a_shnur.EZA", 1);
+			nextanimation =-3;
+		}
+		if(nextanimation ==3)
+		{
+			lastanimation = self->CreateSkeletonAnimation("neb_a_idle2.EZA", 1);
+		}
+		
+		if(nextanimation == 4)
+		{
+			lastanimation = self->CreateSkeletonAnimation("neb_a_provod.EZA", 1);
+			nextanimation = -1;
+		}
+		
+		if(nextanimation == 5)
+		{
+			lastanimation = self->CreateSkeletonAnimation("neb_a_provod2.EZA", 1);
+			nextanimation = -1;
+		}
+		
+	}	
+	
+	
+	if(p_item != NULL)
+	{
+		
+		vec3_t position, size;	
+		GAME_OBJECT * p_obj;
+		
+		queststate.typepr = 0;
+		position.Assign(0, 0, -80);	
+		size.Assign(1024,768,0);
+		
+		if(param == 103)
+			p_obj = CreateGameObject(1,"scetch_rose.scv", position, size);	
+		if(param == 104)
+			p_obj = CreateGameObject(1,"scetch_air_ball.scv", position, size);	
+		if(param == 105)
+			p_obj = CreateGameObject(1,"scetch_cutters.scv", position, size);	
+		if(param == 106)
+			p_obj = CreateGameObject(1,"scetch_ballon.scv", position, size);	
+		if(param == -1)
+			p_obj = CreateGameObject(1,"scetch_provod.scv", position, size);	
+
+					
+		if(param == -3)
+		{
+			if(queststate.quest_pull_rope1 == 3)
+			{
+				p_obj = CreateGameObject(1,"scetch_shnur2.scv", position, size);
+				nextanimation = -2;
+				scene.DeleteObject(p_item);
+			}
+			else
+			{
+				p_obj = CreateGameObject(1,"scetch_shnur.scv", position, size);
+			}
+		}
+		else
+		{
+			scene.DeleteObject(p_item);
+		}
+
+		scene.Add(p_obj, 2);
+		
+		queststate.typepr=0;
+		scene.SetCursorType(0); 
+
+	}
+	
+}

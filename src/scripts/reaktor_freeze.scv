@@ -1,0 +1,76 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_SETFOCUS;
+export ON_KILLFOCUS;
+export ON_LBUTTONDOWN;
+
+int nextanimation;
+int lastanimation;
+
+void ON_SETFOCUS()
+{
+	if(queststate.quest_freeze_giga != -1 && queststate.quest_freeze_giga != 2  && queststate.quest_freeze_giga != 3)
+	{
+		scene.SetCursorType(1);
+	}
+}
+
+void ON_KILLFOCUS()
+{
+
+	scene.SetCursorType(0);
+
+}
+
+void ON_LBUTTONDOWN()
+{
+	if(queststate.quest_freeze_giga != -1 && queststate.quest_freeze_giga != 2  && queststate.quest_freeze_giga != 3)
+	{
+		queststate.quest_freeze_giga = 2;
+
+		GAME_OBJECT * p_anton;
+		p_anton = scene.FindObjectByName("anton");
+		message m2;
+		m2.p_target = p_anton;
+		m2.message_id = EM_NOTIFY;
+		m2.lparam = 104;
+		scene.PostMessage(m2);
+
+		scene.DeleteObject(self);
+		scene.SetCursorType(0);
+	}
+
+}
+
+void ON_CREATE()
+{ 
+
+
+	if(queststate.quest_freeze_giga == -1 || queststate.quest_freeze_giga == 2 || queststate.quest_freeze_giga == 3)
+	{
+		scene.DeleteObject(self);
+	}
+	else
+	{
+
+		GAME_OBJECT * p_partical;
+		vec3_t pos;
+		pos.x = - 20;
+		pos.y = 0.5359;
+		pos.z = 1.0012;
+
+		p_partical = scene.FindObjectByName("Particle");
+		p_partical->SetBonePosition(0, pos);
+
+		if(queststate.quest_freeze_giga == -2)
+			scene.DeleteObject(self);
+		 
+	}
+
+
+
+
+}
+

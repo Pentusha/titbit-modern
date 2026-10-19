@@ -1,0 +1,63 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_DESTROY; 
+
+int nextanimation;
+int lastanimation;
+
+
+STREAM * p_stream = NULL;
+
+
+void ON_DESTROY()
+{
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+}
+
+
+
+void ON_CREATE()
+{ 
+	//фоновая музыка
+	GAME_OBJECT * p_obj;
+	
+	p_obj = scene.FindObjectByName("sound_back");	
+	
+	if(p_obj != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 18000;
+		m.p_target = p_obj;
+		scene.PostMessage(m);
+	}
+	
+	queststate.lastlocation = queststate.activelocation;
+	queststate.activelocation = 29;
+	
+	
+	//разговариваем
+
+	vec3_t position, size;	
+	position.Assign(0, 600, -80);
+	size.Assign(1024,768,0);
+
+	p_obj = CreateGameObject(1,"laba_dialog2.scv", position, size);
+	
+	position.Assign(512, -216, 0);
+	p_obj->SetBoneCenter(0,position);
+
+	scene.Add(p_obj, 2);
+
+
+	scene.SetCursorType(0);
+}
+

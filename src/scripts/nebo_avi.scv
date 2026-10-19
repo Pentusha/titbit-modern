@@ -1,0 +1,35 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_TIME;
+
+LINK * p_avi;
+
+void ON_TIME(int timernum)
+{	
+	p_avi->Delete();
+	scene.DeleteObject(self);
+//	WriteLog("AVI deleted");
+}
+
+
+void ON_CREATE()
+{
+	vec3_t position, size, uvposition, uvsize;
+	GAME_OBJECT * p_obj;	
+
+
+	position.Assign(-2, 4 , 0.1);
+	size.Assign( 2.4,-1.76, 0);	
+	uvposition.Assign(0,1,0);	
+	uvsize.Assign(1,-1,0);
+
+	p_obj = scene.FindObjectByName("neboLand");
+
+	p_avi = CreateAVIPlane(position, size, uvposition, uvsize, true, "buh2.avi");
+	p_obj->Attach(p_avi);
+
+	self->CreateTimer( 3830, -1);
+//	WriteLog("AVI created");
+}

@@ -1,0 +1,240 @@
+#pragma code_page(65001)
+// Editable resources recovered from titbit.exe. Only ICO artwork is binary.
+// No original executable section is used by the source build.
+
+LANGUAGE 0x19, 0x1
+
+202 ICON "icon_202_1049.ico"
+
+LANGUAGE 0x9, 0x1
+
+128 ICON "icon_128_1033.ico"
+
+LANGUAGE 0x9, 0x1
+
+128 MENU
+BEGIN
+ POPUP "&File"
+ BEGIN
+  MENUITEM "&New\tCtrl+N", 57600
+  MENUITEM "&Open...\tCtrl+O", 57601
+  MENUITEM "&Save\tCtrl+S", 57603
+  MENUITEM "Save &As...", 57604
+  MENUITEM SEPARATOR
+  MENUITEM "&Print...\tCtrl+P", 57607
+  MENUITEM "Print Pre&view", 57609
+  MENUITEM "P&rint Setup...", 57606
+  MENUITEM SEPARATOR
+  MENUITEM "E&xit", 57665
+ END
+ POPUP "&Edit"
+ BEGIN
+  MENUITEM "&Undo\tCtrl+Z", 57643
+  MENUITEM SEPARATOR
+  MENUITEM "Cu&t\tCtrl+X", 57635
+  MENUITEM "&Copy\tCtrl+C", 57634
+  MENUITEM "&Paste\tCtrl+V", 57637
+ END
+ POPUP "&Help"
+ BEGIN
+  MENUITEM "&About fullscreengl...", 57664
+ END
+END
+
+LANGUAGE 0x9, 0x1
+
+100 DIALOG 0, 0, 187, 102
+STYLE 0x80c800c0
+EXSTYLE 0x00000000
+CAPTION "About"
+FONT 8, "MS Sans Serif"
+BEGIN
+ CONTROL "OK", 1, "Button", 0x50010001, 130, 81, 50, 14, 0x00000000
+ CONTROL "fullscreengl Application v1.0\n\n(c) Copyright 2002", -1, "Static", 0x50020001, 25, 57, 78, 32, 0x00000000
+ CONTROL 128, -1, "Static", 0x50000003, 55, 26, 18, 20, 0x00000000
+ CONTROL "", -1, "Button", 0x50000007, 7, 7, 115, 88, 0x00000000
+END
+
+LANGUAGE 0x19, 0x1
+
+201 DIALOG 0, 0, 227, 110
+STYLE 0x80c000c0
+EXSTYLE 0x00000000
+CAPTION "Настройка"
+FONT 8, "MS Sans Serif"
+BEGIN
+ CONTROL "Принять", 1, "Button", 0x50010001, 170, 5, 50, 14, 0x00000000
+ CONTROL "Отменить", 2, "Button", 0x50010000, 170, 24, 50, 14, 0x00000000
+ CONTROL "Разрешение", -1, "Button", 0x50010307, 3, 2, 82, 51, 0x00000000
+ CONTROL "640 x 480", 1008, "Button", 0x50020009, 20, 15, 47, 10, 0x00000000
+ CONTROL "800 x 600", 1009, "Button", 0x50000009, 20, 26, 47, 10, 0x00000000
+ CONTROL "1024 x 768", 1010, "Button", 0x50000009, 20, 39, 51, 10, 0x00000000
+ CONTROL "Глубина цвета", -1, "Button", 0x50010307, 91, 2, 72, 51, 0x00000000
+ CONTROL "16 бит", 1011, "Button", 0x50020009, 108, 18, 37, 10, 0x00000000
+ CONTROL "32 бита", 1012, "Button", 0x50000009, 108, 34, 41, 10, 0x00000000
+ CONTROL "", 1018, "Button", 0x50010007, 3, 52, 160, 22, 0x00000000
+ CONTROL "частота обновления экрана:", 1016, "Static", 0x50020000, 9, 60, 99, 8, 0x00000000
+ CONTROL "", 1007, "ComboBox", 0x50210102, 111, 59, 32, 53, 0x00000000
+ CONTROL "Гц", 1017, "Static", 0x50020000, 149, 60, 9, 8, 0x00000000
+ CONTROL "Больше не показывать это окно при старте", 1004, "Button", 0x50010003, 3, 93, 210, 10, 0x00000000
+ CONTROL "Использовать Direct Sound для вывода звука", 1005, "Button", 0x50010003, 4, 77, 210, 10, 0x00000000
+END
+
+LANGUAGE 0x19, 0x1
+
+STRINGTABLE
+BEGIN
+ 128 "Nuclear Titbit"
+END
+
+LANGUAGE 0x19, 0x1
+
+STRINGTABLE
+BEGIN
+ 57345 "Ready"
+END
+
+LANGUAGE 0x19, 0x1
+
+STRINGTABLE
+BEGIN
+ 57600 "Create a new document\nNew"
+ 57601 "Open an existing document\nOpen"
+ 57602 "Close the active document\nClose"
+ 57603 "Save the active document\nSave"
+ 57604 "Save the active document with a new name\nSave As"
+ 57605 "Change the printing options\nPage Setup"
+ 57606 "Change the printer and printing options\nPrint Setup"
+ 57607 "Print the active document\nPrint"
+ 57609 "Display full pages\nPrint Preview"
+END
+
+LANGUAGE 0x19, 0x1
+
+STRINGTABLE
+BEGIN
+ 57632 "Erase the selection\nErase"
+ 57633 "Erase everything\nErase All"
+ 57634 "Copy the selection and put it on the Clipboard\nCopy"
+ 57635 "Cut the selection and put it on the Clipboard\nCut"
+ 57636 "Find the specified text\nFind"
+ 57637 "Insert Clipboard contents\nPaste"
+ 57640 "Repeat the last action\nRepeat"
+ 57641 "Replace specific text with different text\nReplace"
+ 57642 "Select the entire document\nSelect All"
+ 57643 "Undo the last action\nUndo"
+ 57644 "Redo the previously undone action\nRedo"
+END
+
+LANGUAGE 0x19, 0x1
+
+STRINGTABLE
+BEGIN
+ 57648 "Open another window for the active document\nNew Window"
+ 57649 "Arrange icons at the bottom of the window\nArrange Icons"
+ 57650 "Arrange windows so they overlap\nCascade Windows"
+ 57651 "Arrange windows as non-overlapping tiles\nTile Windows"
+ 57652 "Arrange windows as non-overlapping tiles\nTile Windows"
+ 57653 "Split the active window into panes\nSplit"
+END
+
+LANGUAGE 0x19, 0x1
+
+STRINGTABLE
+BEGIN
+ 57664 "Display program information, version number and copyright\nAbout"
+ 57665 "Quit the application; prompts to save documents\nExit"
+END
+
+LANGUAGE 0x19, 0x1
+
+STRINGTABLE
+BEGIN
+ 57680 "Switch to the next window pane\nNext Pane"
+ 57681 "Switch back to the previous window pane\nPrevious Pane"
+END
+
+LANGUAGE 0x19, 0x1
+
+STRINGTABLE
+BEGIN
+ 61184 "Change the window size"
+ 61185 "Change the window position"
+ 61186 "Reduce the window to an icon"
+ 61187 "Enlarge the window to full size"
+ 61188 "Switch to the next document window"
+ 61189 "Switch to the previous document window"
+ 61190 "Close the active window and prompts to save the documents"
+END
+
+LANGUAGE 0x19, 0x1
+
+STRINGTABLE
+BEGIN
+ 61202 "Restore the window to normal size"
+ 61203 "Activate Task List"
+ 61215 "Activate this window"
+END
+
+LANGUAGE 0x19, 0x1
+
+STRINGTABLE
+BEGIN
+ 61402 "Open this document"
+END
+
+LANGUAGE 0x9, 0x1
+
+128 ACCELERATORS
+BEGIN
+ 0x4e, 57600, VIRTKEY, CONTROL
+ 0x4f, 57601, VIRTKEY, CONTROL
+ 0x53, 57603, VIRTKEY, CONTROL
+ 0x50, 57607, VIRTKEY, CONTROL
+ 0x5a, 57643, VIRTKEY, CONTROL
+ 0x58, 57635, VIRTKEY, CONTROL
+ 0x43, 57634, VIRTKEY, CONTROL
+ 0x56, 57637, VIRTKEY, CONTROL
+ 0x8, 57643, VIRTKEY, ALT
+ 0x2e, 57635, VIRTKEY, SHIFT
+ 0x2d, 57634, VIRTKEY, CONTROL
+ 0x2d, 57637, VIRTKEY, SHIFT
+ 0x75, 57680, VIRTKEY
+ 0x75, 57681, VIRTKEY, SHIFT
+END
+
+LANGUAGE 0x9, 0x1
+
+1 VERSIONINFO
+FILEVERSION 1, 0, 6, 49
+PRODUCTVERSION 1, 0, 6, 49
+FILEFLAGSMASK 0x3f
+FILEFLAGS 0x0
+FILEOS 0x4
+FILETYPE 0x2
+FILESUBTYPE 0x0
+BEGIN
+ BLOCK "StringFileInfo"
+ BEGIN
+  BLOCK "041904b0"
+  BEGIN
+   VALUE "Comments", ""
+   VALUE "CompanyName", "VZlab Co Ltd"
+   VALUE "FileDescription", "Nuclear Titbit"
+   VALUE "FileVersion", "1, 0, 6, 49"
+   VALUE "InternalName", "Nuclear Titbit"
+   VALUE "LegalCopyright", "Copyright 2002"
+   VALUE "LegalTrademarks", "VZlab Co Ltd."
+   VALUE "OLESelfRegister", ""
+   VALUE "OriginalFilename", "titbit.exe"
+   VALUE "PrivateBuild", ""
+   VALUE "ProductName", "Nuclear Titbit"
+   VALUE "ProductVersion", "1, 0, 6, 49"
+   VALUE "SpecialBuild", ""
+  END
+ END
+ BLOCK "VarFileInfo"
+ BEGIN
+  VALUE "Translation", 0x419, 0x4b0
+ END
+END

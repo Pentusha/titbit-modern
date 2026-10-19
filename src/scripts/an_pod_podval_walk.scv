@@ -1,0 +1,128 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_NOTIFY;
+export ON_DESTROY;
+
+int nextanimation;
+int lastanimation;
+
+
+
+STREAM * p_stream = NULL;
+
+
+void ON_DESTROY()
+{
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+}
+
+void ON_CREATE()
+{ 
+	//фоновая музыка
+	GAME_OBJECT * p_snd;
+	 
+	p_snd = scene.FindObjectByName("sound_back");	
+	
+	if(p_snd != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 6015;
+		m.p_target = p_snd;
+		scene.PostMessage(m);
+	}
+
+
+	queststate.lastlocation = queststate.activelocation;
+	queststate.activelocation = 8;
+
+	if(queststate.lastlocation == 6)	
+		self->CreateSkeletonAnimation("p_pod_an_idle.EZA", -1);
+	if(queststate.lastlocation == 10)	
+		self->CreateSkeletonAnimation("p_pod_an_idle2.EZA", -1);
+	scene.SetCursorType(0);
+}
+
+void ON_NOTIFY(int param)
+{
+	
+	switch(param)
+	{
+	case 101:
+		//пытаемся попасть в подвал
+		if(queststate.item_basement_key == 1 || queststate.item_basement_key == -1)//&& (queststate.typepr == 24)) 
+		{
+			scene.SetCursorType(0);
+			queststate.typepr = 0;
+			scene.Delete(3);//удаляем все не интерфейсные объекты
+			scene.Load("sex_podval_n.XML");
+			queststate.item_basement_key = -1;
+		}
+		else	
+		{
+		
+			if(p_stream != NULL)
+			{
+				p_stream->Stop(); 	
+				DeleteStream(p_stream);
+				p_stream = NULL;
+			}
+	
+			p_stream = CreateStream("comment_anton_5.ogg");	
+			p_stream->Play(false);	
+		}	
+		break;
+
+	case 102:
+		//выходим на лестницу
+
+		scene.Delete(3);//удаляем все не интерфейсные объекты
+		scene.Load("podjezd_n.XML");
+		break;
+	case 103:
+		//клей
+		if(p_stream != NULL)
+		{
+			p_stream->Stop(); 	
+			DeleteStream(p_stream);
+			p_stream = NULL;
+		}
+			p_stream = CreateStream("comment_anton_2.ogg");
+			p_stream->Play(false);	
+		break;	
+	case 104:
+		//дерьмо
+		if(p_stream != NULL)
+		{
+			p_stream->Stop(); 	
+			DeleteStream(p_stream);
+			p_stream = NULL;
+		}
+			p_stream = CreateStream("comment_anton_3.ogg");
+			p_stream->Play(false);	
+		break;
+
+	case 105:
+		//перчатка
+		if(p_stream != NULL)
+		{
+			p_stream->Stop(); 	
+			DeleteStream(p_stream);
+			p_stream = NULL;
+		}
+			p_stream = CreateStream("comment_anton_2.ogg");
+			p_stream->Play(false);	
+		
+		break;
+	
+	}	
+	
+}

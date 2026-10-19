@@ -1,0 +1,4 @@
+{
+ "0x42280c": "tail of 0x422510 (Ghidra split); parent source covers it",
+ "0x43373e": "tail of 0x433600 (uses parent's EBP frame, jumps back to 0x4336d2); parent source covers it"
+}

@@ -1,0 +1,1336 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_DESTROY;
+export ON_TIME;
+export ON_MOUSEOVER;
+export ON_LBUTTONDOWN;
+export ON_SETFOCUS;
+export ON_KILLFOCUS;
+
+#define postexx0 0
+#define postexx1 0.0625
+#define postexx2 0.125
+#define postexx3 0.1875
+#define postexx4 0.25
+#define postexx5 0.3125
+#define postexx6 0.375
+#define postexx7 0.4375
+#define postexx8 0.5
+#define postexx9 0.5625
+#define postexx10 0.625
+#define postexx11 0.6875
+#define postexx12 0.75
+#define postexx13 0.8125
+#define postexx14 0.875
+#define postexx15 0.9375
+#define postexx16 0.9375
+
+#define postexy0 1
+#define postexy1 0.9375
+#define postexy2 0.875
+#define postexy3 0.8125
+#define postexy4 0.75
+#define postexy5 0.6875
+#define postexy6 0.625
+#define postexy7 0.5625
+#define postexy8 0.5
+#define postexy9 0.4375
+#define postexy10 0.375
+#define postexy11 0.3125
+#define postexy12 0.25
+#define postexy13 0.1875
+#define postexy14 0.125
+#define postexy15 0.0625
+
+float step = 0;
+
+LINK * p_tooltip = NULL;
+
+LINK * p_p1 = NULL;
+LINK * p_p2 = NULL;
+LINK * p_p3 = NULL;
+LINK * p_p4 = NULL;
+LINK * p_p5 = NULL;
+LINK * p_p6 = NULL;
+LINK * p_p7 = NULL;
+LINK * p_p8 = NULL;
+
+LINK * p_pup = NULL;
+LINK * p_pdn = NULL;
+
+LINK * p_dance = NULL;
+
+IFPlane * p_ipl = NULL;
+IFPlane * p_ipl2 = NULL;
+
+int typepr1;
+int typepr2;
+int typepr3;
+int typepr4;
+int typepr5;
+int typepr6;
+int typepr7;
+int typepr8;
+int typeprtmp;
+
+char namepr1[32];
+char namepr2[32];
+char namepr3[32];
+char namepr4[32];
+char namepr5[32];
+char namepr6[32];
+char namepr7[32];
+char namepr8[32];
+char nametmp[32];
+
+vec3_t uvpos1;
+vec3_t uvpos2;
+vec3_t uvpos3;
+vec3_t uvpos4;
+vec3_t uvpos5;
+vec3_t uvpos6;
+vec3_t uvpos7;
+vec3_t uvpos8;
+vec3_t uvpostmp;
+
+int itemoffset;
+
+bool b_downsel = true;
+bool b_upsel = true;
+
+
+STREAM * p_stream = NULL;
+
+
+void strcpy(char * p_ch1, char * p_ch2)
+{
+	int f = 0;
+	while(p_ch2[f]!=0)
+	{
+		p_ch1[f] = p_ch2[f];
+		f++;
+	}
+	p_ch1[f] = 0;
+}
+
+vec3_t CalcItem(int itemnum, char * namepr, int * typepr)
+{
+	int itsset = 0;
+	int dsk;
+	vec3_t uvpos;
+
+/////////////////////////////////// первая полоска предметов
+
+	if ( (queststate.item_nuclear_mushrooms) >= 1 )
+	{	
+		strcpy(namepr, "item_nuclear_mushrooms");
+		*typepr = 1;
+		uvpos.Assign(postexx0,postexy0,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+	if ( (queststate.item_disk_piece) >= 1 )
+	{	
+		int quant = 0;
+		
+		if(queststate.item_disk_piece & 1)
+			quant = quant +1;
+		if(queststate.item_disk_piece & 2)
+			quant = quant +1;
+		if(queststate.item_disk_piece & 4)
+			quant = quant +1;
+		if(queststate.item_disk_piece & 8)
+			quant = quant +1;
+			
+		switch(quant)
+		{
+		case 1:		strcpy(namepr, "item_disk_piece1"); 
+				uvpos.Assign(postexx1,postexy0,0);
+				break;
+		case 2:		strcpy(namepr, "item_disk_piece2"); 
+				uvpos.Assign(postexx2,postexy0,0);
+				break;
+		case 3:		strcpy(namepr, "item_disk_piece3"); 
+				uvpos.Assign(postexx3,postexy0,0);
+				break;
+		case 4:		strcpy(namepr, "item_disk_piece4"); 
+				uvpos.Assign(postexx4,postexy0,0);
+				break;
+		}
+		
+		*typepr = 2;
+
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+	if ( (queststate.item_full_disk) >= 1 )
+	{	
+		strcpy(namepr, "item_full_disk");
+		*typepr = 65;
+		uvpos.Assign(postexx5,postexy0,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+	if ( (queststate.item_rat_tail) >= 1 )
+	{	
+		strcpy(namepr, "item_rats_tail");
+		*typepr = 3;
+		uvpos.Assign(postexx6,postexy0,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+	if ( (queststate.item_clue) >= 1 )
+	{	
+		strcpy(namepr, "item_clue");
+		*typepr = 4;
+		uvpos.Assign(postexx7,postexy0,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+	if ( (queststate.item_piece_of_shit) >= 1 )
+	{	
+		
+		*typepr = 5;
+		if ((queststate.item_piece_of_shit)==1)
+		{
+		 strcpy(namepr, "item_piece_of_shit1");
+		 uvpos.Assign(postexx8,postexy0,0);
+		}
+		else
+		{
+		 uvpos.Assign(postexx9,postexy0,0);
+		 strcpy(namepr, "item_piece_of_shit2");
+		}	
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_indian_poster) >= 1 )
+	{	
+		if(queststate.item_indian_poster == 1)
+			strcpy(namepr, "item_indian_poster1");
+		else
+			strcpy(namepr, "item_indian_poster2");
+				
+		*typepr = 6;
+		if ((queststate.item_indian_poster)==1) 
+			uvpos.Assign(postexx10,postexy0,0);
+		else 
+			uvpos.Assign(postexx11,postexy0,0);
+
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_pioners_tie) >= 1 )
+	{	
+		
+		*typepr = 7;
+		if ((queststate.item_pioners_tie)==1)
+		{
+		 	uvpos.Assign(postexx12,postexy0,0);
+			strcpy(namepr, "item_pioners_tie1");
+		}
+		else 
+		{
+			uvpos.Assign(postexx13,postexy0,0);
+			strcpy(namepr, "item_pioners_tie2");
+		}
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_money_case) >= 1 )
+	{	
+		strcpy(namepr, "item_money_case");
+		*typepr = 8;
+		uvpos.Assign(postexx14,postexy0,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_respirator) >= 1 )
+	{	
+		strcpy(namepr, "item_respirator");
+		*typepr = 9;
+		uvpos.Assign(postexx15,postexy0,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+/////////////////////////////////// вторая полоска предметов
+
+	if ( (queststate.item_pants) >= 1 )
+	{	
+		strcpy(namepr, "item_pants");
+		*typepr = 10;
+		uvpos.Assign(postexx0,postexy1,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_tri_fallos) >= 1 )
+	{	
+		strcpy(namepr, "item_tri_fallos");
+		*typepr = 11;
+		uvpos.Assign(postexx1,postexy1,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+	if ( (queststate.item_erotic_fotos) >= 1 )
+	{	
+		strcpy(namepr, "item_erotic_fotos");
+		*typepr = 12;
+		uvpos.Assign(postexx2,postexy1,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+	if ( (queststate.item_wear) >= 1 )
+	{	
+		strcpy(namepr, "item_wear");
+		*typepr = 13;
+		uvpos.Assign(postexx3,postexy1,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_rubber_glove) >= 1 )
+	{	
+		strcpy(namepr, "item_rubber_glove");
+		*typepr = 14;
+		uvpos.Assign(postexx4,postexy1,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_gas_ballon) >= 1 )
+	{	
+		strcpy(namepr, "item_gas_ballon");
+		*typepr = 15;
+		uvpos.Assign(postexx5,postexy1,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_serp) >= 1 )
+	{	
+		strcpy(namepr, "item_serp");
+		*typepr = 16;
+		uvpos.Assign(postexx6,postexy1,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_axe) >= 1 )
+	{	
+		strcpy(namepr, "item_axe");
+		*typepr = 17;
+		uvpos.Assign(postexx7,postexy1,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_bottle_of_vodka) >= 1 )
+	{	
+
+		strcpy(namepr, "item_bottle_of_vodka");
+		*typepr = 18;
+		uvpos.Assign(postexx8,postexy1,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_kruzhka) >= 1 )
+	{	
+		dsk = queststate.item_kruzhka;
+
+		switch(queststate.item_kruzhka)
+		{
+		case 1:		strcpy(namepr, "item_kruzhka1"); break;
+		case 3:		strcpy(namepr, "item_kruzhka3"); break;
+		case 7:		strcpy(namepr, "item_kruzhka7"); break;
+		case 11:	strcpy(namepr, "item_kruzhka11"); break;
+		case 15:	strcpy(namepr, "item_kruzhka15"); break;
+		case 19:	strcpy(namepr, "item_kruzhka19"); break;
+		case 23:	strcpy(namepr, "item_kruzhka23"); break;
+		case 27:	strcpy(namepr, "item_kruzhka27"); break;
+		case 31:	strcpy(namepr, "item_kruzhka31"); break;
+		}
+
+		*typepr = 66; uvpos.Assign(postexx9,postexy1,0);
+		if (dsk==1) { *typepr = 19; uvpos.Assign(postexx11,postexy4,0); }
+		if (dsk==31) { *typepr = 20; uvpos.Assign(postexx10,postexy1,0); }
+
+
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_book_pis) >= 1 )
+	{	
+		strcpy(namepr, "item_book_pis");
+		*typepr = 21;
+		uvpos.Assign(postexx11,postexy1,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_bucket) >= 1 )
+	{	
+		strcpy(namepr, "int item_bucket");
+		*typepr = 22;
+		uvpos.Assign(postexx12,postexy1,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_rag_and_gutaline) >= 1 )
+	{	
+		strcpy(namepr, "item_rag_and_gutaline");
+		*typepr = 23;
+		uvpos.Assign(postexx13,postexy1,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_basement_key) >= 1 )
+	{	
+		strcpy(namepr, "item_basement_key");
+		*typepr = 24;
+		uvpos.Assign(postexx14,postexy1,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_merry_shiva) >= 1 )
+	{	
+		strcpy(namepr, "item_merry_shiva");
+		*typepr = 25;
+		uvpos.Assign(postexx15,postexy1,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+/////////////////////////////////// третья полоска предметов
+
+	if ( (queststate.item_elephant) >= 1 )
+	{	
+		strcpy(namepr, "item_elephant");
+		*typepr = 26;
+		uvpos.Assign(postexx0,postexy2,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_vantuz) >= 1 )
+	{	
+		strcpy(namepr, "item_vantuz");
+		*typepr = 27;
+		uvpos.Assign(postexx1,postexy2,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_gun) >= 1 )
+	{
+		if(queststate.item_gun == 1)
+			strcpy(namepr, "item_gun1");
+		else
+			strcpy(namepr, "item_gun2");
+
+		*typepr = 28;
+		uvpos.Assign(postexx2,postexy2,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+	if ( (queststate.item_petrolium_can) >= 1 )
+	{	
+		strcpy(namepr, "item_petrolium_can");
+		*typepr = 29;
+		uvpos.Assign(postexx3,postexy2,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+	if ( (queststate.item_note) >= 1 )
+	{	
+		strcpy(namepr, "item_note");
+		*typepr = 30;
+		uvpos.Assign(postexx4,postexy2,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+/*	if ( (queststate.item_crowbar) >= 1 )
+	{	
+		strcpy(namepr, "item_crowbar");
+		*typepr = 31;
+		uvpos.Assign(postexx5,postexy2,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+*/
+	if ( (queststate.item_club_card) >= 1 )
+	{	
+		strcpy(namepr, "item_club_card");
+		*typepr = 32;
+		uvpos.Assign(postexx6,postexy2,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_bullets) >= 1 )
+	{	
+		strcpy(namepr, "item_bullets");
+		*typepr = 33;
+		uvpos.Assign(postexx7,postexy2,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_mount) >= 1 )
+	{	
+		strcpy(namepr, "item_mount");
+		*typepr = 34;
+		uvpos.Assign(postexx8,postexy2,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_saw_benzo) >= 1 )
+	{	
+		strcpy(namepr, "item_saw_benzo");
+		*typepr = 35;
+		uvpos.Assign(postexx9,postexy2,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_titbit) >= 1 )
+	{	
+		strcpy(namepr, "item_titbit");
+		*typepr = 36;
+		uvpos.Assign(postexx10,postexy2,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_marker) >= 1 )
+	{	
+		strcpy(namepr, "item_marker");
+		*typepr = 37;
+		uvpos.Assign(postexx11,postexy2,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_coin) >= 1 )
+	{	
+		strcpy(namepr, "item_coin");
+		*typepr = 38;
+		uvpos.Assign(postexx12,postexy2,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_condom) >= 1 )
+	{	
+		*typepr = 39;
+		if (queststate.item_condom==1) 
+		{
+			uvpos.Assign(postexx13,postexy2,0);
+			strcpy(namepr, "item_condom1");
+		}
+		else
+		{
+		 	uvpos.Assign(postexx14,postexy2,0);
+		 	strcpy(namepr, "item_condom2");
+		}
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_container) >= 1 )
+	{	
+		strcpy(namepr, "item_container");
+		*typepr = 40;
+		uvpos.Assign(postexx15,postexy2,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+/////////////////////////////////// четвертая полоска предметов
+
+	if ( (queststate.item_kalendarik) >= 1 )
+	{	
+		strcpy(namepr, "item_calendarik");
+		*typepr = 41;
+		uvpos.Assign(postexx0,postexy3,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+	if ( (queststate.item_dance_video) >= 1 )
+	{	
+		strcpy(namepr, "item_dance_video");
+		*typepr = 42;
+		uvpos.Assign(postexx1,postexy3,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_photocam) >= 1 )
+	{	
+		strcpy(namepr, "item_photocam");
+		*typepr = 43;
+		uvpos.Assign(postexx2,postexy3,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_plastic) >= 1 )
+	{	
+		strcpy(namepr, "item_plastic");
+		*typepr = 44;
+		uvpos.Assign(postexx3,postexy3,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_tualet_paper) >= 1 )
+	{	
+		switch(queststate.item_tualet_paper)
+		{
+		case 1:		strcpy(namepr, "item_tualet_paper1"); 
+				uvpos.Assign(postexx4,postexy3,0);
+				break;
+		case 2:		strcpy(namepr, "item_tualet_paper2"); 
+				uvpos.Assign(postexx5,postexy3,0);
+				break;
+		case 3:		strcpy(namepr, "item_tualet_paper3"); 
+				uvpos.Assign(postexx6,postexy3,0);
+				break;
+		}
+		*typepr = 45;
+
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_id_card) >= 1 )
+	{	
+		strcpy(namepr, "item_id_card");
+		*typepr = 46;
+		uvpos.Assign(postexx7,postexy3,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+	if ( (queststate.item_leather_cap) >= 1 )
+	{	
+		strcpy(namepr, "item_leather_cap");
+		*typepr = 47;
+		uvpos.Assign(postexx8,postexy3,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+	if ( (queststate.item_boots) >= 1 )
+	{	
+		strcpy(namepr, "item_boots");
+		*typepr = 48;
+		uvpos.Assign(postexx9,postexy3,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_belomor) >= 1 )
+	{	
+		strcpy(namepr, "item_belomor");
+		*typepr = 49;
+		uvpos.Assign(postexx10,postexy3,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_compromat_fotos) >= 1 )
+	{	
+		strcpy(namepr, "item_compromat_fotos");
+		*typepr = 50;
+		uvpos.Assign(postexx11,postexy3,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_porno_disk) >= 1 )
+	{	
+		strcpy(namepr, "item_porno_disk");
+		*typepr = 51;
+		uvpos.Assign(postexx12,postexy3,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_listenning_device) >= 1 )
+	{	
+		strcpy(namepr, "item_listenning_device");
+		*typepr = 52;
+		uvpos.Assign(postexx13,postexy3,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_reciver) >= 1 )
+	{	
+		*typepr = 53;
+		if(queststate.item_reciver == 1)
+		{
+			strcpy(namepr, "item_reciver1");
+		}
+		else
+		{
+			strcpy(namepr, "item_reciver2");
+		}	
+		uvpos.Assign(postexx14,postexy3,0);
+		
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+/////////////////////////////////// пятая полоска предметов
+
+	if ( (queststate.item_donkey_bust) >= 1 )
+	{	
+		strcpy(namepr, "item_donkey_bust");
+		*typepr = 55;
+		uvpos.Assign(postexx0,postexy4,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_titbit_can) >= 1 )
+	{	
+		if(queststate.item_titbit_can == 1)
+			strcpy(namepr, "item_titbit_can1");
+		else
+			strcpy(namepr, "item_titbit_can2");		
+
+		*typepr = 56;
+
+		if (queststate.item_titbit_can==1) 
+			uvpos.Assign(postexx1,postexy4,0);
+		else 
+			uvpos.Assign(postexx2,postexy4,0);
+
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_plan) >= 1 )
+	{	
+		strcpy(namepr, "item_plan");
+		*typepr = 57;
+		uvpos.Assign(postexx3,postexy4,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_skrewdriver) >= 1 )
+	{	
+		strcpy(namepr, "item_skrewdriver");
+		*typepr = 58;
+		uvpos.Assign(postexx4,postexy4,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_scissors) >= 1 )
+	{	
+		strcpy(namepr, "item_scissors");
+		*typepr = 59;
+		uvpos.Assign(postexx5,postexy4,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_saw_circul) >= 1 )
+	{	
+		strcpy(namepr, "item_saw_circul");
+		*typepr = 60;
+		uvpos.Assign(postexx6,postexy4,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_red_paint_ballon) >= 1 )
+	{	
+		strcpy(namepr, "item_red_paint_ballon");
+		*typepr = 61;
+		uvpos.Assign(postexx7,postexy4,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_white_rose) >= 1 )
+	{	
+		strcpy(namepr, "item_white_rose");
+		*typepr = 62;
+		uvpos.Assign(postexx8,postexy4,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_air_ball) >= 1 )
+	{	
+		strcpy(namepr, "item_air_ball");
+		*typepr = 63;
+		uvpos.Assign(postexx9,postexy4,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_cutters) >= 1 )
+	{	
+		strcpy(namepr, "item_cutters");
+		*typepr = 64;
+		uvpos.Assign(postexx10,postexy4,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_keydurka) >= 1 )
+	{	
+		strcpy(namepr, "item_keydurka");
+		*typepr = 67;
+		uvpos.Assign(postexx12,postexy4,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+	if ( (queststate.item_ruchka) >= 1 )
+	{	
+		strcpy(namepr, "item_ruchka");
+		*typepr = 68;
+		uvpos.Assign(postexx13,postexy4,0);
+		if (itsset == itemnum) return uvpos;
+		itsset++;
+	}
+
+	strcpy(namepr, "pusto");
+	*typepr = 0;
+	uvpos.Assign(0,0,0);
+
+	return uvpos;
+
+}
+
+void CREATE_ITEMS()
+{
+	vec3_t pos;
+	vec3_t size;
+	vec3_t uvpos;
+	vec3_t uvsize;
+	
+	pos.Assign(0,0,0);
+	size.Assign(64,64,0);
+	uvpos.Assign(0,0.25,0);
+	uvsize.Assign(0.0625,-0.0625,0);
+
+	if (p_pup!=NULL) {p_pup->Delete(); p_pup=NULL;}
+	if (p_pdn!=NULL) {p_pdn->Delete(); p_pdn=NULL;}
+ 	if (p_p1!=NULL)  {p_p1->Delete(); p_p1=NULL;}
+	if (p_p2!=NULL)  {p_p2->Delete(); p_p2=NULL;}
+	if (p_p3!=NULL)  {p_p3->Delete(); p_p3=NULL;}
+	if (p_p4!=NULL)  {p_p4->Delete(); p_p4=NULL;}
+	if (p_p5!=NULL)  {p_p5->Delete(); p_p5=NULL;}
+	if (p_p6!=NULL)  {p_p6->Delete(); p_p6=NULL;}
+	if (p_p7!=NULL)  {p_p7->Delete(); p_p7=NULL;}
+	if (p_p8!=NULL)  {p_p8->Delete(); p_p8=NULL;}
+
+	if (p_dance != NULL){p_dance->Delete(); p_dance=NULL;}
+
+	//создаем пачку кнопок
+
+	uvpos1 = CalcItem(7+itemoffset, namepr1, &typepr1);
+	if (typepr8==0) itemoffset=0;
+
+
+
+
+	uvpos1 = CalcItem(0+itemoffset, namepr1, &typepr1);
+	if (typepr1!=0)
+	{
+		p_p1 = CreateIFPlane(pos,size,uvpos1,uvsize, "items.tga"); 
+		self->Attach(p_p1);
+		pos.y += 70;
+	}
+
+	uvpos2 = CalcItem(1+itemoffset, namepr2, &typepr2);	
+	if (typepr2!=0)
+	{
+		p_p2 = CreateIFPlane(pos,size,uvpos2,uvsize, "items.tga"); 
+		self->Attach(p_p2);
+		pos.y += 70;
+	}
+
+	uvpos3 = CalcItem(2+itemoffset, namepr3, &typepr3);	
+	if (typepr3!=0)
+	{
+		p_p3 = CreateIFPlane(pos,size,uvpos3,uvsize, "items.tga");
+		self->Attach(p_p3);
+		pos.y += 70;
+	}
+
+	uvpos4 = CalcItem(3+itemoffset, namepr4, &typepr4);	
+	if (typepr4!=0)
+	{
+		p_p4 = CreateIFPlane(pos,size,uvpos4,uvsize, "items.tga"); 
+		self->Attach(p_p4);
+		pos.y += 70;
+	}
+
+	uvpos5 = CalcItem(4+itemoffset, namepr5, &typepr5);	
+	if (typepr5!=0)
+	{
+		p_p5 = CreateIFPlane(pos,size,uvpos5,uvsize, "items.tga"); 
+		self->Attach(p_p5);
+		pos.y += 70;
+	}
+
+	uvpos6 = CalcItem(5+itemoffset, namepr6, &typepr6);	
+	if (typepr6!=0)
+	{
+		p_p6 = CreateIFPlane(pos,size,uvpos6,uvsize, "items.tga"); 
+		self->Attach(p_p6);
+		pos.y += 70;
+	}
+
+	uvpos7 = CalcItem(6+itemoffset, namepr7, &typepr7);	
+	if (typepr7!=0)
+	{
+		p_p7 = CreateIFPlane(pos,size,uvpos7,uvsize, "items.tga"); 
+		self->Attach(p_p7);
+		pos.y += 70;
+	}
+
+	uvpos8 = CalcItem(7+itemoffset, namepr8, &typepr8);	
+	if (typepr8!=0)
+	{
+		p_p8 = CreateIFPlane(pos,size,uvpos8,uvsize, "items.tga"); 
+		self->Attach(p_p8);
+		pos.y += 70;
+	}
+	
+
+	size.Assign(64,32,0);
+	uvsize.Assign(0.0625,-0.03125,0);
+
+	int typeprtmp2;	
+	if (itemoffset>0) CalcItem(itemoffset-1, nametmp, &typeprtmp2);
+
+//	uvpostmp = CalcItem(8+itemoffset, nametmp, &typeprtmp);
+	CalcItem(8+itemoffset, nametmp, &typeprtmp);
+
+	if ( (typeprtmp!=0)||(typeprtmp2!=0) )
+	{
+		uvpos.Assign(postexx15,postexy15,0);	
+		p_pup = CreateIFPlane(pos,size,uvpos,uvsize, "items.tga");
+		self->Attach(p_pup);
+
+		pos.y += 35;
+
+		uvpos.Assign(postexx15,postexy15-0.03125,0);	
+		p_pdn = CreateIFPlane(pos,size,uvpos,uvsize, "items.tga");
+		self->Attach(p_pdn);
+
+	}
+	
+
+	if(queststate.item_dance_video == -1)
+	{
+		size.Assign(64,64,0);
+		uvsize.Assign(0.0625,-0.0625,0);
+		pos.Assign(0, 645, 0);
+		uvpos.Assign(postexx5,postexy15,0);	
+		p_dance = CreateIFPlane(pos,size,uvpos,uvsize, "items.tga");
+		self->Attach(p_dance);
+	}
+
+}
+
+void ON_CREATE()
+{
+	vec3_t position, size, uvposition, uvsize;	
+	LINK * p_obj;				
+	
+	position.Assign(0,-70,-1);
+	size.Assign(64,830,0);
+	uvposition.Assign(0.52,0.24,0);
+	uvsize.Assign(0.0375,-0.05,0);
+	p_obj = CreateIFPlane(position, size, uvposition, uvsize, "items.tga", 1);
+	self->Attach(p_obj);
+
+
+	itemoffset = 0;
+	queststate.typepr = 0;
+	CREATE_ITEMS();
+
+	//создаем вечный таймер с периодом активации 0 мсек
+	self->CreateTimer(0, -1);
+}
+
+void ON_DESTROY()
+{
+
+}
+
+void ON_TIME(int timernum)
+{
+	vec3_t localpos;
+	
+	self->GetBonePosition(0,localpos);
+
+	localpos.x-=8;
+
+	if (localpos.x<-64) localpos.x = -64;
+	self->SetBonePosition(0, localpos);
+		
+}
+
+void ON_MOUSEOVER(vec3_t mousepos)
+{
+	WriteLog("Mouse Over");
+
+	IFPlane * p_oldipl = p_ipl;
+	
+	vec3_t localpos;
+	
+	if(p_ipl != NULL)
+	{
+//		p_ipl->uvorigin.y = 0.118;	
+	}
+
+	self->GetBonePosition(0,localpos);
+	if (localpos.x<-60) { /*itemoffset=0;*/ CREATE_ITEMS(); }
+	localpos.x+=16;
+	if (localpos.x>0) localpos.x = 0;
+	self->SetBonePosition(0, localpos);
+
+	
+	localpos.x = mousepos.x - localpos.x;
+	localpos.y = mousepos.y - localpos.y;
+	
+	if(localpos.y > 0 && localpos.y < 64)
+	{
+	   p_ipl = p_p1;
+	}
+	else if(localpos.y > 70 && localpos.y < 134)
+	{
+	   p_ipl = p_p2;
+	}
+	else if(localpos.y > 140 && localpos.y < 204)
+	{
+	   p_ipl = p_p3;
+	}
+	else if(localpos.y > 210 && localpos.y < 274)
+	{
+	   p_ipl = p_p4;
+ 	}
+	else if(localpos.y > 280 && localpos.y < 344)
+	{
+	   p_ipl = p_p5;
+	}
+	else if(localpos.y > 350 && localpos.y < 414)
+	{
+	   p_ipl = p_p6;
+	}
+	else if(localpos.y > 420 && localpos.y < 484)
+	{
+	   p_ipl = p_p7;
+	}
+	else if(localpos.y > 490 && localpos.y < 554)
+	{
+	   p_ipl = p_p8;
+	}
+	else if(localpos.y > 560 && localpos.y < 592)
+	{
+	   p_ipl = p_pup;
+	}
+	else if(localpos.y > 598 && localpos.y < 634)
+	{
+	   p_ipl = p_pdn;
+	}
+	else if(localpos.y > 648 && localpos.y < 712)
+	{
+	   p_ipl = p_dance;
+	}
+	else
+	{
+	   p_ipl = NULL;
+	}
+
+	if( p_oldipl != p_ipl )
+	{	
+   	    if(p_tooltip != NULL)
+	    {
+		  scene.DeleteObject(p_tooltip);
+	    	  p_tooltip = NULL;
+	    }
+	    if(p_ipl != NULL)
+	    {
+		  if(p_ipl == p_p1)
+		  {
+			p_tooltip = scene.CreateTextWindow(self, namepr1, 70, 0, 510, 60, 30, 0, "");
+		  }
+		  if(p_ipl == p_p2)
+		  {
+  			p_tooltip = scene.CreateTextWindow(self, namepr2, 70, 70, 510, 60, 30, 0, "");
+		  }
+		  if(p_ipl == p_p3)
+		  {
+  			p_tooltip = scene.CreateTextWindow(self, namepr3, 70, 140, 510, 60, 30, 0, "");
+		  }
+		  if(p_ipl == p_p4)
+		  {
+   			p_tooltip = scene.CreateTextWindow(self, namepr4, 70, 210, 510, 60, 30, 0, "");
+		  }			
+ 		  if(p_ipl == p_p5)
+		  {
+   			p_tooltip = scene.CreateTextWindow(self, namepr5, 70, 280, 510, 60, 30, 0, "");
+		  }
+		  if(p_ipl == p_p6)
+		  {
+  			p_tooltip = scene.CreateTextWindow(self, namepr6, 70, 350, 510, 60, 30, 0, "");
+		  }
+		  if(p_ipl == p_p7)
+		  {
+   			p_tooltip = scene.CreateTextWindow(self, namepr7, 70, 420, 510, 60, 30, 0, "");
+		  }			
+ 		  if(p_ipl == p_p8)
+		  {
+   			p_tooltip = scene.CreateTextWindow(self, namepr8, 70, 490, 510, 60, 30, 0, "");
+		  }
+   		  if(p_ipl == p_dance)
+		  {
+   			p_tooltip = scene.CreateTextWindow(self, "dance", 70, 670, 510, 60, 30, 0, "");
+		  }
+
+	    }	     
+	}
+
+
+	p_ipl2 = p_pup;
+	if (p_ipl2!=NULL) p_ipl2->transparency = 0.6;
+	p_ipl2 = p_pdn;
+	if (p_ipl2!=NULL) p_ipl2->transparency = 0.6;
+
+	if(p_ipl != NULL)
+	{
+		CalcItem(8+itemoffset, nametmp, &typeprtmp);
+		if (itemoffset>0) if(p_ipl == p_pup) p_ipl->transparency = 1.0;
+		if (typeprtmp!=0) if(p_ipl == p_pdn) p_ipl->transparency = 1.0;
+	}
+
+}
+
+void ON_LBUTTONDOWN()
+{
+	GAME_OBJECT * p_obj;
+	int newtypepr = -1;
+	float newuvx, newuvy; 
+	vec3_t position, size, uvposition, uvsize;	
+
+	if (p_ipl!=NULL)
+	{
+		if( p_ipl == p_p1 ) { newtypepr = typepr1; newuvx = uvpos1.x; newuvy = uvpos1.y; }
+		if( p_ipl == p_p2 ) { newtypepr = typepr2; newuvx = uvpos2.x; newuvy = uvpos2.y; }
+		if( p_ipl == p_p3 ) { newtypepr = typepr3; newuvx = uvpos3.x; newuvy = uvpos3.y; }
+		if( p_ipl == p_p4 ) { newtypepr = typepr4; newuvx = uvpos4.x; newuvy = uvpos4.y; }
+		if( p_ipl == p_p5 ) { newtypepr = typepr5; newuvx = uvpos5.x; newuvy = uvpos5.y; }
+		if( p_ipl == p_p6 ) { newtypepr = typepr6; newuvx = uvpos6.x; newuvy = uvpos6.y; }
+		if( p_ipl == p_p7 ) { newtypepr = typepr7; newuvx = uvpos7.x; newuvy = uvpos7.y; }
+		if( p_ipl == p_p8 ) { newtypepr = typepr8; newuvx = uvpos8.x; newuvy = uvpos8.y; }
+		if( p_ipl == p_dance ) {
+//			queststate.typepr = 0; scene.SetCursorType(5); return;}
+		newtypepr = 100;
+		newuvx = postexx5;
+		newuvy = postexy15;		
+		}
+		//отслеживаем комбинирование предметов
+		if(newtypepr != -1)
+		{
+			bool refresh = false;
+
+			switch(newtypepr)
+			{
+			//игра веселый шива
+			case 25:
+				scene.Load("shiva.XML");
+				refresh = true;
+				break;
+
+			// в пустую кружку 
+			case 19:
+				//наливаем водку 
+				if(queststate.typepr == 18)
+				{
+					queststate.item_kruzhka = queststate.item_kruzhka | 2;
+					queststate.item_bottle_of_vodka = -1;
+					refresh = true;
+					
+					//комментарий кота
+					if(p_stream != NULL)
+					{
+						p_stream->Stop(); 	
+						DeleteStream(p_stream);
+						p_stream = NULL;
+					}
+					p_stream = CreateStream("comment_cat_11.ogg");
+					p_stream->Play(false);
+				}
+				break;
+			//складываем в кружку 
+			case 66:
+				//добавляем крысиный хвостик 
+				if(queststate.typepr == 3)
+				{
+					queststate.item_kruzhka = queststate.item_kruzhka | 4;
+					queststate.item_rat_tail = -1;	
+					refresh = true;
+				}
+				//добавляем галстук испачканный в сперме 
+				if(queststate.typepr == 7 && queststate.item_pioners_tie == 2)
+				{
+
+					queststate.item_kruzhka = queststate.item_kruzhka | 8;
+					queststate.item_pioners_tie = -1;
+					refresh = true;
+				}
+				//добавляем радиоактивные грибы 
+				if(queststate.typepr == 1)
+				{
+
+					queststate.item_kruzhka = queststate.item_kruzhka | 16;
+					queststate.item_nuclear_mushrooms = -1;
+					refresh = true;
+				}	
+				if(queststate.item_kruzhka == 31)
+				{
+					//комментарий кота
+					if(p_stream != NULL)
+					{
+						p_stream->Stop(); 	
+						DeleteStream(p_stream);
+						p_stream = NULL;
+					}
+					p_stream = CreateStream("comment_cat_12.ogg");
+					p_stream->Play(false);
+				}
+								
+				break;
+			//на пластинку 
+			case 2:
+				//клеим ее
+				if(queststate.typepr == 4 && queststate.item_disk_piece == 15)
+				{
+					queststate.item_disk_piece = -1;	
+					queststate.item_full_disk = 1;	
+					queststate.item_clue = -1;	
+					refresh = true;
+				}					
+				break;
+			//на пистолет 
+			case 28:
+				//обойму
+				if(queststate.typepr == 33)
+				{
+					queststate.item_gun = 2;
+					queststate.item_bullets = -1;	
+					refresh = true;
+					
+					//щелчок затвора
+					if(p_stream != NULL)
+					{
+						p_stream->Stop(); 	
+						DeleteStream(p_stream);
+						p_stream = NULL;
+					}
+					p_stream = CreateStream("gun_zatvor.ogg");
+					p_stream->Play(false);
+
+
+				}					
+				break;
+			case 53:
+				//делаем компрометирующую запись
+				if(queststate.item_listenning_device == -1 && queststate.item_reciver == 1 && queststate.activelocation != 22 && queststate.activelocation != 23)
+				{
+					//показываем скетч
+					queststate.typepr = 0;
+					position.Assign(0, 0, -80);	
+					size.Assign(1024,768,0);
+		
+					p_obj = CreateGameObject(1,"scetch_compr_tape.scv", position, size);	
+					scene.Add(p_obj, 2);
+				
+					queststate.item_reciver = 2;
+					return;
+				}
+			case 29: 
+				//мочим туалетную бумагу в бензине
+				if(queststate.typepr == 45)
+				{
+					queststate.item_tualet_paper = 2;
+					queststate.item_petrolium_can = -1;
+					refresh = true;
+				}				
+				break;
+			case 30:
+				//читаем записку 
+				if(queststate.quest_aes_password == 0)
+					queststate.quest_aes_password = 1;
+				position.Assign(0, 0, -80);
+				size.Assign(1024,768,0);		
+				uvposition.Assign(0,1,0);
+				uvsize.Assign(1,-1,0);
+
+				scene.CreateIFWindow(NULL, position, size, uvposition, uvsize, "note.jpg", "close.scv"); 
+				refresh = true;
+
+				break;
+			case 6:
+				//пишем на постере LSD
+				if(queststate.typepr == 37 && queststate.quest_spoil_city == 2)
+				{
+					queststate.item_indian_poster = 2;
+					queststate.item_marker = -1;
+					refresh = true;
+				}
+				break;
+			case 56:
+				//приклеиваем постер к канистре
+				if(queststate.typepr == 6 && queststate.item_indian_poster == 2)
+				{
+						queststate.item_titbit_can = 2;
+						queststate.item_indian_poster = -1;
+						refresh = true;		
+				}
+
+				break;
+			
+			}
+
+			if(refresh)
+			{
+				queststate.typepr = 0;	
+				itemoffset = 0;			
+				CREATE_ITEMS();
+			}
+			else
+			{
+				queststate.typepr = newtypepr;
+				queststate.uvposx = newuvx;
+				queststate.uvposy = newuvy;
+				
+			}
+		}
+
+		if( p_ipl == p_pup )
+		{
+			if ( itemoffset<=0 ) itemoffset=0;
+			if ( itemoffset>=1 ) itemoffset--;
+			CREATE_ITEMS();
+		}
+		else if( p_ipl == p_pdn )
+		{
+			if ( typeprtmp>0 ) itemoffset++;
+			CREATE_ITEMS();
+		}
+		scene.SetCursorType(0);
+	}
+}
+
+void ON_SETFOCUS()
+{
+	CREATE_ITEMS();
+
+}
+
+void ON_KILLFOCUS()
+{
+	p_ipl2 = p_pup;
+	if (p_ipl2!=NULL) p_ipl2->transparency = 0.6;
+	p_ipl2 = p_pdn;
+	if (p_ipl2!=NULL) p_ipl2->transparency = 0.6;
+
+
+	if(p_tooltip != NULL)
+	{
+//		p_tooltip->Delete();
+		scene.DeleteObject(p_tooltip);
+	    	p_tooltip = NULL;
+	}
+}

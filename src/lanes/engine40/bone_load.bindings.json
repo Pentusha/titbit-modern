@@ -1,0 +1,12 @@
+{
+ "bindings": {
+  "??_C@_07DKCM@bone_id?$AA@": "0x4ddd68",
+  "??_C@_0P@OGMI@parent_bone_id?$AA@": "0x4ddb6c",
+  "??_C@_06JGHA@radius?$AA@": "0x4ddd60",
+  "??_C@_08BOHH@position?$AA@": "0x4dd6fc",
+  "??_C@_06NCNO@center?$AA@": "0x4ddd28",
+  "??_C@_04HGCP@bbox?$AA@": "0x4ddd20",
+  "??_C@_08GHGA@rotation?$AA@": "0x4ddd14",
+  "??_C@_05IMHO@scale?$AA@": "0x4ddd0c"
+ }
+}

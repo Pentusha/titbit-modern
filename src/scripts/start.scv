@@ -1,0 +1,30 @@
+#include scener
+
+export ON_CREATE;
+export ON_SETFOCUS;
+export ON_KILLFOCUS; 
+
+void ON_CREATE()
+{
+
+//	scene.Delete(3);//удаляем все не интерфейсные объекты
+//	scene.DeleteObject(self);
+//	scene.Load("D:\\HoloSpace3D\\quest\\scenes\\getto_center.XML");
+}
+
+
+
+void ON_SETFOCUS()
+{
+	vec3_t scale;
+	scale.Assign(1.5,1.5,1.5);
+	self->SetBoneScale(0, scale);
+
+}
+
+void ON_KILLFOCUS()
+{
+	vec3_t scale;
+	scale.Assign(1,1,1);
+	self->SetBoneScale(0, scale);
+}

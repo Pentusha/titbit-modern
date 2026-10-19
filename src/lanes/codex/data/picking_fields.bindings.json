@@ -1,0 +1,17 @@
+{
+  "bindings": {
+    "?renderBounds@@3URect@@A": "0x501020"
+  },
+  "fieldAliases": {
+    "?renderBounds@@3URect@@A": {
+      "owner": "?pickingControl@@3VObservedPickingControl@@A",
+      "locator": "_source_location_picking_bounds",
+      "ownerExtent": "_source_size_picking_controller",
+      "extent": "_source_size_picking_bounds"
+    }
+  },
+  "evidence": [
+    "engine-platform-module.json binds renderBounds to501020; engine-entry-bindings.json independently binds pickingControl to501018. Native Picking::Pick reads left/top/right/bottom at+8,+c,+10,+14. CreateGameWindow copies the actual client rectangle into this shared storage.",
+    "The source-only startup reached the menu but mouse clicks failed: live process memory showed controller bounds all zero while the standalone renderBounds held1024x768. The independent rectangle was a probe storage view, not a second original variable. Expose the real compiled field and remove only that duplicate definition under TITBIT_SOURCE_LINK."
+  ]
+}

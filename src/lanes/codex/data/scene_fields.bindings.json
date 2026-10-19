@@ -1,0 +1,32 @@
+{
+  "bindings": {
+    "_scene_camera_override": "0x502288",
+    "_scene_selected_object": "0x5022d4",
+    "_scene_text_table": "0x5021a8"
+  },
+  "fieldAliases": {
+    "_scene_camera_override": {
+      "owner": "?g_005011c0@@3VScene@@A",
+      "locator": "_source_location_scene_camera",
+      "ownerExtent": "_source_size_scene",
+      "extent": "_source_size_scene_camera"
+    },
+    "_scene_text_table": {
+      "owner": "?g_005011c0@@3VScene@@A",
+      "locator": "_source_location_scene_pairs",
+      "ownerExtent": "_source_size_scene",
+      "extent": "_source_size_scene_pairs"
+    },
+    "_scene_selected_object": {
+      "owner": "?g_005011c0@@3VScene@@A",
+      "locator": "_source_location_scene_selected",
+      "ownerExtent": "_source_size_scene",
+      "extent": "_source_size_scene_selected"
+    }
+  },
+  "evidence": [
+    "Existing engine-entry-module binds cameraOverride057502288; this is Scene5011c0+10c8, including cameraSet at+72. Selected5022d4 is Scene+1114. Actual e42_scene.h compiler offsetof assertions corroborate both fields; source scene_global.cpp already owns the parent storage.",
+    "TextTable5021a8 is Scene5011c0+fe8: existing ScenePairArray contains vptr plus four-DWORD ScenePairStorage, consistent with engine42/pair_table.cpp. Export the actual compiled member, without allocating a second table.",
+    "engine42 shared readability rename now calls the same native Scene type Scene; update the owner symbol only, preserving the compiler-proven field offsets and one parent allocation."
+  ]
+}

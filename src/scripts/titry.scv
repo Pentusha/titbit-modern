@@ -1,0 +1,93 @@
+#include scener
+#include queststate
+
+
+export ON_CREATE;
+export ON_DESTROY;
+export ON_TIME;
+export ON_NOTIFY;
+export ON_LBUTTONDOWN;
+
+
+LINK * p_avi;
+
+
+STREAM * p_stream = NULL;
+int location;
+
+
+void ON_NOTIFY(int param)
+{
+	vec3_t uvpos, uvsize, position, size;
+
+	position.Assign(0, 0, 200);
+	size.Assign(1024, 768, 0);
+	uvpos.Assign(0, 1, 0);
+	uvsize.Assign(1, -1, 0);
+	
+	p_avi = CreateAVIPlane(position, size, uvpos, uvsize, false, "fon.avi");
+	self->Attach(p_avi);	
+	p_stream->Play(true);	
+	
+	self->CreateTimer(313400, 1);
+
+}
+
+void ON_TIME(int timernum)
+{
+
+	GAME_OBJECT * p_obj;
+ 
+	scene.DeleteObject(self);
+}
+
+
+
+void ON_DESTROY()
+{
+
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+	queststate.activelocation = location;
+	WriteLog("Destroyed");
+	UnFreezeSounds();
+	GameSpeed(0);
+
+
+}
+
+void ON_CREATE()
+{
+	location = queststate.activelocation;
+	queststate.activelocation = 0;
+	
+	queststate.typepr = 0;
+	scene.SetCursorType(0);
+
+	FreezeSounds();
+	GameSpeed(1);
+
+	p_stream = CreateStream("kajfo.ogg");
+
+	message m;	
+	m.message_id = EM_NOTIFY;
+	m.lparam = 0;
+	m.p_target = self;
+	scene.PostMessage(m);
+
+
+
+}
+void ON_LBUTTONDOWN()
+{
+	scene.DeleteObject(self);
+
+
+}
+
+

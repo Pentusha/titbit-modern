@@ -1,0 +1,12 @@
+{
+  "bindings": {
+    "_resource_cache_storage": "0x5ee6dc",
+    "_texture_cache_storage": "0x5ee6f0",
+    "_sound_bank_storage": "0x5ee704"
+  },
+  "evidence": [
+    "scene-cleanup-module.json independently binds observed_resources5ee6dc and observed_textures5ee6f0. ResourceCache native constructor initializes data+4/count+8/step+10h, source caches.cpp independently includes used+0ch; destructor and resize use the same20-byte layout.",
+    "TextureCache native42c080/42c090 and texture.cpp agree on vptr/count/records. The next audio pointer is independently bound5ee6fc, corroborating12-byte size.",
+    "SoundBank source sound.cpp and native427870/427890 agree on vptr/grow/count/slots; the polymorphic derived object's nonvirtual base begins at+4. Constructor restores grow5 and null slots; count is static zero. Native initializer ordering remains required, this POD does not invent a replacement constructor."
+  ]
+}

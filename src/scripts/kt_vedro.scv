@@ -1,0 +1,65 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_SETFOCUS;
+export ON_KILLFOCUS;
+export ON_LBUTTONDOWN;
+export ON_DESTROY;
+
+STREAM * p_stream = NULL;
+
+void ON_CREATE()
+{
+
+	if(queststate.item_bucket != 0)
+		scene.DeleteObject(self);
+	
+}
+
+void ON_DESTROY()
+{
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+}
+
+void ON_SETFOCUS()
+{
+	scene.SetCursorType(3);
+	
+}
+
+void ON_KILLFOCUS()
+{
+
+	scene.SetCursorType(0);
+
+}
+
+void ON_LBUTTONDOWN()
+{
+	if(queststate.quest_wake_alien)
+	{
+		queststate.typepr = 22;
+		queststate.uvposx = 0.75;
+		queststate.uvposy = 0.9375;
+		scene.SetCursorType(0);
+	}
+	else
+	{	
+		GAME_OBJECT * p_anton;
+		p_anton = scene.FindObjectByName("anton");
+		message m;
+		m.p_target = p_anton;
+		m.message_id = EM_NOTIFY;	
+		m.lparam = 6;
+		scene.PostMessage(m); 
+
+	}
+
+
+}

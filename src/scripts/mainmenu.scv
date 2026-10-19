@@ -1,0 +1,299 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_NOTIFY;
+export ON_DESTROY;
+
+
+
+GAME_OBJECT * p_newgame = NULL;
+GAME_OBJECT * p_savegame = NULL;
+GAME_OBJECT * p_loadgame = NULL;
+GAME_OBJECT * p_credits = NULL;
+GAME_OBJECT * p_quitgame = NULL;
+GAME_OBJECT * p_help = NULL;
+GAME_OBJECT * p_advertising = NULL;
+GAME_OBJECT * p_settings = NULL;
+bool created = false;
+
+vec3_t campos, camrot;
+float camfov;
+
+STREAM * p_stream = NULL;
+
+
+
+void ON_DESTROY()
+{
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+}
+
+
+void ON_NOTIFY(int param)
+{
+	GAME_OBJECT * p_go = NULL;
+	vec3_t pos, rot;
+
+	if(param == 0)
+	{
+		p_go = scene.FindObjectByName("sure_quit");
+		if (p_go!=NULL)
+		{
+			message m;
+			m.p_target = p_go;
+			m.message_id = EM_DESTROY;
+			scene.PostMessage(m);	
+			return;
+		}
+		
+		p_go = scene.FindObjectByName("settingsdlg");
+		if (p_go!=NULL)
+		{
+			message m;
+			m.p_target = p_go;
+			m.message_id = EM_DESTROY;
+			scene.PostMessage(m);	
+			return;
+		}
+
+		p_go = scene.FindObjectByName("loaddlg");
+		if (p_go!=NULL)
+		{
+			message m;
+			m.p_target = p_go;
+			m.message_id = EM_DESTROY;
+			scene.PostMessage(m);
+			return;
+		}
+		p_go = scene.FindObjectByName("savedlg");
+		if (p_go!=NULL)
+		{
+			message m;
+			m.p_target = p_go;
+			m.message_id = EM_DESTROY;
+			scene.PostMessage(m);	
+			return;
+		}
+		p_go = scene.FindObjectByName("titry");
+		if (p_go!=NULL)
+		{
+			message m;
+			m.p_target = p_go;
+			m.message_id = EM_DESTROY;
+			scene.PostMessage(m);	
+			return;
+		}
+		p_go = scene.FindObjectByName("helpdlg");
+		if (p_go!=NULL)
+		{
+			message m;
+			m.p_target = p_go;
+			m.message_id = EM_DESTROY;
+			scene.PostMessage(m);	
+			return;
+		}
+
+
+	
+	}
+
+	if(queststate.activelocation == 0) return;
+
+	if(param == 0) //управл€ем меню
+	{		
+	if(created)
+	{		
+		camera.PlaceCamera(camfov, campos, camrot);
+		GameSpeed(1);
+
+		//восстанавливаем звуки
+		UnFreezeSounds();
+		p_stream->Pause();
+
+
+		pos.Assign(-5000, - 5000, -201);
+		self->SetBonePosition(0, pos);	
+		self->Selectable(false);
+
+		pos.Assign(-5000,190,-102);	
+		p_newgame->SetBonePosition(0, pos);
+		p_newgame->Selectable(false); 
+		created = false;
+
+		pos.Assign(-5000,248,-102);	
+		p_settings->SetBonePosition(0, pos);
+		p_settings->Selectable(created);
+
+		pos.Assign(-5000,306,-102);	
+		p_savegame->SetBonePosition(0, pos);
+		p_savegame->Selectable(created);
+
+		pos.Assign(-5000,364,-102);		
+		p_loadgame->SetBonePosition(0, pos);
+		p_loadgame->Selectable(created);
+
+		pos.Assign(-5000,422,-102);		
+		p_help->SetBonePosition(0, pos);
+		p_help->Selectable(created);
+
+		pos.Assign(-5000,480,-102);		
+		p_credits->SetBonePosition(0, pos);
+		p_credits->Selectable(created);
+	
+		pos.Assign(-5000,538,-102);		
+		p_quitgame->SetBonePosition(0, pos);
+		p_quitgame->Selectable(created);
+
+	}
+	else
+	{
+
+		camfov = camera.GetCamera(campos, camrot);
+//		rot.Assign(camrot.x, -camrot.y, camrot.z);
+		pos.Assign(100000, -100000, 100000);
+		
+		camera.PlaceCamera(1, pos, camrot);
+		GameSpeed(0);
+
+		//гасим звуки
+		FreezeSounds();
+		p_stream->Resume();
+
+		pos.Assign(0, 0, -201);
+
+		self->SetBonePosition(0, pos);	
+		self->Selectable(true);
+
+		pos.Assign(0,190,-202);	
+		p_newgame->SetBonePosition(0, pos);
+		p_newgame->Selectable(true); 
+		created = true;
+	
+		pos.Assign(0,248,-202);	
+		p_settings->SetBonePosition(0, pos);
+		p_settings->Selectable(created);
+
+		pos.Assign(0,306,-202);	
+		p_savegame->SetBonePosition(0, pos);
+		p_savegame->Selectable(created);
+
+		pos.Assign(0,364,-202);		
+		p_loadgame->SetBonePosition(0, pos);
+		p_loadgame->Selectable(created);
+
+		pos.Assign(0,422,-202);		
+		p_help->SetBonePosition(0, pos);
+		p_help->Selectable(created);
+
+		pos.Assign(0,480,-202);		
+		p_credits->SetBonePosition(0, pos);
+		p_credits->Selectable(created);
+	
+		pos.Assign(0,538,-202);		
+		p_quitgame->SetBonePosition(0, pos);
+		p_quitgame->Selectable(created);
+
+
+	}
+
+	}
+	if(param == 1 && queststate.typepr != 0)	//снимаем выделение с активного предмета
+	{
+		queststate.typepr=0;	
+		scene.SetCursorType(0);	
+
+	}
+
+}
+
+
+
+void ON_CREATE()
+{
+	GAME_OBJECT * p_obj;
+	vec3_t	pos;
+
+	LINK * p_link;
+	IFPlane * p_plane;
+	vec3_t center;
+ 	vec3_t position, size, uvposition, uvsize;
+
+	queststate.activelocation = 0;
+	position.Assign(0,0,0);	 
+	uvposition.Assign(0,1,0);
+	size.Assign(1024,768,0);
+	uvsize.Assign(1, -0.75, 0);
+	center.Assign(0,0,0);	
+
+	p_link = CreateIFPlane(position, size, uvposition, uvsize, "inter_face.tga");
+	self->Attach(p_link);
+	
+	size.Assign(724,62,0);
+	uvsize.Assign(0.70703125, -0.060546875, 0);
+	center.Assign(0,0,0);	
+
+
+	position.Assign(0,190,-202);	 
+	uvposition.Assign(0.2900390625, 0.68751, 0);
+
+	p_newgame = scene.CreateIFWindow(NULL, position, size, uvposition, uvsize, "items.tga", "newgame.scv");//"newgame.scv"
+
+
+	position.Assign(0,248,-202);	 
+	uvposition.Assign(0.2900390625, 0.6259765625, 0);
+
+	p_settings = scene.CreateIFWindow(NULL, position, size, uvposition, uvsize, "items.tga", "settings.scv");
+
+	position.Assign(0,306,-202);	 
+	uvposition.Assign(0.2900390625, 0.564453125, 0);
+
+	p_savegame = scene.CreateIFWindow(NULL, position, size, uvposition, uvsize, "items.tga", "savegame.scv");
+
+	position.Assign(0,364,-202);	 
+	uvposition.Assign(0.2900390625,0.5029296875, 0);
+
+	p_loadgame = scene.CreateIFWindow(NULL, position, size, uvposition, uvsize, "items.tga", "loadgame.scv");
+
+	position.Assign(0,422,-202);	 
+	uvposition.Assign(0.2900390625,0.44140625, 0);
+	p_help = scene.CreateIFWindow(NULL, position, size, uvposition, uvsize, "items.tga", "help.scv");
+
+
+	position.Assign(0,480,-202);	 
+	uvposition.Assign(0.2900390625,0.3798828125, 0);
+	p_credits = scene.CreateIFWindow(NULL, position, size, uvposition, uvsize, "items.tga", "credits.scv");
+
+	position.Assign(0,538,-202);	 
+	uvposition.Assign(0.2900390625,0.318359375, 0);
+	p_quitgame = scene.CreateIFWindow(NULL, position, size, uvposition, uvsize, "items.tga", "quit.scv");
+
+	camfov = camera.GetCamera(campos, camrot);
+	position.Assign(10000, 10000, 0);
+//	camfov = 10;
+	camera.PlaceCamera(camfov, campos, camrot);
+
+
+	
+	if(scene.FindObjectByName("actionmenu") == NULL)
+	{
+
+		pos.Assign(-63,10, 0);
+		size.Assign(70,748,0);//66
+		p_obj = CreateGameObject(1, "items.scv", pos, size);
+		scene.Add(p_obj, 2);
+	}	
+	created = true;
+
+	p_stream = CreateStream("track7-.ogg");	
+	p_stream->Play(true);	
+
+
+}
+

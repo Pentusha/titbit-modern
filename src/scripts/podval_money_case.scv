@@ -1,0 +1,37 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_SETFOCUS;
+export ON_KILLFOCUS;
+export ON_LBUTTONDOWN;
+
+void ON_CREATE()
+{
+
+	if(queststate.item_money_case != 0)
+		scene.DeleteObject(self);
+	
+}
+
+void ON_SETFOCUS()
+{
+	scene.SetCursorType(3);
+	
+}
+
+void ON_KILLFOCUS()
+{
+
+	scene.SetCursorType(0);
+
+}
+
+void ON_LBUTTONDOWN()
+{	
+
+	queststate.item_money_case = 1;
+	queststate.typepr = 0;
+	scene.SetCursorType(0);	
+	scene.DeleteObject(self);
+}

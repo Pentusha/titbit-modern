@@ -1,0 +1,16 @@
+{
+ "bindings": {
+  "??_7CLexicalHandler@XML@CSL@@6B@": "0x4cd7d8",
+  "??_ECLexicalHandler@XML@CSL@@UAEPAXI@Z": "0x42f560",
+  "??_GCLexicalHandler@XML@CSL@@UAEPAXI@Z": "0x42f560",
+  "??1CLexicalHandler@XML@CSL@@UAE@XZ": "0x4476b0",
+  "??_7CContentHandler@XML@CSL@@6B@": "0x4cd7fc",
+  "??_ECContentHandler@XML@CSL@@UAEPAXI@Z": "0x42f540",
+  "??_GCContentHandler@XML@CSL@@UAEPAXI@Z": "0x42f540",
+  "??1CContentHandler@XML@CSL@@UAE@XZ": "0x447660",
+  "_$E68": "0x43ff40",
+  "??1PendingNS@CXMLWriter2@XML@CSL@@QAE@XZ": "0x43da10",
+  "??1?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@XZ": "0x4334c0",
+  "?_Construct@std@@YAXPAUPendingNS@CXMLWriter2@XML@CSL@@ABU2345@@Z": "0x43ee10"
+ }
+}

@@ -1,0 +1,35 @@
+{
+  "bindings": {
+    "___RTDynamicCast": "0x4a959b",
+    "?_Addstd@ios_base@std@@IAEXXZ": "0x4b9f6a",
+    "__DEFAULT_CW_in_mem": "0x4d0fd8",
+    "__pi_by_2_to_61": "0x4d0fda",
+    "__piby2": "0x4ff47a",
+    "?camera@@3UM@@A": "0x5ee694",
+    "?zoom@@3MA": "0x5ee6d4",
+    "?SAX_LEXICALHANDLER@DOMBuilder@XML@CSL@@0V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": "0x5ee750",
+    "?FEATURE_NAMESPACES@DOMBuilder@XML@CSL@@0V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": "0x5ee72c",
+    "?EMPTY_STRING@DOMBuilder@XML@CSL@@0V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B": "0x5ee740",
+    "?Slot6@Node_00405160@@UAEXXZ": "0x4051b0",
+    "?Update@SlotBank_00405240@@UAEXH@Z": "0x405760",
+    "?Update@Texture_0040f3a0@@UAEXH@Z": "0x40f4e0",
+    "?GetType@Skeleton@@UAEHXZ": "0x48b410",
+    "?Update@Skeleton@@UAEXH@Z": "0x406230",
+    "??_7ios_base@std@@6B@": "0x4ce22c",
+    "?_Doraise@bad_cast@std@@MBEXXZ": "0x43b210",
+    "?getParentNode@Attr@XML@CSL@@UBEPAVNode@23@XZ": "0x48b410",
+    "?dispatchEvent@Document@XML@CSL@@UAE_NPAVEvent@23@@Z": "0x438610",
+    "?do_falsename@?$numpunct@D@std@@MBE?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@XZ": "0x4c3ca4"
+  },
+  "evidence": [
+    "These are identity bindings for source-to-source symbol aliases only, never absolute LINK definitions.",
+    "RTDynamicCast and Addstd are separately source-built native providers. Historical common.asm defines default CW027fh and pi*2^61 as a symbolic REAL10; 87disp.asm defines pi/2 REAL10. Their PUBLIC source definitions are in the actual real-link inputs.",
+    "engine-picking-candidate.json independently binds camera and zoom to renderer fields5ee694/5ee6d4, not separately allocated globals.",
+    "Native42f010/42f170 construct lexical-handler and namespaces strings at5ee750/5ee72c. engine41 cpxml43 DOMBuilder.cxx defines these exact static members with the independently matching literals; alias the emitted real string objects, do not allocate duplicate globals. Other classes' similarly named strings are distinct.",
+    "Full-source constructor views restore the independently read Node/SlotBank/Model/spline/NamedBuffer/Avi/Texture/Skeleton virtual slots. SlotBank Update aliases the real engine40 BoxedModel source at405760; Texture Update aliases the actual TextureView Draw source at40f4e0. Skeleton GetType and Update have explicit object-method source definitions in script_objects.cpp (native folded XOR EAX,EAX/RET and sibling Update), not Audiere substitutes. Node slot6 is the actual one-byte empty native RET, defined from source in sound_bank.cpp. Fields and original bytes are not patched.",
+    "Correct stale shared identities using existing independent source proofs: stl_ios_base.bindings.json and native RTTI distinguish ios_base table4ce22c from basic_ios<char> table4ce224; stl_bad_cast/stl_facet_factories identify bad_cast::_Doraise43b210 (copy43b250, throw-info4d77a0), whereas4bd39d is bad_alloc::_Doraise (copy4bd3d6, throw-info4da338). These are source symbol identities only, not implementation bytes or absolute LINK symbols.",
+    "Attr/UnspecAttr native vtable slots4cdae8/4cdb78 point to folded48b410 (XOR EAX,EAX; RET), whereas SimpleNode::getParentNode417920 loads owner-element storage+8. Restore the real Attr::getParentNode NULL-return source override; do not alias it to an unrelated class method. Field layout is unchanged.",
+    "Native Document primary vtable slot4ce104 targets438610: check actual m_eventSuspendLevel at+60, return true when nonzero, otherwise tail-forward to SimpleNode::dispatchEvent433600. The restored Document source override preserves this check and the existing class layout.",
+    "Correct another stale shared identity: native char numpunct vtable4d21c4 slot+10 points to do_falsename4c3ca4, independently recorded in stl_locale_makeloc.bindings.json/stl_num.bindings.json. Global4bef75 is not this char specialization. The actual typed source method stays unchanged; the full LINK uses its source definition."
+  ]
+}

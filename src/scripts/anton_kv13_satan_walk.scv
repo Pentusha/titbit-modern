@@ -1,0 +1,168 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_NOTIFY;
+export ON_DESTROY;
+
+int nextanimation;
+int lastanimation;
+STREAM * p_stream = NULL;
+
+void ON_DESTROY()
+{
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+}
+
+void Dialog(char * dialogname)
+{
+	vec3_t position, size;	
+	GAME_OBJECT * p_obj;
+
+	position.Assign(0, 600, -80);
+	size.Assign(1024,768,0);
+
+	p_obj = CreateGameObject(1,dialogname, position, size);
+
+	position.Assign(512, -216, 0);
+	p_obj->SetBoneCenter(0,position);
+
+	scene.Add(p_obj, 2);
+	
+
+}
+
+void ON_CREATE()
+{ 
+	queststate.lastlocation = queststate.activelocation;
+	queststate.activelocation = 14;
+
+	nextanimation = 1;
+	lastanimation = self->CreateSkeletonAnimation("ksat_a_enter.EZA", 1);
+
+	scene.SetCursorType(0);
+}
+
+void ON_NOTIFY(int param)
+{
+	if(param != lastanimation && param != 200)	//обозначает окончание диалога
+	{
+		if (nextanimation < 0) return;
+
+//		WriteLog("Notify");
+	
+		if(queststate.typepr != 0)
+		{
+			if(p_stream != NULL)
+			{
+				p_stream->Stop(); 	
+				DeleteStream(p_stream);
+				p_stream = NULL;
+			}
+				p_stream = CreateStream("comment_anton_2.ogg");
+				p_stream->Play(false);	
+			return;
+		}
+
+		if( param == 100) // если нажали на выход
+		{
+			nextanimation = -1;
+		}
+		if( param == 101) // если нажали идти к предметам
+		{
+			if(nextanimation == 1) nextanimation = 2;
+		}
+		if( param == 102 ) // если нажали идти к предметам
+		{
+			if(nextanimation == 1) nextanimation = 5;
+		}
+		if( param == 103 ) // если нажали на достоевского
+		{
+			if(nextanimation == 1) nextanimation = -3;
+		}
+		if( param == 104 ) // если нажали на палача
+		{
+			if(nextanimation == 1) nextanimation = -4;
+		}
+
+	}
+	else
+	{
+		if(nextanimation == -1)
+		{	
+			scene.Delete(3);//удаляем все не интерфейсные объекты
+			scene.Load("kv13_vhod.XML");
+			return;			
+		}
+		if(nextanimation == -3)
+		{
+			// общаемся	с Достоевским
+			Dialog("dost_dialog.scv");
+			nextanimation = 1;	//помечаем какая анимация должна идти следом за разговором
+			return;			
+		}
+		if(nextanimation == -4)
+		{
+			// общаемся	с Достоевским
+			Dialog("gerasim_dialog.scv");
+			nextanimation = 1;	//помечаем какая анимация должна идти следом за разговором
+			return;			
+		}
+
+		if(nextanimation == 1) lastanimation = self->CreateSkeletonAnimation("ksat_a_idle.EZA", 1);
+		if(nextanimation == 2)
+		{	
+			lastanimation = self->CreateSkeletonAnimation("ksat_a_take.EZA", 1);
+			nextanimation = 3;
+			return;			
+		}
+		if(nextanimation == 5)
+		{	
+			lastanimation = self->CreateSkeletonAnimation("ksat_a_take.EZA", 1);
+			nextanimation = 6;
+			return;			
+		}
+		if(nextanimation == 3 || nextanimation == 6)
+		{
+			GAME_OBJECT * p_obj;
+			// тут берем соответствующий предмет.
+			if(nextanimation == 3)
+			{
+			
+				vec3_t position, size;	
+//				GAME_OBJECT * p_obj;
+	
+				queststate.typepr = 0;
+				position.Assign(0, 0, -80);	
+				size.Assign(1024,768,0);
+
+				p_obj = CreateGameObject(1,"scetch_serp.scv", position, size);	
+				scene.Add(p_obj, 2);
+			
+				queststate.item_serp = 1;
+				p_obj = scene.FindObjectByName("Kvartira_serp");
+				scene.SetCursorType(0);
+				queststate.typepr = 0;
+			}
+			else
+			{
+				queststate.item_gas_ballon = 1;
+				p_obj = scene.FindObjectByName("Kvartira_ballon");
+			}
+			
+			message m;
+			m.p_target = p_obj;
+			m.message_id = EM_DESTROY;
+			scene.PostMessage(m);
+			
+			lastanimation = self->CreateSkeletonAnimation("ksat_a_idle.EZA", 1);
+			nextanimation = 1;	
+		}
+	}
+}

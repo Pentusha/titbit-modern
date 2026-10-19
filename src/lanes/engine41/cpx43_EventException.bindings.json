@@ -1,0 +1,10 @@
+{
+ "bindings": {
+  "??_7EventException@XML@CSL@@6B@": "0x4cd918",
+  "??_EEventException@XML@CSL@@UAEPAXI@Z": "0x430130",
+  "??_GEventException@XML@CSL@@UAEPAXI@Z": "0x430130",
+  "??1EventException@XML@CSL@@UAE@XZ": "0x440e50",
+  "?what@CXMLException@XML@CSL@@UBEPBDXZ": "0x447d70",
+  "??0EventException@XML@CSL@@QAE@H@Z": "0x43bf70"
+ }
+}

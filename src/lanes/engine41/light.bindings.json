@@ -1,0 +1,15 @@
+{
+ "bindings": {
+  "??0Light@@QAE@PAVEngineObject_004137b0@@@Z": "0x412140",
+  "?Update@Light@@UAEXH@Z": "0x406230",
+  "?GetType@Light@@UAEHXZ": "0x413770",
+  "??_GLight@@UAEPAXI@Z": "0x412120",
+  "??_ELight@@UAEPAXI@Z": "0x412120",
+  "??_7Light@@6B@": "0x4cd5ac",
+  "??1Light@@UAE@XZ": "0x412190",
+  "?Export@Light@@UAE?AVObservedString@@XZ": "0x412770",
+  "?Render@Light@@UAEXH@Z": "0x413750",
+  "??0Light@@QAE@PAVEngineObject@@@Z": "0x412140",
+  "??0EngineObject@@QAE@XZ": "0x4137b0"
+ }
+}

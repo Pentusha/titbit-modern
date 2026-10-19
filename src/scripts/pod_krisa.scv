@@ -1,0 +1,42 @@
+#include scener
+#include queststate
+
+export ON_CREATE;
+export ON_SETFOCUS;
+export ON_KILLFOCUS;
+export ON_LBUTTONDOWN;
+
+STREAM * p_stream = NULL;
+
+void ON_CREATE()
+{
+
+	if(queststate.item_rat_tail != 0)
+		scene.DeleteObject(self);
+	
+}
+
+void ON_SETFOCUS()
+{
+	scene.SetCursorType(1);
+	
+}
+
+void ON_KILLFOCUS()
+{
+
+	scene.SetCursorType(0);
+
+}
+
+void ON_LBUTTONDOWN()
+{
+
+	GAME_OBJECT * p_anton;
+	p_anton = scene.FindObjectByName("anton");
+	message m;
+	m.p_target = p_anton;
+	m.message_id = EM_NOTIFY;
+	m.lparam = 102;
+	scene.PostMessage(m);	
+}

@@ -1,0 +1,299 @@
+#include scener
+#include queststate
+
+export ON_LBUTTONDOWN;
+export ON_CREATE;
+export ON_NOTIFY;
+export ON_DESTROY;
+
+
+int step = 0;
+LINK * p_text = NULL;
+STREAM * p_stream = NULL;
+GAME_OBJECT * p_pers = NULL;
+GAME_OBJECT * p_anton = NULL;
+ANILINK * p_guba = NULL;
+ANILINK * p_antguba = NULL;
+
+void ON_DESTROY()
+{
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+
+}
+
+
+
+void StepDialog()
+{
+	vec3_t position, size;
+	
+	if(step == -1)
+		return;
+	
+	position.Assign(0, 0, 90);
+	size.Assign(1024, 120, 0);
+	
+	
+	if(p_text != NULL)	
+	{
+		p_text->Delete();
+		p_text = NULL;
+
+	}	
+	if(p_stream != NULL)
+	{
+		p_stream->Stop(); 	
+		DeleteStream(p_stream);
+		p_stream = NULL;
+	}
+	
+	if( p_guba != NULL)
+	{
+		p_guba->Delete();
+		p_guba = NULL;
+
+		vec3_t rot;
+		rot.Assign(-4,-90,-85.7);
+		p_pers->SetBoneRotation(7, rot);
+		
+	}
+	if( p_antguba != NULL)
+	{
+		p_antguba->Delete();
+		p_antguba = NULL;
+		
+	}
+	
+	
+	step = step + 1;
+	
+	//в зависимости от состояния квеста выбираем какой диалог выводить
+	if(queststate.quest_talk_rask_axe != 1)	//пока не поговорил с Раскольниковым о топоре
+	{
+		if(step == 1) 
+		{	
+			p_text = TextWindowCreate("flat13satan_dostoevski_11", "font", position,size, 29, 2);	
+			p_stream = CreateStream("flat13satan_dostoevski_11.ogg");	
+			p_stream->Play(false);	
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);
+			p_guba = p_pers->CreateSkeletonAnimation("dost_rot.EZA", -1);	
+		
+		}
+		if(step == 2) 
+		{	
+			p_text = TextWindowCreate("flat13satan_anton_12", "font", position,size, 29, 2);	
+			p_stream = CreateStream("flat13satan_anton_12.ogg");	
+			p_stream->Play(false);	
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);		
+		}
+		if(step == 3) 
+		{	
+			p_text = TextWindowCreate("flat13satan_dostoevski_13", "font", position,size, 29, 2);	
+			p_stream = CreateStream("flat13satan_dostoevski_13.ogg");	
+			p_stream->Play(false);	
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);		
+			p_guba = p_pers->CreateSkeletonAnimation("dost_rot.EZA", -1);	
+		}
+		if(step == 4) 
+		{	
+			p_text = TextWindowCreate("flat13satan_anton_14", "font", position,size, 29, 2);	
+			p_stream = CreateStream("flat13satan_anton_14.ogg");	
+			p_stream->Play(false);	
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);	
+		}
+		if(step == 5) 
+		{	
+			p_text = TextWindowCreate("flat13satan_dostoevski_15", "font", position,size, 29, 2);	
+			p_stream = CreateStream("flat13satan_dostoevski_15.ogg");	
+			p_stream->Play(false);	
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);	
+			p_guba = p_pers->CreateSkeletonAnimation("dost_rot.EZA", -1);		
+		}
+		if(step == 6) 
+		{	
+			GAME_OBJECT * p_video;
+
+			position.Assign(0, 0, -90);
+			size.Assign(1024,768,0);
+
+			p_video = CreateGameObject(1,"satan_tv.scv", position, size);
+			scene.Add(p_video, 2);
+		}
+		if(step == 7) 
+		{
+			p_text = TextWindowCreate("flat13satan_dostoevski_16", "font", position,size, 29, 2);	
+			p_stream = CreateStream("flat13satan_dostoevski_16.ogg");
+			p_stream->Play(false);
+			p_stream->SetSync(0, self);
+			self->Attach(p_text);	
+			p_guba = p_pers->CreateSkeletonAnimation("dost_rot.EZA", -1);	
+		}
+		if(step == 8) {
+			p_text = TextWindowCreate("flat13satan_anton_17", "font", position,size, 29, 2);	
+			p_stream = CreateStream("flat13satan_anton_17.ogg");
+			p_stream->Play(false);	
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);	
+		}
+		if(step == 9) {	step = -1;	}						
+	}
+	
+	if(queststate.quest_talk_rask_axe == 1)	//поговорили с раскольниковым о топоре
+	{
+		if(step == 1) 
+		{	
+			p_text = TextWindowCreate("flat13satan_anton_21", "font", position,size, 29, 2);
+			p_stream = CreateStream("flat13satan_anton_21.ogg");
+			p_stream->Play(false);
+			p_stream->SetSync(0, self);
+			self->Attach(p_text);	
+		}
+		if(step == 2) 
+		{	
+			p_text = TextWindowCreate("flat13satan_dostoevski_22", "font", position,size, 29, 2);
+			p_stream = CreateStream("flat13satan_dostoevski_22.ogg");
+			p_stream->Play(false);
+			p_stream->SetSync(0, self);
+			self->Attach(p_text);	
+			p_guba = p_pers->CreateSkeletonAnimation("dost_rot.EZA", -1);	
+		}
+		if(step == 3) 
+		{
+			p_text = TextWindowCreate("flat13satan_anton_23", "font", position,size, 29, 2);
+			p_stream = CreateStream("flat13satan_anton_23.ogg");
+			p_stream->Play(false);
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);	
+		}
+		if(step == 4) 
+		{	
+			p_text = TextWindowCreate("flat13satan_dostoevski_24", "font", position,size, 29, 2);
+			p_stream = CreateStream("flat13satan_dostoevski_24.ogg");
+			p_stream->Play(false);
+			p_stream->SetSync(0, self);	
+			self->Attach(p_text);	
+			p_guba = p_pers->CreateSkeletonAnimation("dost_rot.EZA", -1);	
+		}
+		if(step == 5) {	step = -1; queststate.quest_talk_dost_axe = 1;	}					
+		
+		
+		
+	}
+	
+	if(step == -1)
+	{
+
+	//фоновая музыка
+	GAME_OBJECT * p_snd;
+ 
+	p_snd = scene.FindObjectByName("sound_back");	
+
+	if(p_snd != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 100;
+		m.p_target = p_snd;
+		scene.PostMessage(m);
+	}
+
+		scene.DeleteObject(self); 
+		
+		GAME_OBJECT * p_anton;
+		p_anton = scene.FindObjectByName("anton");
+		message m;
+		m.p_target = p_anton;
+		m.message_id = EM_NOTIFY;
+		m.lparam = 200;
+		scene.PostMessage(m);
+		
+		position.Assign(1.942817,-1.16859,-1.796198);
+		size.Assign(-90.2229,3.1581,-0.0124);
+		camera.PlaceCamera(41.2, position, size);
+		
+		
+		LINK * p_link = p_pers;
+		ANILINK* p_ani = p_link->GetAniLink();
+		if(p_ani != NULL)
+			p_ani->Delete();
+		p_pers->CreateSkeletonAnimation("dost_idle.EZA", -1);	
+		
+	}					
+	
+	
+	
+	
+}
+
+void ON_NOTIFY(int param)
+{
+	StepDialog();
+}
+
+void ON_CREATE()
+{
+	vec3_t position, size, uvposition, uvsize;	
+	LINK * p_obj;				
+
+		//фоновая музыка
+	GAME_OBJECT * p_snd;
+ 
+	p_snd = scene.FindObjectByName("sound_back");	
+
+	if(p_snd != NULL)
+	{
+		message m;	
+		m.message_id = EM_NOTIFY;
+		m.lparam = 25;
+		m.p_target = p_snd;
+		scene.PostMessage(m);
+	}
+
+	position.Assign(0,0,-1);
+	size.Assign(1024,168,0);
+	uvposition.Assign(0.52,0.24,0);
+	uvsize.Assign(0.0375,-0.05,0);
+	
+	
+	p_obj = scene.FindObjectByName("dostoevsky");
+	p_pers = p_obj;
+	ANILINK* p_ani = p_obj->GetAniLink();
+	if(p_ani != NULL)
+		p_ani->Delete();
+	p_pers->CreateSkeletonAnimation("dostoevsky_talk.EZA", -1);	
+	
+	p_obj = scene.FindObjectByName("anton");
+	p_anton = p_obj;
+	
+	p_obj = CreateIFPlane(position, size, uvposition, uvsize, "items.tga", 1);
+	self->Attach(p_obj);
+
+	
+	StepDialog();	
+	
+	
+	position.Assign(2.34,-1.1706,0.6632);
+	size.Assign(-94.0596,11.8791,-0.8371);
+	camera.PlaceCamera(41.2, position, size);
+	
+	
+	
+	
+}
+
+
+void ON_LBUTTONDOWN()
+{
+	StepDialog();		
+}
+
