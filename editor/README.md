@@ -2,9 +2,10 @@
 
 ![Studio: свободная камера, сцена клуба и выделенный объект](../docs/images/studio.png)
 
-**Проще всего:** скачайте `TitbitStudio.exe` из [Releases](https://github.com/offx366/titbit-modern/releases)
-и запустите — он сам найдёт `QUEST.ezd` или спросит его один раз. Собрать exe самому:
-`editoruild_studio.ps1` (нужен Python с зависимостями и `pyinstaller==6.11.1`).
+**Проще всего:** распакуйте portable-пакет из [Releases](https://github.com/offx366/titbit-modern/releases),
+добавьте свои данные через `TitbitSetup.exe` и запустите `TitbitStudio.exe`.
+Он найдёт `QUEST.ezd` рядом с собой или предложит выбрать архив.
+Сборка EXE: [docs/BUILD.md](../docs/BUILD.md).
 
 Запуск из исходников, из корня публичного репозитория:
 
@@ -30,7 +31,8 @@
 - **Камера игры** — исходная камера с пропорциями 4:3. **Вся сцена** возвращает
   свободный обзор. Можно изменить параметры камеры или записать новый ракурс.
 - Дублирование, удаление, пустые объекты, копия локации; `Ctrl+Z` и `Ctrl+Shift+Z`.
-- `Ctrl+S` сохраняет проект в `editor/projects/default.json`. Предыдущая сохранённая
+- `Ctrl+S` сохраняет проект в `TitbitStudio-projects/default.json` рядом с EXE
+  (для сервера из исходников — `editor/projects/default.json`). Предыдущая сохранённая
   версия остаётся в `default.previous.json`. Закрывая вкладку, сохраняйте изменения.
 
 ## Обмен с Blender и игровая сборка

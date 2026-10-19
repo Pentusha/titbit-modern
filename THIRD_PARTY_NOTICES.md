@@ -19,3 +19,8 @@
 | CenterPoint/XML | `src/lanes/engine41/cpxml43`, `engine42/cpxml` | CenterPoint Public License 1.0 (текст в каждом каталоге) |
 
 Источники и контрольные суммы архивов Xiph: [provenance.json](docs/licenses/provenance.json).
+
+Готовые Setup и Studio также включают Python, Tcl/Tk, Pillow и загрузчик
+PyInstaller. Их тексты лицензий находятся в `docs/licenses/runtime/` внутри
+portable-пакета. Исходники использованных компонентов движка находятся в этом
+репозитории; версия исходников конкретной сборки записана в `package.json` пакета.

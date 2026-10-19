@@ -47,3 +47,11 @@ src/leaf/FUN_004c*.c
 .env
 .env.*
 .mcp.json
+
+# Original content is imported locally, never published.
+src/scripts/
+src/script_headers/
+src/lanes/codex/resources/icon_*.ico
+TitbitStudio-projects/
+TitbitStudio.json
+dist/

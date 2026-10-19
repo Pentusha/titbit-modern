@@ -272,8 +272,15 @@ def main(default_compat=False):
     response(sdk/'Bin/LIB.EXE','sources',['/nologo','/OUT:'+str(out/'sources.lib'),*[r['object'] for r in compiled]])
     response(sdk/'Bin/LIB.EXE','aliases',['/nologo','/OUT:'+str(out/'aliases.lib'),*alias_members])
     from source_resources import resource_compiler
+    from project_icon import write_icon
     rc=resource_compiler();res=out/'game.res';resource=out/'game_resources.obj'
-    run([str(rc),'/nologo','/fo'+match.short_path(out)+'/'+res.name,'titbit.rc'],out/'resources.log',BASE/'src/lanes/codex/resources')
+    # Keep resource IDs/dialogs, with our own artwork rather than disc ICOs.
+    resources=out/'generated/resources';resources.mkdir(parents=True,exist_ok=True)
+    write_icon(resources/'titbit-modern.ico')
+    text=(BASE/'src/lanes/codex/resources/titbit.rc').read_text(encoding='utf-8')
+    text=text.replace('icon_202_1049.ico','titbit-modern.ico').replace('icon_128_1033.ico','titbit-modern.ico')
+    (resources/'titbit.rc').write_text(text,encoding='utf-8')
+    run([str(rc),'/nologo','/fo'+match.short_path(out)+'/'+res.name,'titbit.rc'],out/'resources.log',resources)
     run([str(sdk/'Bin/CVTRES.EXE'),'/NOLOGO','/MACHINE:IX86','/OUT:'+match.short_path(out)+'/'+resource.name,match.short_path(res)],out/'cvtres.log')
     exe=out/('TitbitModern.exe' if compat else 'titbit.exe')
     response(sdk/'Bin/LINK.EXE','link',['/nologo','/NODEFAULTLIB','/MACHINE:IX86','/SUBSYSTEM:WINDOWS,4.0',

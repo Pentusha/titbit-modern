@@ -7,7 +7,7 @@
   "python": "3.11.15",
   "builds": {
     "modern": {
-      "sha256": "7c57debd203fd4d92c664d7aa8a0068b097e12c893610732d8c65bd6f1b18d26",
+      "sha256": "7abe0cc868ead596d46ba5bb2ea0b3ba1799ddb0f35ac8c75355a9c493a55fc2",
       "sourceUnits": 337,
       "linkExit": 0,
       "freshCompilation": true,
@@ -141,29 +141,28 @@
   },
   "smoke": {
     "scenario": "newgame",
-    "cleanExportCopy": true,
-    "hiddenDesktop": true,
-    "windowed": true,
     "outcome": "alive",
+    "dataSource": "19 files imported from original raw IMG by frozen TitbitSetup.exe",
+    "hiddenDesktop": true,
     "log": [
-      "   7.2s checkpoint 01-logos",
-      "  32.3s until menu: reached",
-      "  35.4s checkpoint 02-menu",
-      "  37.8s checkpoint 03-menu-hover",
-      "  39.1s click 250,207",
-      "  45.3s checkpoint 04-newgame-5s",
-      " 118.6s until street: reached",
-      " 122.8s checkpoint 05-first-scene",
-      " 124.0s click 512,600",
-      " 130.4s checkpoint 06-click-ground",
-      " 131.6s click 700,650",
-      " 138.1s checkpoint 07-click-right",
-      " 139.4s click 330,640",
-      " 146.0s checkpoint 08-click-left",
-      " 157.6s checkpoint 09-end"
+      "   8.2s checkpoint 01-logos",
+      "  46.8s until menu: reached",
+      "  49.8s checkpoint 02-menu",
+      "  52.4s checkpoint 03-menu-hover",
+      "  53.7s click 250,207",
+      "  59.8s checkpoint 04-newgame-5s",
+      " 148.4s until street: reached",
+      " 153.6s checkpoint 05-first-scene",
+      " 154.9s click 512,600",
+      " 161.5s checkpoint 06-click-ground",
+      " 162.9s click 700,650",
+      " 169.1s checkpoint 07-click-right",
+      " 170.4s click 330,640",
+      " 177.0s checkpoint 08-click-left",
+      " 188.1s checkpoint 09-end"
     ],
     "screenGuard": {
-      "samples": 689,
+      "samples": 830,
       "clean": true,
       "events": [],
       "displayMode": [
@@ -185,7 +184,7 @@
     },
     "gameCameraSelectionBoxVisible": true,
     "cameraRoundTripPreservesBox": true,
-    "lastUnitTestSeconds": 40.663,
+    "lastUnitTestSeconds": 42.135,
     "cleanVenvInstall": true,
     "cleanVenvHttpSmoke": {
       "catalogScenes": 70,
@@ -194,11 +193,71 @@
       "httpStatus": 200,
       "separatePort": 4319
     },
-    "requestedScreenshot": "docs/images/studio.png"
+    "requestedScreenshot": "docs/images/studio.png",
+    "frozenStudio": {
+      "ok": true,
+      "scenes": 70,
+      "sceneKeys": [
+        "name",
+        "camera",
+        "objects",
+        "xml"
+      ],
+      "sceneObjects": 10,
+      "frozen": true,
+      "browserOpened": false,
+      "httpChecks": {
+        "mesh": {
+          "name": "acid.MEAT",
+          "bytes": 566454
+        },
+        "texture": {
+          "name": "01.jpg",
+          "bytes": 109641
+        },
+        "animation": {
+          "name": "acid_dance.EZA",
+          "bytes": 853053
+        }
+      }
+    }
   },
   "limits": [
     "Not a whole-EXE byte-exact result",
     "Not a clean OS installation test",
     "Not a full-game walkthrough or all Windows/GPU configurations test"
-  ]
+  ],
+  "assetImporter": {
+    "standaloneExe": true,
+    "frozenImageImport": {
+      "installed": 19,
+      "reused": 0,
+      "verified": 19,
+      "bytes": 311181440
+    },
+    "sourceGuiImportAndVerification": {
+      "ok": true,
+      "files": 19,
+      "seconds": 10.58,
+      "hiddenDesktop": true
+    },
+    "automatedTests": {
+      "total": 26,
+      "passed": 24,
+      "optionalOriginalDataSkipped": 2,
+      "failures": 0
+    }
+  },
+  "portableExecutables": {
+    "TitbitSetup.exe": "92456e143c23666592ba853773d5455999351ebafb05a3629fc0701c7ff1c32a",
+    "TitbitStudio.exe": "95ba341c1122b2d6b9ce9e4c53b5e756d16abfab9558228f220ac51508482194"
+  },
+  "cleanIndexedSourceRebuild": {
+    "linked": true,
+    "compat": true,
+    "linkExit": 0,
+    "sourceUnits": 337,
+    "sha256": "bb63768cad6fce6d66f51da6804224947ab93d939319c5b240c293a72c5ad450",
+    "originalGameDataPresent": false
+  }
 }

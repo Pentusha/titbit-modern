@@ -1,14 +1,14 @@
 #pragma code_page(65001)
-// Editable resources recovered from titbit.exe. Only ICO artwork is binary.
+// Resource IDs and editable dialogs recovered from titbit.exe; project artwork is generated.
 // No original executable section is used by the source build.
 
 LANGUAGE 0x19, 0x1
 
-202 ICON "icon_202_1049.ico"
+202 ICON "titbit-modern.ico"
 
 LANGUAGE 0x9, 0x1
 
-128 ICON "icon_128_1033.ico"
+128 ICON "titbit-modern.ico"
 
 LANGUAGE 0x9, 0x1
 

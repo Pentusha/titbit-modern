@@ -1,5 +1,5 @@
 # Builds build/studio/TitbitStudio.exe: Titbit Studio as one file, no Python needed
-# to run it. Needs Python 3.11 with: pip install -r requirements.txt pyinstaller==6.11.1
+# to run it. Needs Python 3.11 with: pip install -r requirements-build.txt
 param([string]$Python = 'python')
 $ErrorActionPreference = 'Stop'
 Push-Location $PSScriptRoot

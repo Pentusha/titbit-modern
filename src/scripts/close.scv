@@ -1,9 +1,0 @@
-#include scener
-
-export ON_LBUTTONDOWN;
-
-void ON_LBUTTONDOWN()
-{
-	scene.DeleteObject(self);
-}
-

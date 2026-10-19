@@ -22,7 +22,7 @@ if sys.stderr is None or sys.stdout is None:
     sys.stderr = sys.stderr or _log
 HERE = pathlib.Path(sys.executable if getattr(sys, 'frozen', False) else __file__).resolve().parent
 CONFIG = HERE/'TitbitStudio.json'
-CANDIDATES = [HERE, HERE.parent, HERE/'game', pathlib.Path.cwd(),
+CANDIDATES = [HERE, HERE.parent, HERE/'game', HERE.parent/'build/modern', pathlib.Path.cwd(),
               pathlib.Path(r'C:\Games\Titbit'), pathlib.Path(r'C:\Games\Ядерный Титбит'),
               pathlib.Path(r'C:\Program Files (x86)\Buka\Titbit'), pathlib.Path(r'C:\Program Files\Buka\Titbit'),
               pathlib.Path(r'C:\Program Files (x86)\Бука\Ядерный Титбит'), pathlib.Path(r'C:\Program Files\Бука\Ядерный Титбит')]
@@ -106,10 +106,11 @@ def main():
     httpd.app = app
     threading.Thread(target=httpd.serve_forever, daemon=True).start()
     url = f'http://127.0.0.1:{port}/'
-    webbrowser.open(url)
+    if os.environ.get('TITBIT_STUDIO_NO_BROWSER') != '1':
+        webbrowser.open(url)
 
     tk.Label(root, text=f'{APP} работает', font=('Segoe UI', 12, 'bold')).pack(padx=24, pady=(18, 4))
-    tk.Label(root, text=f'{len(app.scenes)} сцен · {archive.name}\nПроекты: {projects}', justify='center').pack(padx=24)
+    tk.Label(root, text=f'{url}\n{len(app.scenes)} сцен · {archive.name}\nПроекты: {projects}', justify='center').pack(padx=24)
     row = tk.Frame(root)
     row.pack(pady=16)
     tk.Button(row, text='Открыть в браузере', width=18, command=lambda: webbrowser.open(url)).pack(side='left', padx=6)

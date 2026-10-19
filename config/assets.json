@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "game": "Ядерный Титбит 1.00",
+  "files": {
+    "acid.avi": {
+      "size": 4681780,
+      "sha256": "b6c29bde17d5568cfded1fd29f5ccedec487075596386daedeff4e2ba5f79b6c"
+    },
+    "belka.avi": {
+      "size": 107342,
+      "sha256": "d1b6f5863a9a26249c869d1431507177e10031bfac986120b96a95e078f4253a"
+    },
+    "belka2.avi": {
+      "size": 477228,
+      "sha256": "6bb1d77f3faffe550a2eed72aaf600a323635bbee5ca30933e5b19c7e3a4d261"
+    },
+    "buh.avi": {
+      "size": 560634,
+      "sha256": "50a5016c04256903f72551e0da7f0ea7f322d79010beb34626074dd692c46299"
+    },
+    "buh2.avi": {
+      "size": 173522,
+      "sha256": "a4371e7cc033d97dec0bf94aa233770a5ffaa4067ee31a4e14db596ed736a095"
+    },
+    "buka.avi": {
+      "size": 1010386,
+      "sha256": "a95ef8f2b993a5b4dacdacc000d0796e643d69860350e9efe8e7f212dd753e7e"
+    },
+    "cat_1.avi": {
+      "size": 9734752,
+      "sha256": "8847bfcafbd1bfd237967827e7ff6ecb0ebd1790033278623a0934ee44cee77e"
+    },
+    "cat_2.avi": {
+      "size": 146364,
+      "sha256": "84256e91bf9acf8d10883f775dff755e30055b656a550e0f0925bc1953a98618"
+    },
+    "dans.avi": {
+      "size": 683032,
+      "sha256": "e41cdc0bee4fe16a02fb67da79bb2b0ffea21e3b425d300f34f80a182adae32d"
+    },
+    "dost.avi": {
+      "size": 4008468,
+      "sha256": "c3cfd4c63f7204171ccf1d5cea1fb0155d3a0b1ef5bc633496bd268d1310d628"
+    },
+    "fon.avi": {
+      "size": 40190230,
+      "sha256": "392cb45e8dd9363d93eb1c3c53dbaac4e7d3744620cfd58b903c8d868564deac"
+    },
+    "gameboom.avi": {
+      "size": 1103688,
+      "sha256": "aa3b8f3b9c4dcabcb8e2c64a5dc857d0ef77dd0264670b99d30fd3c0c44ade55"
+    },
+    "gameover.avi": {
+      "size": 145408,
+      "sha256": "df68bc443e73561262524ad77871f2b6e113547b2f96b1037414772c6102c70b"
+    },
+    "happyend.avi": {
+      "size": 6913642,
+      "sha256": "999705aed2ba0b66ad8c2a8ca5e1da8fa6ae5c29645634f3aad5d14c73f523e0"
+    },
+    "intro.avi": {
+      "size": 797696,
+      "sha256": "784c6f193f1bb97cc15840a65d977f29bb3eae8a13ff2e86ec81484ce50e002d"
+    },
+    "intro2.avi": {
+      "size": 12595418,
+      "sha256": "50c6327767270459effe793da1783f6f5236dcc7fb355ca647c37e16f35f182e"
+    },
+    "porno.avi": {
+      "size": 666598,
+      "sha256": "1fc321cc4a15385936ecb201f997ecd3e0e41fc617a77098eb92a03ad44482b2"
+    },
+    "QUEST.ezd": {
+      "size": 226663126,
+      "sha256": "bc214d2862997c27b7db627154dfcb31a526c789f364e9e7060c58522b9e03fb"
+    },
+    "vzlab.avi": {
+      "size": 522126,
+      "sha256": "a4cfeba053ee1dafab764812263bc6f7378d358fe1c1ecd437bf2d3b32bc3a84"
+    }
+  }
+}
