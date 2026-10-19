@@ -11,8 +11,8 @@
   `CVTRES.EXE`, `ML.EXE` (MASM с `/coff`), `Include`, `ATL/Include` и `Lib`.
   Нужны `LIBC.LIB`, `LIBCP.LIB` и штатные Win32/OpenGL/DirectInput/VfW библиотеки.
   MASM при необходимости устанавливается отдельно.
-- **rc.exe** из Windows SDK 10/11: в `PATH` либо стандартном каталоге
-  `Windows Kits/10/bin`. Устанавливать современную Visual Studio целиком не нужно.
+- Windows SDK и современная Visual Studio **не нужны**: ресурсы (иконка, диалоги, строки,
+  версия) компилирует `tools/rc_compile.py` — результат байт в байт совпадает с `rc.exe`.
 
 Инструменты Microsoft и их исходники в проект не включены.
 `TITBIT_VC6` должен указывать именно на установленный **VC98**:

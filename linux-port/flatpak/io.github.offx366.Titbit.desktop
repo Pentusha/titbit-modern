@@ -1,0 +1,21 @@
+[Desktop Entry]
+Type=Application
+Name=Nuclear Titbit
+Name[ru]=Ядерный Титбит
+Comment=Quest game by VZlab (2003), rebuilt from restored sources; needs your copy of the game
+Comment[ru]=Квест VZlab (2003), собранный из восстановленных исходников; нужна ваша копия игры
+Exec=titbit
+Icon=io.github.offx366.Titbit
+Categories=Game;AdventureGame;
+Keywords=titbit;quest;vzlab;
+Actions=import;studio;
+
+[Desktop Action import]
+Name=Import game data
+Name[ru]=Добавить данные игры
+Exec=titbit --import
+
+[Desktop Action studio]
+Name=Titbit Studio
+Name[ru]=Titbit Studio (редактор сцен)
+Exec=titbit --studio

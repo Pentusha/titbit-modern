@@ -14,7 +14,7 @@ ARTIFACTS={'.o','.obj','.a','.so','.exe','.dll','.lib','.pdb','.pyc','.ppm','.ll
 
 def excluded(relative):
     parts=relative.parts
-    if any(p in ('__pycache__','out','build','.git','.venv','projects') for p in parts):return True
+    if any(p in ('__pycache__','out','build','dist','stage','.git','.venv','projects') for p in parts):return True
     if relative.suffix.lower() in ARTIFACTS:return True
     if relative.name=='XTREE' or relative.name.startswith('.env'):return True
     if fnmatch.fnmatch(relative.name,'icon_*.ico'):return True

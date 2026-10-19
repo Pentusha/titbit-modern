@@ -17,6 +17,8 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--source',type=Path,default=ROOT,help='Clean exported Linux source tree')
     p.add_argument('--executable',type=Path,default=ROOT/'build/titbit')
+    p.add_argument('--tools',type=Path,default=ROOT/'build/titbit-tools',
+                   help='Import wizard + Studio executable from tools/build_tools.sh; skipped if missing')
     p.add_argument('--out',type=Path,required=True)
     p.add_argument('--version',required=True)
     p.add_argument('--commit',required=True)
@@ -40,6 +42,14 @@ def main():
         if path.suffix=='.sh' or path.name=='Makefile':payload=payload.replace(b'\r\n',b'\n')
         files[relative.as_posix()]=payload
     files['titbit']=binary
+    if a.tools.is_file():
+        tools=a.tools.read_bytes()
+        if tools[:5]!=b'\x7fELF\x02':raise ValueError('Expected x86-64 ELF titbit-tools')
+        files['titbit-tools']=tools
+        licenses=a.tools.parent/'tools-licenses'
+        if not licenses.is_dir():raise ValueError('Missing '+str(licenses)+': rebuild with tools/build_tools.sh')
+        for path in sorted(licenses.iterdir()):
+            files['docs/licenses/runtime/'+path.name]=path.read_bytes()
     metadata={'version':a.version,'sourceCommit':a.commit,'target':'ELF32 i386; tested Ubuntu 24.04 x86-64 / WSL2',
               'gameAssetsIncluded':False,'sdkIncluded':False,
               'sourceBuildExecutableSHA256':original_digest,
@@ -49,7 +59,7 @@ def main():
     with a.out.open('wb') as raw, gzip.GzipFile(fileobj=raw,mode='wb',filename='',mtime=0) as zipped, tarfile.open(fileobj=zipped,mode='w') as archive:
         for name,payload in files.items():
             entry=tarfile.TarInfo(archive_root+'/'+name);entry.size=len(payload)
-            entry.mode=0o755 if name=='titbit' or name.endswith('.sh') else 0o644
+            entry.mode=0o755 if name in ('titbit','titbit-tools') or name.endswith('.sh') else 0o644
             entry.mtime=0;archive.addfile(entry,io.BytesIO(payload))
     digest=hashlib.sha256(a.out.read_bytes()).hexdigest()
     a.out.with_name(a.out.name+'.sha256').write_text(digest+'  '+a.out.name+'\n')

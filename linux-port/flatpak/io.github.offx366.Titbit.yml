@@ -1,0 +1,75 @@
+# Flatpak for the native Linux build. Packs the prebuilt ELF32 game (build/titbit)
+# and the import/Studio tool (build/titbit-tools); game data is not included.
+#   sh flatpak/build_flatpak.sh
+app-id: io.github.offx366.Titbit
+runtime: org.freedesktop.Platform
+runtime-version: '25.08'
+sdk: org.freedesktop.Sdk
+command: titbit
+finish-args:
+  - --share=ipc
+  # Titbit Studio is a local web server (127.0.0.1) opened in the host browser
+  - --share=network
+  - --socket=x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --device=dri
+  - --allow=multiarch
+  # disc images and installed copies are picked in a Tk file dialog (no portal)
+  - --filesystem=home:ro
+  - --filesystem=/media:ro
+  - --filesystem=/run/media:ro
+  - --filesystem=/mnt:ro
+add-extensions:
+  org.freedesktop.Platform.Compat.i386:
+    directory: lib/i386-linux-gnu
+    version: '25.08'
+  org.freedesktop.Platform.GL32:
+    directory: lib/i386-linux-gnu/GL
+    version: '1.4'
+    versions: 25.08;1.4
+    subdirectories: true
+    no-autodownload: true
+    autodelete: false
+    add-ld-path: lib
+    merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d;OpenCL/vendors;lib/dri;lib/d3d;vulkan/explicit_layer.d;vulkan/implicit_layer.d
+    download-if: active-gl-driver
+    enable-if: active-gl-driver
+modules:
+  - name: titbit
+    buildsystem: simple
+    build-options:
+      # titbit-tools keeps its PyInstaller archive in an ELF section; strip would drop it
+      no-debuginfo: true
+      strip: false
+    build-commands:
+      - mkdir -p /app/lib/i386-linux-gnu/GL
+      - install -Dm755 titbit /app/lib/titbit/titbit
+      - install -Dm755 titbit-tools /app/bin/titbit-tools
+      - install -Dm755 titbit-launch.sh /app/bin/titbit
+      - install -Dm755 titbit-game.sh /app/bin/titbit-game
+      - install -Dm644 io.github.offx366.Titbit.desktop /app/share/applications/io.github.offx366.Titbit.desktop
+      - install -Dm644 io.github.offx366.Titbit.svg /app/share/icons/hicolor/scalable/apps/io.github.offx366.Titbit.svg
+      - install -Dm644 io.github.offx366.Titbit.metainfo.xml /app/share/metainfo/io.github.offx366.Titbit.metainfo.xml
+      - install -Dm644 THIRD_PARTY_NOTICES.md /app/share/doc/titbit/THIRD_PARTY_NOTICES.md
+      - mkdir -p /app/share/doc/titbit/licenses && cp -r licenses/. /app/share/doc/titbit/licenses/
+    sources:
+      - type: file
+        path: stage/titbit
+      - type: file
+        path: stage/titbit-tools
+      - type: file
+        path: titbit-launch.sh
+      - type: file
+        path: titbit-game.sh
+      - type: file
+        path: io.github.offx366.Titbit.desktop
+      - type: file
+        path: io.github.offx366.Titbit.svg
+      - type: file
+        path: io.github.offx366.Titbit.metainfo.xml
+      - type: file
+        path: ../THIRD_PARTY_NOTICES.md
+      - type: dir
+        path: stage/licenses
+        dest: licenses

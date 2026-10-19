@@ -53,11 +53,43 @@ Wayland, PulseAudio, ALSA и PipeWire во время работы. libstdc++, l
 вшиваются в исполняемый файл. Итог — ELF зависит только от `libGL.so.1` и glibc:
 
 ```sh
-sudo apt install libc6:i386 libgl1:i386 libpulse0:i386   # для запуска
+# для запуска (SDL подгружает X11 и звук сам, когда они есть)
+sudo apt install libgl1:i386 libgl1-mesa-dri:i386 libx11-6:i386 libxext6:i386 libxcursor1:i386 libxi6:i386 libxrandr2:i386 libpulse0:i386
 ```
 
-Нужны git и сеть при первой сборке (исходники FFmpeg 6.1.1 и SDL 2.30.9).
+При первой сборке нужны `curl` и сеть: скачиваются официальные архивы FFmpeg 6.1.1 и
+SDL 2.30.9, каждый проверяется по зашитому в скрипт SHA-256.
 Отдельно: `tools/build_ffmpeg_min.sh`, `tools/build_sdl2_min.sh`, флаги `--ffmpeg` / `--sdl2`.
+
+Готовый ELF требует glibc 2.38+, если собран на Ubuntu 24.04: порог задаёт glibc
+системы сборки. Для более старых систем есть Flatpak — у него своя glibc.
+
+## Пакеты для игроков
+
+```sh
+sudo apt install python3-venv python3-tk flatpak-builder
+sh tools/build_tools.sh                     # build/titbit-tools
+python3 tools/package_linux.py --version dev --commit "$(git rev-parse --short HEAD)" \
+  --out dist/Titbit-dev-linux-x86.tar.gz
+sh flatpak/build_flatpak.sh dev             # dist/Titbit-dev-x86_64.flatpak
+```
+
+`titbit-tools` — мастер импорта и Studio одним x86-64 файлом (PyInstaller): игроку не нужен
+Python. Лицензии всего, что в него упаковано, собираются в `build/tools-licenses/` и кладутся
+в пакеты (`docs/licenses/runtime/`). `start-game.sh` при отсутствии данных сам открывает мастер.
+
+Flatpak (`io.github.offx366.Titbit`, рантайм `org.freedesktop.Platform//25.08`) запускает ELF32
+через расширения `Compat.i386` и `GL32`. Для сборки один раз:
+
+```sh
+flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+flatpak install --user flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08 \
+  org.freedesktop.Platform.Compat.i386//25.08 org.freedesktop.Platform.GL32.default//25.08
+```
+
+Данные игры Flatpak хранит в `~/.var/app/io.github.offx366.Titbit/data/titbit/game`.
+Доступ к файлам — только чтение (`home`, `/media`, `/run/media`, `/mnt`) для выбора образа;
+сеть открыта только ради Studio: это локальный веб-сервер, который открывается в браузере.
 
 ## Данные и запуск
 

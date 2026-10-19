@@ -14,7 +14,7 @@ import zipfile
 from project_icon import write_icon
 
 BASE = Path(__file__).resolve().parents[1]
-VERSION = '0.1.0'
+VERSION = '0.3.0'
 
 
 def sha(path):

@@ -316,9 +316,9 @@ def run_gui():
             if not any((destination / filename).is_file() for filename in ('QUEST.ezd', 'quest.ezd')):
                 return None
             if name == 'studio':
-                return BUNDLE / 'tools' / 'start_studio.py'
+                return Path(sys.executable) if getattr(sys, 'frozen', False) else BUNDLE / 'tools' / 'start_studio.py'
             candidates = [Path(os.environ['TITBIT_LINUX_GAME'])] if os.environ.get('TITBIT_LINUX_GAME') else []
-            candidates += [Path(self.destination.get()).expanduser() / 'titbit', BUNDLE / 'build' / 'titbit']
+            candidates += [Path(self.destination.get()).expanduser() / 'titbit', BUNDLE / 'titbit', BUNDLE / 'build' / 'titbit']
             for path in candidates:
                 if path.is_file() and os.access(path, os.X_OK):
                     return path.resolve()
@@ -336,8 +336,12 @@ def run_gui():
             try:
                 # Explicit button click only. No automatic launches after importing.
                 destination = Path(self.destination.get()).expanduser().resolve()
-                command = ([sys.executable, str(path), '--archive', str(destination)]
-                           if name == 'studio' else [str(path)])
+                if name != 'studio':
+                    command = [str(path)]
+                elif getattr(sys, 'frozen', False):
+                    command = [str(path), 'studio', '--archive', str(destination)]
+                else:
+                    command = [sys.executable, str(path), '--archive', str(destination)]
                 env = dict(os.environ, TITBIT_GAME=str(destination))
                 subprocess.Popen(command, cwd=str(destination), env=env)
             except OSError as exc:

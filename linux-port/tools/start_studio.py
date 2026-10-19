@@ -7,7 +7,8 @@ import sys
 import threading
 import webbrowser
 
-ROOT = Path(__file__).resolve().parents[1]
+FROZEN = getattr(sys, 'frozen', False)
+ROOT = Path(sys.executable).resolve().parent if FROZEN else Path(__file__).resolve().parents[1]
 DATA_HOME = Path(os.environ.get('XDG_DATA_HOME', Path.home() / '.local/share')) / 'titbit'
 
 
@@ -34,7 +35,8 @@ def main():
     if archive is None:
         parser.error('QUEST.ezd not found. Use --archive /path/to/QUEST.ezd or import your game first.')
     os.environ['TITBIT_STUDIO_PROJECTS'] = str(args.projects.expanduser().resolve())
-    sys.path.insert(0, str(ROOT / 'editor'))
+    if not FROZEN:
+        sys.path.insert(0, str(ROOT / 'editor'))
     try:
         import server
         app = server.Application(archive)

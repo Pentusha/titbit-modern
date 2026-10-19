@@ -41,37 +41,44 @@ Windows 10/11; Linux-порт собирается в нативный ELF32 и 
 
 ## Установка Linux
 
-Нативная сборка (ELF32), без Wine. Нужны только 32-битные glibc и OpenGL —
-всё остальное (видео, звук, окно) уже внутри исполняемого файла.
-Проверено на Ubuntu 24.04 x86-64 и WSL2 / WSLg.
+Нативная сборка (ELF32), без Wine. Python и компилятор не нужны. Два варианта:
 
-1. Установите зависимости (Ubuntu / Debian):
+**Flatpak — любой дистрибутив.** Скачайте `Titbit-*-x86_64.flatpak` из
+[Releases](https://github.com/offx366/titbit-modern/releases):
+
+```bash
+flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+flatpak install --user flathub org.freedesktop.Platform.Compat.i386//25.08 org.freedesktop.Platform.GL32.default//25.08
+flatpak install --user Titbit-*-x86_64.flatpak
+flatpak run io.github.offx366.Titbit
+```
+
+Вторая строка — 32-битные библиотеки с Flathub (у кого стоит Steam из Flathub, они уже есть).
+Игра появится и в меню приложений.
+
+**Архив — Ubuntu 24.04+, Debian 13+, Fedora 39+ и другие системы с glibc 2.38+.**
+
+1. Установите 32-битные OpenGL, X11 и звук (Ubuntu / Debian):
 
    ```bash
    sudo dpkg --add-architecture i386 && sudo apt update
-   sudo apt install libgl1:i386 libgl1-mesa-dri:i386 libx11-6:i386 libxext6:i386      libxcursor1:i386 libxi6:i386 libxrandr2:i386 libpulse0:i386 python3 python3-tk python3-pil
+   sudo apt install libgl1:i386 libgl1-mesa-dri:i386 libx11-6:i386 libxext6:i386 libxcursor1:i386 libxi6:i386 libxrandr2:i386 libpulse0:i386
    ```
 
-   Если у вас стоит Steam, 32-битные библиотеки, скорее всего, уже есть.
-   `python3`, `python3-tk` и `python3-pil` нужны только для импорта данных и Studio.
+   Если у вас стоит Steam, они, скорее всего, уже есть.
 
-2. Скачайте `Titbit-*-linux-x86.tar.gz` из [Releases](https://github.com/offx366/titbit-modern/releases),
-   распакуйте и импортируйте данные своей копии игры:
+2. Скачайте `Titbit-*-linux-x86.tar.gz` из [Releases](https://github.com/offx366/titbit-modern/releases)
+   и запустите:
 
    ```bash
    tar -xzf Titbit-*-linux-x86.tar.gz && cd Titbit-*-linux-x86
-   sh tools/import_assets.sh
+   sh start-game.sh
    ```
 
-   Укажите ISO / IMG / CUE / CCD, папку установщика (`data1.hdr`, `data*.cab`) или
-   установленную игру — `QUEST.ezd` и 18 роликов скопируются и проверятся.
-
-3. Играйте:
-
-   ```bash
-   sh start-game.sh          # игра
-   sh tools/start_studio.sh  # Titbit Studio в браузере
-   ```
+При первом запуске откроется мастер импорта: укажите ISO / IMG / CUE / CCD, папку
+установщика (`data1.hdr`, `data*.cab`) или установленную игру — `QUEST.ezd` и 18 роликов
+скопируются и проверятся. Дальше игра запускается сразу. Studio: `sh tools/start_studio.sh`
+(во Flatpak — `flatpak run io.github.offx366.Titbit --studio`).
 
 ![Начальная улица — нативная Linux-сборка](docs/images/game-linux.png)
 
@@ -125,7 +132,7 @@ flowchart LR
 <details>
 <summary><b>Windows</b></summary>
 
-Нужны Python 3.11, VC6 SP6 с MASM (`ML.EXE`) и `rc.exe` из Windows SDK 10/11.
+Нужны только Python 3.11 и VC6 SP6 с MASM (`ML.EXE`). Windows SDK и современная Visual Studio не нужны.
 
 ```powershell
 git clone https://github.com/offx366/titbit-modern.git
@@ -156,7 +163,7 @@ Ubuntu 24.04 x86-64 (или WSL2). Сборка: Clang/LLVM 18 → ELF32, без
 
 ```bash
 sudo dpkg --add-architecture i386 && sudo apt update
-sudo apt install git python3 clang-18 llvm-18 lld-18 gcc-multilib g++-multilib pkg-config   libsdl2-dev:i386 libgl1-mesa-dev:i386 libglu1-mesa-dev:i386 zlib1g-dev:i386
+sudo apt install git curl python3 clang-18 llvm-18 lld-18 gcc-multilib g++-multilib pkg-config libsdl2-dev:i386 libgl1-mesa-dev:i386 libglu1-mesa-dev:i386 zlib1g-dev:i386
 
 git clone https://github.com/offx366/titbit-modern.git
 cd titbit-modern/linux-port
@@ -165,14 +172,21 @@ python3 tools/build_linux.py --check
 python3 tools/build_linux.py --minimal --jobs "$(nproc)" --test-runtime
 ```
 
-Результат — `build/titbit`. `--minimal` при первой сборке скачивает и собирает в
-`~/.cache/titbit/` урезанные FFmpeg и SDL2 и вшивает их в игру: готовому файлу нужны только
-32-битные glibc и OpenGL. Запуск и упаковка:
+Результат — `build/titbit`. `--minimal` при первой сборке скачивает официальные архивы
+FFmpeg и SDL2 (с проверкой SHA-256), собирает их урезанными в `~/.cache/titbit/` и вшивает
+в игру: готовому файлу нужны только 32-битные glibc и OpenGL. Запуск:
 
 ```bash
 python3 tools/titbit_setup.py --import /path/to/disc.iso --dest ~/.local/share/titbit/game
 ./build/titbit --data ~/.local/share/titbit/game
-python3 tools/package_linux.py --version dev --commit "$(git rev-parse --short HEAD)"   --out dist/Titbit-dev-linux-x86.tar.gz
+```
+
+Пакеты как в Releases (нужны ещё `python3-venv python3-tk`, для Flatpak — `flatpak-builder`):
+
+```bash
+sh tools/build_tools.sh            # build/titbit-tools: импорт + Studio одним файлом
+python3 tools/package_linux.py --version dev --commit "$(git rev-parse --short HEAD)" --out dist/Titbit-dev-linux-x86.tar.gz
+sh flatpak/build_flatpak.sh dev    # dist/Titbit-dev-x86_64.flatpak
 ```
 
 Подробно: [linux-port/docs/BUILD-LINUX.md](linux-port/docs/BUILD-LINUX.md).

@@ -13,16 +13,20 @@
 #else
 #define WAPI
 #endif
-static void *gl_library,*glu_library;
+static void *gl_library;
 static pthread_once_t library_once=PTHREAD_ONCE_INIT;
 static void load_libraries(void) {
  gl_library=dlopen("libGL.so.1",RTLD_NOW|RTLD_LOCAL);
- glu_library=dlopen("libGLU.so.1",RTLD_NOW|RTLD_LOCAL);
- if(!gl_library||!glu_library){fprintf(stderr,"Titbit: OpenGL runtime load failed: %s\n",dlerror());abort();}
+ if(!gl_library){fprintf(stderr,"Titbit: OpenGL runtime load failed: %s\n",dlerror());abort();}
 }
 static void *resolve(const char *name) {
- void *result;pthread_once(&library_once,load_libraries);
- result=dlsym(strncmp(name,"glu",3)==0?glu_library:gl_library,name);
+ void *result;
+ /* GLU is linked into the executable (statically with --minimal), so it is
+  * taken from there: the system may have no 32-bit libGLU.so.1 at all. */
+ if(!strcmp(name,"gluPerspective"))return (void *)&gluPerspective;
+ if(!strcmp(name,"gluBuild2DMipmaps"))return (void *)&gluBuild2DMipmaps;
+ pthread_once(&library_once,load_libraries);
+ result=dlsym(gl_library,name);
  if(!result){fprintf(stderr,"Titbit: required OpenGL symbol missing: %s\n",name);abort();}
  return result;
 }

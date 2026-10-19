@@ -20,6 +20,10 @@ if [ "$#" -eq 0 ]; then
     if [ -z "${TITBIT_GAME:-}" ] && [ -d "$root/game" ]; then
         data="$root/game"
     fi
+    if [ ! -f "$data/QUEST.ezd" ] && [ ! -f "$data/quest.ezd" ]; then
+        printf '%s\n' "Game data not found in $data - opening the import wizard." >&2
+        exec "$root/tools/import_assets.sh"
+    fi
     set -- --data "$data"
 fi
 exec "$executable" "$@"

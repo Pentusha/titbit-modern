@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.offx366.Titbit</id>
+  <name>Nuclear Titbit</name>
+  <name xml:lang="ru">Ядерный Титбит</name>
+  <summary>Restored sources of the 2003 VZlab quest, native Linux build</summary>
+  <summary xml:lang="ru">Восстановленные исходники квеста VZlab 2003 года, нативная сборка для Linux</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>LicenseRef-proprietary</project_license>
+  <description>
+    <p>Game code rebuilt from the original titbit.exe. Levels, models, music, voices and
+    videos are not included: the first start imports them from your CD, disc image
+    (ISO, IMG, CUE, CCD) or installed game.</p>
+    <p xml:lang="ru">Код игры восстановлен по оригинальному titbit.exe. Уровни, модели, музыка,
+    озвучка и видео не входят: при первом запуске они импортируются с вашего CD, образа
+    диска (ISO, IMG, CUE, CCD) или из установленной игры.</p>
+  </description>
+  <launchable type="desktop-id">io.github.offx366.Titbit.desktop</launchable>
+  <url type="homepage">https://github.com/offx366/titbit-modern</url>
+  <url type="bugtracker">https://github.com/offx366/titbit-modern/issues</url>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="0.3.0" date="2026-10-19"/>
+  </releases>
+</component>

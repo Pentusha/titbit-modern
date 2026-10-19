@@ -62,3 +62,6 @@ linux-port/game/
 *.ll
 *.bc
 *.ppm
+
+linux-port/flatpak/stage/
+*.flatpak

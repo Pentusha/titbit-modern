@@ -22,10 +22,12 @@
 
 ## Нативная Linux-сборка
 
-Игра динамически использует системные SDL2, OpenGL/GLU, FFmpeg, zlib,
-glibc и libstdc++. Их `.so` не включены в Linux-пакет: зависимости устанавливаются
-из репозитория дистрибутива вместе с соответствующими лицензиями и исходниками.
-Python, Tcl/Tk и Pillow для Linux также устанавливаются системным менеджером пакетов.
+Пакеты в Releases собраны с `--minimal`: компоненты из таблицы ниже вшиты в игру
+статически, а OpenGL, glibc, X11/Wayland и звуковые библиотеки берутся из системы
+(во Flatpak — из рантайма `org.freedesktop.Platform` и его расширений `Compat.i386`, `GL32`).
+`titbit-tools` (мастер импорта и Studio) — сборка PyInstaller: внутри Python, Tcl/Tk,
+Pillow и системные библиотеки Ubuntu, на которой он собран. Их тексты лицензий лежат
+в пакете в `docs/licenses/runtime/` (во Flatpak — `/app/share/doc/titbit/licenses/runtime/`).
 Linux-пакет содержит исходники порта; версия коммита и SHA256 файлов указаны в `package.json`.
 Заголовки и инструменты Microsoft, игровые данные и оригинальный EXE не включены.
 
@@ -35,3 +37,13 @@ Linux-пакет содержит исходники порта; версия к
 PyInstaller. Их тексты лицензий находятся в `docs/licenses/runtime/` внутри
 portable-пакета. Исходники использованных компонентов движка находятся в этом
 репозитории; версия исходников конкретной сборки записана в `package.json` пакета.
+
+## Сборка `--minimal`
+
+| Компонент | Лицензия | Как используется |
+|---|---|---|
+| FFmpeg 6.1.1 (libavformat, libavcodec, libavutil, libswscale, libswresample) | GNU LGPL 2.1+ | статически: AVI + MP42 + CRAM, собран `tools/build_ffmpeg_min.sh` без GPL-компонентов; исходники игры открыты, поэтому её можно перелинковать с любой версией FFmpeg |
+| SDL 2.30.9 | zlib | статически, `tools/build_sdl2_min.sh` |
+| Mesa GLU | SGI Free Software License B | статически (`libGLU.a`) |
+| GCC libstdc++ / libgcc | GPL с исключением GCC Runtime Library | статически |
+| zlib | zlib | статически |
