@@ -146,6 +146,11 @@ $env:TITBIT_GAME = 'D:\Games\Titbit'
 `config/source-build.json` содержит рецепты сборки и символы,
 без машинного кода или данных исходного EXE.
 
+Сборка воспроизводима: в заголовок EXE записывается время коммита (или `SOURCE_DATE_EPOCH`),
+поэтому один и тот же коммит с теми же файлами VC6 даёт побайтно одинаковые `TitbitModern.exe`
+и `TitbitSettings.exe`. Сравнить свою сборку с релизом: `tools/verify_release.py`, см. [VERIFY.md](VERIFY.md).
+Номер версии для всех EXE и пакетов — в файле `VERSION`.
+
 ## Linux
 
 Нативная сборка выполняется отдельно из `linux-port/` средствами Clang/LLVM.

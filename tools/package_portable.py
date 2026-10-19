@@ -14,7 +14,7 @@ import zipfile
 from project_icon import write_icon
 
 BASE = Path(__file__).resolve().parents[1]
-VERSION = '0.3.0'
+from project_version import VERSION, pyinstaller_version_file
 
 
 def sha(path):
@@ -29,7 +29,7 @@ def tools():
     except importlib.metadata.PackageNotFoundError as exc:
         raise ValueError('Установите зависимости сборки: python -m pip install -r requirements-build.txt') from exc
     out = BASE/'build/portable-tools'; out.mkdir(parents=True, exist_ok=True)
-    inputs = [BASE/'config/assets.json']
+    inputs = [BASE/'config/assets.json', BASE/'VERSION', BASE/'tools/project_version.py']
     inputs += [BASE/'tools'/n for n in ('titbit_setup.py','titbit_assets.py','disc_image.py','project_icon.py')]
     inputs += [p for p in (BASE/'editor').rglob('*') if p.is_file()
                and not any(part in ('__pycache__','projects','TitbitStudio-projects') for part in p.relative_to(BASE/'editor').parts)
@@ -43,9 +43,11 @@ def tools():
             print('Setup/Studio: verified build cache', flush=True)
             return out
     write_icon(out/'titbit-modern.ico')
+    pyinstaller_version_file(out/'TitbitSetup.version','TitbitSetup.exe','Titbit game data import')
+    pyinstaller_version_file(out/'TitbitStudio.version','TitbitStudio.exe','Titbit Studio scene editor')
     for name, entry, extra in (
-        ('TitbitSetup',BASE/'tools/titbit_setup.py', ['--paths',str(BASE/'tools'), '--add-data',str(BASE/'config/assets.json')+';config']),
-        ('TitbitStudio',BASE/'editor/studio_launcher.py', ['--paths',str(BASE/'editor'), '--add-data',str(BASE/'editor/web')+';web']),
+        ('TitbitSetup',BASE/'tools/titbit_setup.py', ['--version-file',str(out/'TitbitSetup.version'),'--paths',str(BASE/'tools'), '--add-data',str(BASE/'config/assets.json')+';config']),
+        ('TitbitStudio',BASE/'editor/studio_launcher.py', ['--version-file',str(out/'TitbitStudio.version'),'--paths',str(BASE/'editor'), '--add-data',str(BASE/'editor/web')+';web']),
     ):
         cmd = [sys.executable,'-m','PyInstaller','--noconfirm','--onefile','--windowed','--noupx',
                '--name',name,'--icon',str(out/'titbit-modern.ico'),'--distpath',str(out),
@@ -81,7 +83,7 @@ def assemble(game_build, tool_build, output, version=VERSION):
         (package/'config').mkdir()
         shutil.copy2(BASE/'config/assets.json',package/'config/assets.json')
         docs = package/'docs';docs.mkdir()
-        for name in ('GETTING_STARTED.md','ASSETS.md','BUILD.md','VALIDATION.md','validation.json'):
+        for name in ('GETTING_STARTED.md','ASSETS.md','BUILD.md','VALIDATION.md','VERIFY.md','validation.json'):
             shutil.copy2(BASE/'docs'/name,docs/name)
         shutil.copytree(BASE/'docs/images',docs/'images')
         shutil.copytree(BASE/'docs/licenses',docs/'licenses')
@@ -107,7 +109,7 @@ def assemble(game_build, tool_build, output, version=VERSION):
         for p in (BASE/'src/lanes').rglob('*LICENSE*'):
             if p.is_file():
                 target=package/p.relative_to(BASE);target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(p,target)
-        (package/'НАЧНИТЕ ЗДЕСЬ.txt').write_text('Титбит Modern\n\n1. Распакуйте всю папку из ZIP.\n2. Откройте TitbitSetup.exe.\n3. Выберите свою папку игры, диск или ISO/IMG/CUE/CCD.\n4. Добавьте данные в эту папку (рядом с EXE).\n5. TitbitSettings.exe — экран и запуск; TitbitStudio.exe — редактор.\n\nPython, установка старой игры и кодек-паки не нужны.\nИнструкция: docs/GETTING_STARTED.md\n',encoding='utf-8-sig')
+        (package/'НАЧНИТЕ ЗДЕСЬ.txt').write_text('Титбит Modern\n\n1. Распакуйте всю папку из ZIP.\n2. Откройте TitbitModern.exe — без данных игры он сам откроет TitbitSetup.exe.\n3. Выберите свою папку игры, диск или ISO/IMG/CUE/CCD и нажмите «Добавить файлы игры».\n4. Снова откройте TitbitModern.exe. TitbitSettings.exe — экран; TitbitStudio.exe — редактор.\n\nОкно «Windows защитила ваш компьютер»: «Подробнее» → «Выполнить в любом случае».\nEXE не подписаны; как проверить файлы — docs/VERIFY.md.\n\nPython, установка старой игры и кодек-паки не нужны.\nИнструкция: docs/GETTING_STARTED.md\n',encoding='utf-8-sig')
         try:
             commit=subprocess.check_output(['git','-C',str(BASE),'rev-parse','HEAD'],stderr=subprocess.DEVNULL).decode().strip()
             dirty=bool(subprocess.check_output(['git','-C',str(BASE),'status','--porcelain','--untracked-files=no']))
@@ -117,6 +119,13 @@ def assemble(game_build, tool_build, output, version=VERSION):
                   'sourceCommit':commit,'sourceTreeDirty':dirty,
                   'executables':{n:sha(package/n) for n in sources},
                   'originalDataIncluded':False,'platform':'Windows 10/11 x64; game executable x86'}
+        info=game_build/'build-info.json'
+        if info.is_file():
+            built=json.loads(info.read_text(encoding='utf-8'))
+            # TitbitModern.exe and TitbitSettings.exe rebuild byte for byte from sourceCommit
+            # with the same VC6 files: tools/verify_release.py compares them.
+            metadata['reproducible']={'sourceDateEpoch':built.get('sourceDateEpoch'),'vc6Tools':built.get('tools'),
+                                      'vc6Libraries':built.get('libraries')}
         (package/'package.json').write_text(json.dumps(metadata,indent=2)+'\n',encoding='utf8')
         paths=sorted(p for p in package.rglob('*') if p.is_file())
         for p in paths:

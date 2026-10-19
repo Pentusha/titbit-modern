@@ -9,9 +9,12 @@
 #include "compat.h"
 
 extern "C" void __cdecl WinMainCRTStartup(void);
+extern "C" int __stdcall CompatOpenSetupWithoutData(void);
+extern "C" __declspec(dllimport) void __stdcall ExitProcess(unsigned int);
 extern "C" void __cdecl SourceCompatStartup(void)
 {
-    CompatPlatformStartup();
+    CompatPlatformStartup();          /* also makes the EXE folder current */
+    if (CompatOpenSetupWithoutData()) ExitProcess(0);
     CompatStartup();
     WinMainCRTStartup();
 }

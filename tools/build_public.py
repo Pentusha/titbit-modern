@@ -279,10 +279,14 @@ def main(default_compat=False):
     write_icon(resources/'titbit-modern.ico')
     text=(BASE/'src/lanes/codex/resources/titbit.rc').read_text(encoding='utf-8')
     text=text.replace('icon_202_1049.ico','titbit-modern.ico').replace('icon_128_1033.ico','titbit-modern.ico')
+    from project_version import versioninfo_rc
+    exe=out/('TitbitModern.exe' if compat else 'titbit.exe')
+    # The disc EXE's VERSIONINFO names VZlab; an unofficial rebuild must name this project.
+    cut=text.rindex('LANGUAGE',0,text.index('1 VERSIONINFO'))
+    text=text[:cut]+versioninfo_rc(exe.name,'Nuclear Titbit (rebuilt from restored sources)')
     (resources/'titbit.rc').write_text(text,encoding='utf-8')
     res.write_bytes(compile_rc(resources/'titbit.rc'))  # same bytes as Windows SDK rc.exe
     run([str(sdk/'Bin/CVTRES.EXE'),'/NOLOGO','/MACHINE:IX86','/OUT:'+match.short_path(out)+'/'+resource.name,match.short_path(res)],out/'cvtres.log')
-    exe=out/('TitbitModern.exe' if compat else 'titbit.exe')
     response(sdk/'Bin/LINK.EXE','link',['/nologo','/NODEFAULTLIB','/MACHINE:IX86','/SUBSYSTEM:WINDOWS,4.0',
         '/ENTRY:'+('SourceCompatStartup' if compat else 'WinMainCRTStartup'),'/INCREMENTAL:NO','/OPT:REF',
         '/INCLUDE:_public_game_initializers','/OUT:'+str(exe),'/MAP:'+str(exe.with_suffix('.map')),
@@ -292,17 +296,42 @@ def main(default_compat=False):
         launch=BASE/'src/compat/launcher.cpp';launch_obj=objdir/'launcher.obj'
         run([str(sdk/'Bin/CL.EXE'),'/nologo','/c','/O2','/ML','/Fo'+match.short_path(objdir)+'/'+launch_obj.name,
              '/I'+match.short_path(sdk/'Include'),match.short_path(launch)],out/'launcher-compile.log')
+        settings_rc=resources/'settings.rc'
+        settings_rc.write_text('LANGUAGE 0x9, 0x1\n\n1 ICON "titbit-modern.ico"\n\n'+versioninfo_rc('TitbitSettings.exe','Titbit display settings and launcher'),encoding='utf-8')
+        (out/'settings.res').write_bytes(compile_rc(settings_rc))
+        run([str(sdk/'Bin/CVTRES.EXE'),'/NOLOGO','/MACHINE:IX86','/OUT:'+match.short_path(out)+'/settings_resources.obj',match.short_path(out/'settings.res')],out/'settings-cvtres.log')
         response(sdk/'Bin/LINK.EXE','launcher',['/nologo','/SUBSYSTEM:WINDOWS','/ENTRY:WinMainCRTStartup','/NODEFAULTLIB',
-                 '/OUT:'+str(out/'TitbitSettings.exe'),str(launch_obj),*[str(sdk/'Lib'/x) for x in ('KERNEL32.LIB','USER32.LIB','GDI32.LIB')]])
+                 '/OUT:'+str(out/'TitbitSettings.exe'),str(launch_obj),str(out/'settings_resources.obj'),*[str(sdk/'Lib'/x) for x in ('KERNEL32.LIB','USER32.LIB','GDI32.LIB')]])
         (out/'titbit_compat.ini').write_text('[compat]\ndisplay=fullscreen\nresolution=1024x768\naspect=fit\nsetup=modern\ncd=folder\nvideo=auto\nreplay=off\n',encoding='ascii')
+    # LINK writes the current time into the PE header; that is the only byte that
+    # differs between two builds. A fixed time makes the EXE reproducible.
+    stamp=source_date()
+    for built in [exe]+([out/'TitbitSettings.exe'] if compat else []):
+        data=bytearray(built.read_bytes());header=struct.unpack_from('<I',data,0x3c)[0]
+        struct.pack_into('<I',data,header+8,stamp);built.write_bytes(bytes(data))
     manifest={'linked':True,'compat':compat,'linkExit':0,'sourceUnits':len(compiled),'executable':str(exe),
               'sha256':digest(exe),'objects':[{k:v for k,v in r.items() if not k.startswith('_')} for r in compiled],
               'runtime':'installed VC98 LIBC.LIB + LIBCP.LIB','vc98':str(sdk),
               'libraries':[{'name':p.name,'sha256':digest(p)} for p in libs],
+              # what someone else needs to get the same bytes (tools/verify_release.py)
+              'sourceDateEpoch':stamp,
+              'tools':{n:digest(sdk/'Bin'/n) for n in ('CL.EXE','C1.DLL','C1XX.DLL','C2.DLL','LINK.EXE','LIB.EXE','CVTRES.EXE','ML.EXE') if (sdk/'Bin'/n).is_file()},
+              'settingsSha256':digest(out/'TitbitSettings.exe') if compat else None,
               'gameInitializers':len(labels),'aliases':aliases}
     (out/'build-info.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
     print('LINK OK:',exe,'SHA256',digest(exe),flush=True)
     return 0
+
+
+def source_date():
+    """SOURCE_DATE_EPOCH, else the commit time, else 0: same sources, same EXE."""
+    if os.environ.get('SOURCE_DATE_EPOCH'):
+        return int(os.environ['SOURCE_DATE_EPOCH'])
+    try:
+        return int(subprocess.check_output(['git','-C',str(BASE),'log','-1','--format=%ct'],
+                                           stderr=subprocess.DEVNULL).strip() or 0)
+    except (OSError,subprocess.CalledProcessError,ValueError):
+        return 0
 
 
 if __name__=='__main__':

@@ -49,3 +49,34 @@ extern "C" unsigned __stdcall CompatGetDriveTypeA(const char *root) {
  if (root && faked_root[0] && lstrcmpiA(root, faked_root) == 0) return DRIVE_CDROM;
  return GetDriveTypeA(root);
 }
+
+/* The game reads everything from QUEST.EZD in its own folder (even with
+ * cd=disc, the disc is only checked) and crashes later without it. On the first
+ * start of the portable package open TitbitSetup.exe next to the game so the
+ * player can import the data; without it, say what is missing. Returns 1 when
+ * the game must not start. */
+extern "C" int __stdcall CompatOpenSetupWithoutData(void) {
+ if (GetFileAttributesA("QUEST.EZD") != INVALID_FILE_ATTRIBUTES) return 0;
+ WCHAR setup[MAX_PATH + 16];
+ DWORD n = GetModuleFileNameW(0, setup, MAX_PATH);
+ if (n && n < MAX_PATH) {
+  while (n && setup[n - 1] != L'\\' && setup[n - 1] != L'/') --n;
+  lstrcpyW(setup + n, L"TitbitSetup.exe");
+  STARTUPINFOW startup; PROCESS_INFORMATION process;
+  ZeroMemory(&startup, sizeof(startup)); startup.cb = sizeof(startup);
+  if (GetFileAttributesW(setup) != INVALID_FILE_ATTRIBUTES &&
+      CreateProcessW(setup, 0, 0, 0, FALSE, 0, 0, 0, &startup, &process)) {
+   CloseHandle(process.hThread); CloseHandle(process.hProcess);
+   CompatLog("cd", "no QUEST.EZD: opened TitbitSetup.exe", 0);
+   return 1;
+  }
+ }
+ /* "Ядерный Титбит" / "Не найдены данные игры (QUEST.ezd). Запустите TitbitSetup.exe ..."
+  * as UTF-16 escapes: VC6 reads source files in the ANSI code page. */
+ MessageBoxW(0,
+  L"\x041d\x0435 \x043d\x0430\x0439\x0434\x0435\x043d\x044b \x0434\x0430\x043d\x043d\x044b\x0435 \x0438\x0433\x0440\x044b (QUEST.ezd).\n\n"
+  L"\x0417\x0430\x043f\x0443\x0441\x0442\x0438\x0442\x0435 TitbitSetup.exe \x0438 \x0434\x043e\x0431\x0430\x0432\x044c\x0442\x0435 \x0444\x0430\x0439\x043b\x044b \x0441\x043e \x0441\x0432\x043e\x0435\x0433\x043e \x0434\x0438\x0441\x043a\x0430, \x043e\x0431\x0440\x0430\x0437\x0430 \x0438\x043b\x0438 \x0438\x0437 \x0443\x0441\x0442\x0430\x043d\x043e\x0432\x043b\x0435\x043d\x043d\x043e\x0439 \x0438\x0433\x0440\x044b.",
+  L"\x042f\x0434\x0435\x0440\x043d\x044b\x0439 \x0422\x0438\x0442\x0431\x0438\x0442", MB_OK | MB_ICONINFORMATION);
+ CompatLog("cd", "no QUEST.EZD and no TitbitSetup.exe: told the player", 0);
+ return 1;
+}
