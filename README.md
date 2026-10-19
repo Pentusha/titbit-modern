@@ -118,13 +118,14 @@ flowchart LR
 
 ## Сборка из исходников
 
-**Linux:** [Clang/LLVM, ELF32 и Microsoft object ABI](linux-port/docs/BUILD-LINUX.md).
-Заголовки VC98 нужны только при сборке; Windows CRT `.lib` в Linux не линкуются.
+Для обеих платформ нужен **Visual C++ 6.0 SP6** — в Windows им собирается игра, в Linux берутся
+только его заголовки (`VC98/Include`, `VC98/ATL/Include`). Инструменты Microsoft и данные игры
+в репозиторий не входят.
 
-**Windows:**
+<details>
+<summary><b>Windows</b></summary>
 
-Нужны Python 3.11 и своя установка **Visual C++ 6.0 SP6** с MASM и Resource Compiler из Windows SDK
-(инструменты Microsoft в репозиторий не входят).
+Нужны Python 3.11, VC6 SP6 с MASM (`ML.EXE`) и `rc.exe` из Windows SDK 10/11.
 
 ```powershell
 git clone https://github.com/offx366/titbit-modern.git
@@ -132,10 +133,51 @@ cd titbit-modern
 $env:TITBIT_VC6 = 'C:\Program Files (x86)\Microsoft Visual Studio\VC98'
 py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe tools/build_modern.py --check   # проверка инструментов
 .\.venv\Scripts\python.exe tools/build_modern.py --fresh
 ```
 
-Готовые EXE появятся в `build/modern/`. Подробнее — [docs/BUILD.md](docs/BUILD.md).
+Результат — `build/modern/TitbitModern.exe` и `TitbitSettings.exe`. Данные игры добавьте
+`python tools/titbit_setup.py`. Portable-пакет как в Releases (с TitbitSetup и TitbitStudio):
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements-build.txt
+.\.venv\Scripts\python.exe tools/package_portable.py --game-build build/modern
+```
+
+Подробно: [docs/BUILD.md](docs/BUILD.md).
+
+</details>
+
+<details>
+<summary><b>Linux</b></summary>
+
+Ubuntu 24.04 x86-64 (или WSL2). Сборка: Clang/LLVM 18 → ELF32, без Wine.
+
+```bash
+sudo dpkg --add-architecture i386 && sudo apt update
+sudo apt install git python3 clang-18 llvm-18 lld-18 gcc-multilib g++-multilib pkg-config   libsdl2-dev:i386 libgl1-mesa-dev:i386 libglu1-mesa-dev:i386 zlib1g-dev:i386
+
+git clone https://github.com/offx366/titbit-modern.git
+cd titbit-modern/linux-port
+export TITBIT_VC6="/path/to/VC98"   # в WSL: "/mnt/c/Program Files (x86)/Microsoft Visual Studio/VC98"
+python3 tools/build_linux.py --check
+python3 tools/build_linux.py --minimal --jobs "$(nproc)" --test-runtime
+```
+
+Результат — `build/titbit`. `--minimal` при первой сборке скачивает и собирает в
+`~/.cache/titbit/` урезанные FFmpeg и SDL2 и вшивает их в игру: готовому файлу нужны только
+32-битные glibc и OpenGL. Запуск и упаковка:
+
+```bash
+python3 tools/titbit_setup.py --import /path/to/disc.iso --dest ~/.local/share/titbit/game
+./build/titbit --data ~/.local/share/titbit/game
+python3 tools/package_linux.py --version dev --commit "$(git rev-parse --short HEAD)"   --out dist/Titbit-dev-linux-x86.tar.gz
+```
+
+Подробно: [linux-port/docs/BUILD-LINUX.md](linux-port/docs/BUILD-LINUX.md).
+
+</details>
 
 ---
 
