@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Как запустить игру
+    url: https://github.com/offx366/titbit-modern/blob/main/docs/GETTING_STARTED.md
+    about: Установка, импорт данных с диска или образа, первый запуск.
+  - name: Безопасность и проверка файлов
+    url: https://github.com/offx366/titbit-modern/blob/main/docs/VERIFY.md
+    about: Окно SmartScreen, срабатывания антивирусов, как сверить EXE с исходниками.

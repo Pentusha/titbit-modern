@@ -1,0 +1,67 @@
+name: Ошибка в игре или установке
+description: Игра не запускается, падает, неправильно выглядит, не импортируются данные
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Спасибо! Чем точнее описание, тем быстрее найдётся причина.
+        Не прикладывайте файлы игры (`QUEST.ezd`, видео, образы диска) — их нельзя распространять.
+  - type: dropdown
+    id: package
+    attributes:
+      label: Что вы запускаете
+      options:
+        - Windows ZIP (TitbitModern)
+        - Linux Flatpak
+        - Linux tar.gz
+        - Сборка из исходников (Windows)
+        - Сборка из исходников (Linux)
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Версия пакета
+      description: Из названия файла релиза или из `package.json` в папке игры.
+      placeholder: "0.3.1"
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: Система и видеокарта
+      placeholder: "Windows 11 23H2, NVIDIA RTX 3060 / Ubuntu 24.04, Intel UHD 620, Wayland"
+    validations:
+      required: true
+  - type: dropdown
+    id: source
+    attributes:
+      label: Откуда данные игры
+      options:
+        - Оригинальный CD
+        - Образ диска (ISO / IMG / CUE / CCD)
+        - Установленная игра
+        - Другое
+  - type: textarea
+    id: what
+    attributes:
+      label: Что случилось
+      description: Что делали, что ожидали и что произошло. Если ошибка в определённом месте игры — где именно.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Журнал
+      description: |
+        **Windows:** добавьте строку `log=1` в `titbit_compat.ini` рядом с игрой, повторите ошибку и приложите `titbit_compat.log`.
+        **Linux, tar.gz:** запустите `sh start-game.sh 2>&1 | tee titbit.log` из терминала и приложите `titbit.log`.
+        **Flatpak:** `flatpak run io.github.offx366.Titbit 2>&1 | tee titbit.log`.
+        **Импорт данных:** текст из окна TitbitSetup.
+      render: text
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Скриншоты
+      description: Если ошибка видна на экране — перетащите сюда картинку.
