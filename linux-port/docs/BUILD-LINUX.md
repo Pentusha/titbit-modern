@@ -33,7 +33,7 @@ python3 tools/build_linux.py --check
 python3 tools/build_linux.py --jobs 4 --test-runtime
 ```
 
-В WSL путь к Windows SDK имеет вид `/mnt/c/.../VC98`.
+В WSL путь к VC98 имеет вид `/mnt/c/.../VC98`.
 Результат — `build/titbit`. Логи этапов: `build/logs/`; итоговый отчёт и SHA256:
 `build/linux-build.json`. Одновременные запуски сборочного скрипта блокируются.
 

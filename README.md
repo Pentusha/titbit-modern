@@ -168,7 +168,7 @@ sudo apt install git curl python3 clang-18 llvm-18 lld-18 gcc-multilib g++-multi
 git clone https://github.com/offx366/titbit-modern.git
 cd titbit-modern/linux-port
 export TITBIT_VC6="/path/to/VC98"   # в WSL: "/mnt/c/Program Files (x86)/Microsoft Visual Studio/VC98"
-python3 tools/build_linux.py --check
+python3 tools/build_linux.py --minimal --check   # проверка инструментов
 python3 tools/build_linux.py --minimal --jobs "$(nproc)" --test-runtime
 ```
 

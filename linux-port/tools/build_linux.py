@@ -82,7 +82,7 @@ def main():
         for script, prefix, attr in (('build_ffmpeg_min.sh', cache/'ffmpeg-min', 'ffmpeg'),
                                      ('build_sdl2_min.sh', cache/'sdl2-min', 'sdl2')):
             marker = prefix/'lib'/('libavformat.a' if attr == 'ffmpeg' else 'libSDL2.a')
-            if not marker.exists():
+            if not marker.exists() and not args.check:  # --check only validates the toolchain
                 print('Building '+prefix.name+' (one time)...', flush=True)
                 subprocess.run(['sh', str(ROOT/'tools'/script), str(prefix)], check=True)
             setattr(args, attr, prefix)
