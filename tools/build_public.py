@@ -158,7 +158,9 @@ def main(default_compat=False):
             flags+=['/I'+match.short_path(sdk/'Include'),'/I'+match.short_path(sdk/'ATL/Include')]
         tool=sdk/'Bin'/('ML.EXE' if asm else 'CL.EXE')
         raw=rawdir/obj.name
-        command=[str(tool),'/nologo','/c',*flags,'/Fo'+match.short_path(rawdir)+'/'+obj.name,match.short_path(actual)]
+        # The compiler runs in the source's folder; a relative name keeps __FILE__ (SeeR
+        # error strings) independent of where the repository is checked out.
+        command=[str(tool),'/nologo','/c',*flags,'/Fo'+match.short_path(rawdir)+'/'+obj.name,os.path.relpath(actual,src.parent)]
         previous=cache['objects'].get(row['source'],{})
         if previous.get('command')!=command or not raw.exists() or previous.get('sha256')!=digest(raw):
             run(command,obj.with_suffix('.log'),src.parent)
