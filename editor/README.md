@@ -2,7 +2,11 @@
 
 ![Studio: свободная камера, сцена клуба и выделенный объект](../docs/images/studio.png)
 
-Из корня публичного репозитория:
+**Проще всего:** скачайте `TitbitStudio.exe` из [Releases](https://github.com/offx366/titbit-modern/releases)
+и запустите — он сам найдёт `QUEST.ezd` или спросит его один раз. Собрать exe самому:
+`editoruild_studio.ps1` (нужен Python с зависимостями и `pyinstaller==6.11.1`).
+
+Запуск из исходников, из корня публичного репозитория:
 
 ```powershell
 .\.venv\Scripts\python.exe editor/server.py --archive "D:\Games\Titbit\QUEST.ezd"

@@ -17,9 +17,13 @@ from animation import parse_eza
 from scene_runtime import scene_animations
 
 ROOT = pathlib.Path(__file__).resolve().parent
+# TitbitStudio.exe (PyInstaller): web assets come from the bundle, projects live
+# next to the exe (set by studio_launcher.py through TITBIT_STUDIO_PROJECTS)
+if getattr(__import__('sys'), 'frozen', False):
+    ROOT = pathlib.Path(getattr(__import__('sys'), '_MEIPASS'))
 GAME = (pathlib.Path(os.environ['TITBIT_GAME'])/'QUEST.ezd' if os.environ.get('TITBIT_GAME')
         else ROOT.parent/'decompilation/original/game/App_Executables/QUEST.ezd')
-PROJECT = ROOT/'projects/default.json'
+PROJECT = (pathlib.Path(os.environ['TITBIT_STUDIO_PROJECTS']) if os.environ.get('TITBIT_STUDIO_PROJECTS') else ROOT/'projects')/'default.json'
 LOCK = threading.Lock()
 
 
