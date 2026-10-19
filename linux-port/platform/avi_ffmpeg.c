@@ -31,7 +31,7 @@ static void video_free(Video *v) {
  sws_freeContext(v->sws);av_packet_free(&v->packet);av_frame_free(&v->frame);
  avcodec_free_context(&v->codec);avformat_close_input(&v->format);free(v->dib);free(v);
 }
-void WAPI AVIFileInit(void) { /* Current libavformat requires no global initialization. */ }
+void WAPI AVIFileInit(void) { av_log_set_level(AV_LOG_ERROR); /* quiet swscale notices; no other global setup */ }
 void WAPI AVIFileExit(void) { /* Individual streams own and release decoder state. */ }
 int32_t WAPI AVIStreamOpenFromFileA(void **out,const char *file,uint32_t type,int32_t index,unsigned mode,void *clsid) {
  char path[4096];Video *v;const AVCodec *codec;(void)mode;(void)clsid;

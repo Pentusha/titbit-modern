@@ -37,7 +37,7 @@ def preflight(vc98, environment):
             raise RuntimeError('Required tool missing: '+tool+'; see docs/BUILD-LINUX.md')
         run = subprocess.run([path, '--version'], capture_output=True, text=True, env=environment)
         versions[tool] = (run.stdout or run.stderr).splitlines()[0]
-    libraries = ('sdl2', 'gl', 'glu', 'libavformat', 'libavcodec', 'libavutil', 'libswscale', 'libswresample')
+    libraries = ('gl', 'glu') + (() if environment.get('TITBIT_SDL2') else ('sdl2',)) +         (() if environment.get('TITBIT_FFMPEG') else ('libavformat', 'libavcodec', 'libavutil', 'libswscale', 'libswresample'))
     subprocess.run(['pkg-config', '--exists', *libraries], env=environment, check=True)
     with tempfile.TemporaryDirectory(prefix='titbit-native-check-') as temporary:
         executable = Path(temporary)/'check'
@@ -61,6 +61,12 @@ def main():
     parser.add_argument('--vc98', type=Path, default=os.environ.get('TITBIT_VC6'),
                         help='User-installed VC98 directory containing Include and ATL/Include')
     parser.add_argument('--jobs', type=int, default=4)
+    parser.add_argument('--ffmpeg', type=Path, default=os.environ.get('TITBIT_FFMPEG'),
+                        help='Prefix of the minimal static FFmpeg from tools/build_ffmpeg_min.sh (fewer runtime libraries)')
+    parser.add_argument('--minimal', action='store_true',
+                        help='Build (once) and link the minimal static FFmpeg and SDL2: the game then needs only 32-bit glibc and GL')
+    parser.add_argument('--sdl2', type=Path, default=os.environ.get('TITBIT_SDL2'),
+                        help='Prefix of the static SDL2 from tools/build_sdl2_min.sh (X11/Wayland/audio loaded at run time)')
     parser.add_argument('--check', action='store_true', help='Check toolchain and ELF32 execution without rebuilding')
     parser.add_argument('--test-runtime', action='store_true', help='Also execute string/EH/locale/FILE32 checks')
     args = parser.parse_args()
@@ -70,6 +76,20 @@ def main():
         parser.error('--jobs must be between 1 and 64')
     vc98 = args.vc98.expanduser().resolve()
     environment = dict(os.environ, TITBIT_VC6=str(vc98))
+    if args.minimal:
+        # outside the repository: autotools (SDL2) cannot build in paths with spaces
+        cache = Path(os.environ.get('XDG_CACHE_HOME') or Path.home()/'.cache')/'titbit'
+        for script, prefix, attr in (('build_ffmpeg_min.sh', cache/'ffmpeg-min', 'ffmpeg'),
+                                     ('build_sdl2_min.sh', cache/'sdl2-min', 'sdl2')):
+            marker = prefix/'lib'/('libavformat.a' if attr == 'ffmpeg' else 'libSDL2.a')
+            if not marker.exists():
+                print('Building '+prefix.name+' (one time)...', flush=True)
+                subprocess.run(['sh', str(ROOT/'tools'/script), str(prefix)], check=True)
+            setattr(args, attr, prefix)
+    if args.ffmpeg:
+        environment['TITBIT_FFMPEG'] = str(args.ffmpeg.expanduser().resolve())
+    if args.sdl2:
+        environment['TITBIT_SDL2'] = str(args.sdl2.expanduser().resolve())
     pkgconfig = Path('/usr/lib/i386-linux-gnu/pkgconfig')
     if pkgconfig.is_dir() and 'PKG_CONFIG_LIBDIR' not in environment:
         environment['PKG_CONFIG_LIBDIR'] = str(pkgconfig)+':/usr/share/pkgconfig'

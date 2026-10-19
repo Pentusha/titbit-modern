@@ -35,3 +35,14 @@ Linux-пакет содержит исходники порта; версия к
 PyInstaller. Их тексты лицензий находятся в `docs/licenses/runtime/` внутри
 portable-пакета. Исходники использованных компонентов движка находятся в этом
 репозитории; версия исходников конкретной сборки записана в `package.json` пакета.
+
+
+## Сборка `--minimal`
+
+| Компонент | Лицензия | Как используется |
+|---|---|---|
+| FFmpeg 6.1.1 (libavformat, libavcodec, libavutil, libswscale, libswresample) | GNU LGPL 2.1+ | статически: AVI + MP42 + CRAM, собран `tools/build_ffmpeg_min.sh` без GPL-компонентов; исходники игры открыты, поэтому её можно перелинковать с любой версией FFmpeg |
+| SDL 2.30.9 | zlib | статически, `tools/build_sdl2_min.sh` |
+| Mesa GLU | SGI Free Software License B | статически (`libGLU.a`) |
+| GCC libstdc++ / libgcc | GPL с исключением GCC Runtime Library | статически |
+| zlib | zlib | статически |

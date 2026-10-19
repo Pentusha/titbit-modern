@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Build the native SDL/OpenGL/FFmpeg boundary as genuine ELF32 objects."""
 import argparse
+import os
 from pathlib import Path
 import shlex
 import subprocess
@@ -13,7 +14,16 @@ def main():
     p.add_argument('--out',type=Path,default=ROOT/'build/native')
     a=p.parse_args();a.out.mkdir(parents=True,exist_ok=True)
     packages=['sdl2','libavformat','libavcodec','libswscale','libswresample']
-    pkg=subprocess.check_output(['pkg-config','--cflags',*packages],text=True)
+    prefix=os.environ.get('TITBIT_FFMPEG'); sdl=os.environ.get('TITBIT_SDL2')
+    if sdl:      # static SDL2 (tools/build_sdl2_min.sh)
+        packages.remove('sdl2')
+    if prefix:   # minimal static FFmpeg (tools/build_ffmpeg_min.sh)
+        packages=[p for p in packages if not p.startswith('lib')]
+    pkg=subprocess.check_output(['pkg-config','--cflags',*packages],text=True) if packages else ''
+    if sdl:
+        pkg+=' -I'+str(Path(sdl)/'include/SDL2')+' -D_REENTRANT'
+    if prefix:
+        pkg+=' -I'+str(Path(prefix)/'include')
     sources=['sdl_platform.c','win32_sdl.c','win32_kernel.c','win32_heap.c','win32_misc.c','win32_mixer.c','win32_host.c','gl_stdcall.c','avi_ffmpeg.c',
              'seer_call.S','ms_setjmp.S','main.c','ms_exception.cpp','crt_linux.c','crt_new.cpp','game_input_native.cpp']
     if (ROOT/'platform/ms_rtti.cpp').exists():sources.append('ms_rtti.cpp')

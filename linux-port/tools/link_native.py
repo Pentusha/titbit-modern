@@ -7,6 +7,7 @@ used as executable storage or absolute implementation definitions.
 import argparse
 from collections import defaultdict
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -75,6 +76,31 @@ class Elf32:
                     target=self.symbol_index[info>>8]
                     return target,offset
         raise ValueError('No compiler relocation for '+name)
+
+
+def sdl_libs():
+    """System libSDL2, or with TITBIT_SDL2=<prefix> the static SDL2 from
+    tools/build_sdl2_min.sh, which dlopens X11/Wayland/PulseAudio/ALSA itself."""
+    prefix=os.environ.get('TITBIT_SDL2')
+    return [str(Path(prefix)/'lib/libSDL2.a')] if prefix else ['-lSDL2']
+
+
+def glu_libs():
+    """libGLU is linked statically in the reduced-dependency build (libGLU.a from
+    libglu1-mesa-dev:i386); only the GL driver itself stays a shared library."""
+    return ['-Wl,-Bstatic','-lGLU','-Wl,-Bdynamic'] if os.environ.get('TITBIT_SDL2') else ['-lGLU']
+
+
+def media_libs():
+    """System FFmpeg, or with TITBIT_FFMPEG=<prefix> the minimal static build from
+    tools/build_ffmpeg_min.sh (AVI + MP42 + CRAM only) plus static libstdc++,
+    libgcc and zlib: the ELF then needs only libc, SDL2, GL and GLU at run time."""
+    prefix=os.environ.get('TITBIT_FFMPEG')
+    if not prefix:
+        return ['-lavformat','-lavcodec','-lavutil','-lswscale','-lswresample','-lz']
+    lib=Path(prefix)/'lib'
+    return [str(lib/(n+'.a')) for n in ('libavformat','libavcodec','libswscale','libswresample','libavutil')]+[
+        '-Wl,-Bstatic','-lz','-Wl,-Bdynamic','-static-libstdc++','-static-libgcc']
 
 
 def main():
@@ -277,8 +303,7 @@ def main():
         command=['clang++-18','-m32','-no-pie','-Wl,--gc-sections',
                  '-Wl,-Map,'+str(a.native/'titbit.map'),
                  *[r['object'] for r in direct],'-Wl,--start-group',str(archive),'-Wl,--end-group','-L/usr/lib/i386-linux-gnu',
-                 '-lSDL2','-lGL','-lGLU','-lavformat','-lavcodec','-lavutil','-lswscale','-lswresample',
-                 '-lz','-lpthread','-ldl','-lm','-o',str(a.out.with_suffix('.new'))]
+                 *sdl_libs(),*glu_libs(),'-lGL',*media_libs(),'-lpthread','-ldl','-lm','-o',str(a.out.with_suffix('.new'))]
         # INSERT lets the native linker keep its standard ELF layout.
         script.write_text(script.read_text()+'SECTIONS { .titbit_metadata : { } } INSERT AFTER .rodata;\n')
         result=subprocess.run(command,capture_output=True,text=True)

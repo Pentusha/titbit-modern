@@ -41,6 +41,24 @@ python3 tools/build_linux.py --jobs 4 --test-runtime
 в DWARF и нативный backend ELF32. Окно, ввод, звук и видео обслуживают SDL2,
 OpenGL и FFmpeg. Исходники оригинального движка и платформенный слой разделены.
 
+## Сборка с минимумом зависимостей (рекомендуется для пакетов)
+
+```sh
+python3 tools/build_linux.py --minimal --jobs 4 --test-runtime
+```
+
+Один раз собирает в `~/.cache/titbit/` статический FFmpeg только с тем, что нужно игре
+(контейнер AVI, кодеки MP42 и CRAM) и статический SDL2, который сам подгружает X11,
+Wayland, PulseAudio, ALSA и PipeWire во время работы. libstdc++, libgcc, zlib и GLU
+вшиваются в исполняемый файл. Итог — ELF зависит только от `libGL.so.1` и glibc:
+
+```sh
+sudo apt install libc6:i386 libgl1:i386 libpulse0:i386   # для запуска
+```
+
+Нужны git и сеть при первой сборке (исходники FFmpeg 6.1.1 и SDL 2.30.9).
+Отдельно: `tools/build_ffmpeg_min.sh`, `tools/build_sdl2_min.sh`, флаги `--ffmpeg` / `--sdl2`.
+
 ## Данные и запуск
 
 ```sh
