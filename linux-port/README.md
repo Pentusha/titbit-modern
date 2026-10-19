@@ -5,7 +5,7 @@
 
 ## Запуск
 
-Готовый пакет: [Linux Release](https://github.com/offx366/titbit-modern/releases/tag/v0.2.0-linux.1).
+Готовый пакет: [Releases](https://github.com/offx366/titbit-modern/releases). Нужны только 32-битные glibc и OpenGL.
 Установка системных библиотек: [основная инструкция](https://github.com/offx366/titbit-modern#установка-linux).
 Для запуска пакета компилятор и VC98 не нужны. Сначала импортируйте свою копию игры:
 
@@ -34,8 +34,11 @@ sh start-game.sh --data /path/to/game
 
 ```sh
 export TITBIT_VC6=/path/to/VC98
-python3 tools/build_linux.py --test-runtime
+python3 tools/build_linux.py --minimal --test-runtime
 ```
+
+`--minimal` вшивает урезанные FFmpeg (AVI, MP42, CRAM) и SDL2, libstdc++, zlib и GLU:
+готовый ELF зависит только от `libGL.so.1` и glibc. Без флага используются системные библиотеки.
 
 Зависимости и команды для Ubuntu: [BUILD-LINUX.md](docs/BUILD-LINUX.md).
 Результат: `build/titbit`; журнал сборки: `build/linux-build.json`.

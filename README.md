@@ -41,64 +41,42 @@ Windows 10/11; Linux-порт собирается в нативный ELF32 и 
 
 ## Установка Linux
 
-Проверено на **Ubuntu 24.04 x86-64** и WSL2 / WSLg. Игра — **ELF32/i386**:
-нужны 32-битные библиотеки, Wine не используется. ARM64 и другие дистрибутивы
-пока не проверены. Для запуска готового пакета компилятор и VC98 не нужны.
+Нативная сборка (ELF32), без Wine. Нужны только 32-битные glibc и OpenGL —
+всё остальное (видео, звук, окно) уже внутри исполняемого файла.
+Проверено на Ubuntu 24.04 x86-64 и WSL2 / WSLg.
 
-1. Установите зависимости:
+1. Установите зависимости (Ubuntu / Debian):
 
    ```bash
-   sudo dpkg --add-architecture i386
-   sudo apt update
-   sudo apt install libc6:i386 libstdc++6:i386 libsdl2-2.0-0:i386 \
-     libgl1:i386 libglu1-mesa:i386 libavformat60:i386 libavcodec60:i386 \
-     libavutil58:i386 libswscale7:i386 libswresample4:i386 zlib1g:i386 \
-     python3 python3-tk python3-pil
+   sudo dpkg --add-architecture i386 && sudo apt update
+   sudo apt install libgl1:i386 libgl1-mesa-dri:i386 libx11-6:i386 libxext6:i386      libxcursor1:i386 libxi6:i386 libxrandr2:i386 libpulse0:i386 python3 python3-tk python3-pil
    ```
 
-2. Скачайте `Titbit-0.2.0-linux.1-linux-x86.tar.gz` из
-   [Linux Release](https://github.com/offx366/titbit-modern/releases/tag/v0.2.0-linux.1),
-   распакуйте и перейдите в каталог пакета:
+   Если у вас стоит Steam, 32-битные библиотеки, скорее всего, уже есть.
+   `python3`, `python3-tk` и `python3-pil` нужны только для импорта данных и Studio.
+
+2. Скачайте `Titbit-*-linux-x86.tar.gz` из [Releases](https://github.com/offx366/titbit-modern/releases),
+   распакуйте и импортируйте данные своей копии игры:
 
    ```bash
-   tar -xzf Titbit-0.2.0-linux.1-linux-x86.tar.gz
-   cd Titbit-0.2.0-linux.1-linux-x86
+   tar -xzf Titbit-*-linux-x86.tar.gz && cd Titbit-*-linux-x86
    sh tools/import_assets.sh
    ```
 
-   Выберите ISO / IMG / CUE / CCD, папку оригинального InstallShield-установщика
-   (`data1.hdr`, `data*.cab`) или готовую папку игры. Мастер извлечёт `QUEST.ezd`
-   и 18 AVI, проверит SHA256 и сохранит их в `~/.local/share/titbit/game/`.
-   Произвольные однофайловые репаки `setup.exe` не поддерживаются.
+   Укажите ISO / IMG / CUE / CCD, папку установщика (`data1.hdr`, `data*.cab`) или
+   установленную игру — `QUEST.ezd` и 18 роликов скопируются и проверятся.
 
-3. Запустите игру или Studio:
+3. Играйте:
 
    ```bash
-   sh start-game.sh
-   sh tools/start_studio.sh
+   sh start-game.sh          # игра
+   sh tools/start_studio.sh  # Titbit Studio в браузере
    ```
-
-Studio откроется в браузере по `http://127.0.0.1:4318/`. Игровые данные
-не изменяются; проекты хранятся в `~/.local/share/titbit/studio-projects/`.
-Для сервера без браузера: `sh tools/start_studio.sh --no-browser`.
-
-Консольный импорт и другая папка данных:
-
-```bash
-sh tools/import_assets.sh --import /path/to/game.iso --dest "$HOME/Games/Titbit-data"
-sh start-game.sh --data "$HOME/Games/Titbit-data"
-sh tools/start_studio.sh --archive "$HOME/Games/Titbit-data/QUEST.ezd"
-```
-
-Linux-порт находится в [`linux-port/`](linux-port/). Инструкции:
-[сборка](linux-port/docs/BUILD-LINUX.md), [импорт и Studio](linux-port/docs/STUDIO.md).
-В Linux проверены ролики, меню, начальная улица, ходьба, анимации, диалог,
-сохранение и загрузка. Полное прохождение пока не проверено. Полный экран
-Alt+Enter / F11 и Windows-панель настроек относятся к Windows-сборке.
 
 ![Начальная улица — нативная Linux-сборка](docs/images/game-linux.png)
 
-Состав и результаты проверок: [VALIDATION-LINUX.md](docs/VALIDATION-LINUX.md).
+Сборка из исходников: [linux-port/docs/BUILD-LINUX.md](linux-port/docs/BUILD-LINUX.md)
+(`python3 tools/build_linux.py --minimal`). Проверки: [VALIDATION-LINUX.md](docs/VALIDATION-LINUX.md).
 
 ## Titbit Studio
 
