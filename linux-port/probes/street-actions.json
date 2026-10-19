@@ -1,10 +1,9 @@
 [
-  {"at": 2, "type": "key", "key": "Escape"},
-  {"at": 8, "type": "key", "key": "Escape"},
-  {"at": 20, "type": "capture", "name": "main-menu"},
-  {"at": 22, "type": "click", "x": 250, "y": 206},
-  {"at": 25, "type": "capture", "name": "new-game-25s"},
-  {"at": 30, "type": "capture", "name": "new-game-30s"},
-  {"at": 32, "type": "click", "x": 250, "y": 206},
-  {"at": 40, "type": "capture", "name": "new-game-40s"}
+  {"at": 2, "type": "key", "key": "Escape", "whenScene": "startup.XML"},
+  {"at": 3, "type": "key", "key": "Escape", "whenScene": "introvzlab.xml"},
+  {"at": 4, "type": "key", "key": "Escape", "whenScene": "intro.xml"},
+  {"at": 5, "type": "capture", "name": "main-menu", "whenScene": "menu.xml"},
+  {"at": 6, "type": "click", "x": 250, "y": 206, "whenScene": "menu.xml"},
+  {"at": 7, "type": "click", "x": 250, "y": 206, "whenScene": "intro2.XML"},
+  {"at": 8, "type": "capture", "name": "street", "whenScene": "sumerki_entrance.XML"}
 ]

@@ -76,6 +76,12 @@ python3 tools/headless_probe.py --data /path/to/game-data --frames 9000 \
   --timeout 90 --out build/headless-street --actions probes/street-actions.json --gdb
 ```
 
+Actions in `street-actions.json` wait for the engine's `Scene loaded` marker
+and match the actual XML scene (`whenScene`), rather than assuming a wall-clock
+deadline identifies the current screen. `--require-scene sumerki_entrance.XML`
+adds an explicit scene requirement to the final report. A cold startup that
+has not reached the street fails rather than passing on exit status alone.
+
 The test creates its own private Xvfb display, skips publisher videos, selects
 New Game, and skips the introductory cutscene. Check the final frame for the
 rendered `sumerki_entrance.XML` street. The first verified run reached this scene

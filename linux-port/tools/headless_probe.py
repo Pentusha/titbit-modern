@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Run only on an owned, private Xvfb display, recording the actual GL frames."""
 import argparse
+import errno
 import hashlib
 import json
 import os
 from pathlib import Path
 import resource
+import signal
 import socket
 import subprocess
 import time
@@ -16,10 +18,12 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--data',required=True,type=Path)
-    p.add_argument('--exe',type=Path,default=ROOT/'build/titbit',help='Native ELF to test (defaults to the main build)')
+    p.add_argument('--exe',type=Path,default=ROOT/'titbit' if (ROOT/'titbit').is_file() else ROOT/'build/titbit',
+                   help='Native ELF to test (packaged executable or main build)')
     p.add_argument('--frames',type=int,default=50)
     p.add_argument('--timeout',type=int,default=60)
     p.add_argument('--actions',type=Path,help='Timed XTest key/click/capture actions on the private display')
+    p.add_argument('--require-scene',action='append',default=[],help='Fail unless this XML scene was fully loaded; repeatable')
     p.add_argument('--gdb',action='store_true')
     p.add_argument('--audio',choices=('dummy','disk'),default='dummy')
     p.add_argument('--out',type=Path,default=ROOT/'build/headless-probe')
@@ -53,12 +57,14 @@ def main():
             if ready:break
             display.terminate();display.wait()
         if not display or not ready:raise RuntimeError('Private Xvfb did not start')
+        process=None
         try:
             number=str(candidate)
             environment['DISPLAY']=':'+number
             start=time.monotonic()
             actions=json.loads(a.actions.read_text()) if a.actions else []
             performed=[]
+            scenes=[];loading_scene=None;current_scene=None;scene_ready=0;partial=''
             with (a.out/'game.log').open('w') as log:
                 command=[str(executable),'--data',str(data)]
                 if a.gdb:command=['gdb','--batch','-q','-ex','set pagination off','-ex','run',
@@ -71,10 +77,30 @@ def main():
                                  '--args',*command]
                 process=subprocess.Popen(command,env=environment,
                     stdout=log,stderr=subprocess.STDOUT,
+                    start_new_session=True,
                     preexec_fn=lambda:resource.setrlimit(resource.RLIMIT_CORE,(0,0)))
+                scene_log=(a.out/'game.log').open(errors='replace')
                 while process.poll() is None and time.monotonic()-start<a.timeout:
+                    # Use the engine's actual completed-load marker. Cold GL,
+                    # GDB and archive initialization can delay the first frame;
+                    # elapsed wall time alone does not identify the current UI.
+                    try:partial+=scene_log.read()
+                    except OSError as exc:
+                        # WSL/DrvFS may report ENODATA while an empty/new log
+                        # is being filled by another process. Retry only this
+                        # transient EOF case, not arbitrary filesystem errors.
+                        if exc.errno not in (errno.ENODATA,errno.EAGAIN):raise
+                    lines=partial.split('\n');partial=lines.pop()
+                    for line in lines:
+                        if line.startswith('Start loading ') and line.strip().lower().endswith('.xml'):
+                            loading_scene=line[len('Start loading '):].strip();current_scene=None
+                        elif line.strip()=='Scene loaded' and loading_scene:
+                            current_scene=loading_scene;loading_scene=None
+                            scenes.append(current_scene);scene_ready=time.monotonic()
                     for index,action in enumerate(actions):
                         if index in performed or time.monotonic()-start<action['at']:continue
+                        if action.get('whenScene') and (not current_scene or current_scene.casefold()!=action['whenScene'].casefold()
+                                or time.monotonic()-scene_ready<action.get('sceneDelay',.5)):continue
                         kind=action['type']
                         if kind=='key':
                             subprocess.run(['xdotool','key',action['key']],env=environment,check=True)
@@ -93,8 +119,10 @@ def main():
                         else:raise ValueError('Unknown action type: '+kind)
                         performed.append(index)
                     time.sleep(.05)
+                scene_log.close()
                 code=process.poll()
-                if code is None:process.terminate();process.wait(timeout=10);code='timeout'
+                if code is None:
+                    os.killpg(process.pid,signal.SIGTERM);process.wait(timeout=10);code='timeout'
             text=(a.out/'game.log').read_text(errors='replace')
             images=[json.loads(path.read_text()) for path in sorted(a.out.glob('frame-*.json'))]
             report={'executableSha256':hashlib.sha256(executable.read_bytes()).hexdigest(),
@@ -102,12 +130,22 @@ def main():
                     'seconds':round(time.monotonic()-start,2),'exitCode':code,'framesRequested':a.frames,
                     'images':images,'log':str(a.out/'game.log')}
             report['actionsPerformed']=[actions[index] for index in performed]
+            report['scenesLoaded']=scenes
+            report['requiredScenes']=a.require_scene
+            report['requiredScenesLoaded']=all(scene.casefold() in {s.casefold() for s in scenes} for scene in a.require_scene)
             report['passed']=(code==0 and bool(images) and len(performed)==len(actions)
+                              and report['requiredScenesLoaded']
                               and 'file corrupt' not in text and 'received signal' not in text)
             (a.out/'report.json').write_text(json.dumps(report,indent=2))
-            print(text[-2500:]);print(json.dumps(report,indent=2))
+            print(json.dumps({key:report[key] for key in ('passed','exitCode','seconds','executableSha256','scenesLoaded','requiredScenesLoaded')},indent=2))
+            print('Full report: '+str(a.out/'report.json'))
             return 0 if report['passed'] else 1
         finally:
+            if process is not None and process.poll() is None:
+                os.killpg(process.pid,signal.SIGTERM)
+                try:process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    os.killpg(process.pid,signal.SIGKILL);process.wait()
             display.terminate()
             try:display.wait(timeout=5)
             except subprocess.TimeoutExpired:display.kill();display.wait()
