@@ -16,7 +16,7 @@
 
 ## Установка
 
-1. Скачайте `TitbitModern-*-windows-x64.zip` из [Releases](https://github.com/offx366/titbit-modern/releases/latest)
+1. Скачайте `TitbitModern-*-windows-x64.zip` из [Releases](https://github.com/offx366/titbit-modern/releases)
    и распакуйте в любую папку, например `C:\Games\TitbitModern`.
 2. Запустите **TitbitSetup.exe** и укажите, откуда взять данные игры:
    - **диск** — вставьте CD и выберите привод;
