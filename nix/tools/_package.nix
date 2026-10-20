@@ -18,8 +18,12 @@ stdenvNoCC.mkDerivation {
   src = lib.fileset.toSource {
     root = src;
     fileset = lib.fileset.unions [
-      (src + "/linux-port/tools")
-      (src + "/linux-port/editor")
+      (lib.fileset.fileFilter (file: !(file.hasExt "pyc" || file.hasExt "pyo")) (
+        src + "/linux-port/tools"
+      ))
+      (lib.fileset.fileFilter (file: !(file.hasExt "pyc" || file.hasExt "pyo")) (
+        src + "/linux-port/editor"
+      ))
       (src + "/linux-port/config/assets.json")
     ];
   };

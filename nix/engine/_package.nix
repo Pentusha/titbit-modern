@@ -35,7 +35,9 @@ stdenv.mkDerivation {
   src = lib.fileset.toSource {
     root = src;
     fileset = lib.fileset.unions [
-      (src + "/linux-port")
+      (lib.fileset.difference (lib.fileset.fileFilter (file: !(file.hasExt "pyc" || file.hasExt "pyo")) (
+        src + "/linux-port"
+      )) (src + "/linux-port/docs"))
       (src + "/portable")
     ];
   };
@@ -114,6 +116,7 @@ stdenv.mkDerivation {
   installPhase = ''
     runHook preInstall
     install -Dm755 build/titbit "$out/libexec/titbit"
+    install -Dm755 build/cpp-runtime-test/smoke "$out/libexec/titbit-runtime-smoke"
     mkdir -p "$out/bin"
     substitute ${./titbit.sh} "$out/bin/titbit" \
       --subst-var-by shell ${stdenv.shell} \
