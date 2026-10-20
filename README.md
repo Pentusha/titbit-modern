@@ -41,7 +41,7 @@ Windows 10/11; Linux-порт собирается в нативный ELF32 и 
 
 ## Установка Linux
 
-Нативная сборка (ELF32), без Wine. Python и компилятор не нужны. Два варианта:
+Нативная сборка (ELF32), без Wine. Python и компилятор не нужны. Варианты:
 
 **Flatpak — любой дистрибутив.** Скачайте `Titbit-*-x86_64.flatpak` из
 [Releases](https://github.com/offx366/titbit-modern/releases):
@@ -79,6 +79,13 @@ flatpak run io.github.offx366.Titbit
 установщика (`data1.hdr`, `data*.cab`) или установленную игру — `QUEST.ezd` и 18 роликов
 скопируются и проверятся. Дальше игра запускается сразу. Studio: `sh tools/start_studio.sh`
 (во Flatpak — `flatpak run io.github.offx366.Titbit --studio`).
+
+**Nix / NixOS:** `nix run github:offx366/titbit-modern` соберёт и запустит игру.
+Подключение к конфигурации NixOS и подробности: [linux-port/docs/NIX.md](linux-port/docs/NIX.md).
+
+**macOS и ARM Linux:** нативной версии нет. Экспериментально — через Nix с эмуляцией QEMU
+([NIX.md](linux-port/docs/NIX.md)); Windows-версию можно попробовать в CrossOver / Wine.
+Расскажите в Issues, что получилось.
 
 ![Начальная улица — нативная Linux-сборка](docs/images/game-linux.png)
 
