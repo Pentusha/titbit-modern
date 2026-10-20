@@ -108,6 +108,7 @@ stdenv.mkDerivation {
   doCheck = true;
   checkPhase = ''
     runHook preCheck
+    python3 ${./tests/launcher.py} ${./titbit.sh} ${stdenv.shell}
     python3 tools/check_cpp_runtime.py
     ./build/titbit --help
     runHook postCheck
