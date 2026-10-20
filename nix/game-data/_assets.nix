@@ -14,7 +14,7 @@ stdenvNoCC.mkDerivation {
   dontBuild = true;
   installPhase = ''
     runHook preInstall
-    ${python3}/bin/python3 ${./prepare.py} \
+    PYTHONPATH=${tools}/share/titbit/tools ${python3}/bin/python3 ${./prepare.py} \
       --importer ${tools}/bin/titbit-setup --source "$source" --dest "$out"
     runHook postInstall
   '';

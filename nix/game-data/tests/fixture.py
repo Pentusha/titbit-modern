@@ -50,6 +50,19 @@ def main():
     directory = b"".join(entries)
     data[20 * 2048:20 * 2048 + len(directory)] = directory
     (root / "torrent" / "disc.iso").write_bytes(data)
+    clonecd = root / "clonecd"
+    clonecd.mkdir()
+    raw = bytearray()
+    for offset in range(0, len(data), 2048):
+        raw += b"\0" + b"\xff" * 10 + b"\0\0\0\0\1"
+        raw += data[offset:offset + 2048] + bytes(288)
+    (clonecd / "IMAGE.img").write_bytes(raw)
+    (clonecd / "IMAGE.cue").write_text(
+        'FILE "IMAGE.img" BINARY\n TRACK 1 MODE1/2352\n INDEX 1 00:00:00\n'
+    )
+    (clonecd / "IMAGE.CCD").write_text(
+        "[Disc]\nSessions=1\nDataTracksScrambled=0\n[TRACK 1]\nMODE=1\nINDEX 1=0\n"
+    )
     (root / "assets.json").write_text(json.dumps(manifest))
 
 

@@ -46,6 +46,7 @@ runCommand "titbit-game-data-check"
     TITBIT_FIXTURE = fixture;
     TITBIT_PREPARE = ./prepare.py;
     TITBIT_IMPORTER = "${fixtureTools}/bin/titbit-setup";
+    PYTHONPATH = "${fixtureTools}/share/titbit/tools";
   }
   ''
     ${python3}/bin/python3 ${./tests/runtime.py}

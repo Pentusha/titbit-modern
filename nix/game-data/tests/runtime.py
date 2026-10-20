@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -93,6 +94,19 @@ class GameDataTests(unittest.TestCase):
         shutil.copy2(iso, source / "two.iso")
         with self.assertRaisesRegex(ValueError, "Several matching"):
             module.select_source(os.environ["TITBIT_IMPORTER"], source)
+
+    def test_cue_ccd_and_img_of_one_disc_import_as_one_source(self):
+        source = Path(os.environ["TITBIT_FIXTURE"]) / "clonecd"
+        result = subprocess.run(
+            [sys.executable, os.environ["TITBIT_PREPARE"],
+             "--importer", os.environ["TITBIT_IMPORTER"],
+             "--source", str(source), "--dest", str(self.data)],
+            text=True, capture_output=True, check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(len(list(self.data.iterdir())), 19)
+        self.assertEqual((self.data / "QUEST.ezd").read_bytes(),
+                         (Path(os.environ["TITBIT_DATA"]) / "QUEST.ezd").read_bytes())
 
 
 if __name__ == "__main__":
