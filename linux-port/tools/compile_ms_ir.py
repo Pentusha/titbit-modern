@@ -147,6 +147,10 @@ def main():
             '-ffunction-sections', '-fdata-sections', '-ferror-limit=16',
             '-Wno-ignored-attributes', '-Wno-pragma-pack', '-Wno-microsoft-cast']
     portable = ROOT/'portable' if (ROOT/'portable').is_dir() else ROOT.parent/'portable'
+    # __FILE__ (SeeR error strings) and the module name must not depend on where the
+    # checkout lives, so the same sources build the same ELF in any folder.
+    base += ['-ffile-prefix-map='+str(ROOT)+'=linux-port',
+             '-ffile-prefix-map='+str(portable.resolve())+'=portable']
     if sdk:
         base += ['-ivfsoverlay', str(overlay)]
     else:
@@ -205,7 +209,7 @@ extern "C" long __stdcall DirectInputCreateA(void *instance, unsigned version, v
             command += ['-I', str(folder)]
         ir = out/(key+'.ll')
         temporary_ir = ir.with_suffix('.new.ll')
-        command += ['-S', '-emit-llvm', str(actual), '-o', str(temporary_ir)]
+        command += ['-S', '-emit-llvm', os.path.relpath(actual, ROOT/row.get('cwd', '.')), '-o', str(temporary_ir)]
         result['command'] = command
         try:
             run = subprocess.run(command, cwd=ROOT/row.get('cwd', '.'), capture_output=True, text=True, errors='replace', timeout=120)

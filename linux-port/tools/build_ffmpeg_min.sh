@@ -24,7 +24,7 @@ fetch() {  # url sha256 dir: download once, check the pinned checksum, unpack
 fetch https://ffmpeg.org/releases/ffmpeg-6.1.1.tar.xz \
   8684f4b00f94b85461884c3719382f1261f0d9eb3d59640a1f4ac0873616f968 "$SRC"
 cd "$SRC"
-./configure --prefix="$PREFIX" --arch=x86 --target-os=linux --cc="gcc -m32" --extra-cflags="-O2 -fPIC" \
+./configure --prefix="$PREFIX" --arch=x86 --target-os=linux --cc="gcc -m32" --extra-cflags="-O2 -fPIC -ffile-prefix-map=$SRC=ffmpeg" \
   --enable-static --disable-shared --disable-everything --disable-programs --disable-doc --disable-network \
   --disable-autodetect --disable-x86asm --disable-avdevice --disable-avfilter --disable-postproc \
   --enable-demuxer=avi --enable-decoder=msmpeg4v2,msvideo1 --enable-protocol=file \

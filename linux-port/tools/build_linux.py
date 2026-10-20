@@ -84,9 +84,17 @@ def main():
         for script, prefix, attr in (('build_ffmpeg_min.sh', cache/'ffmpeg-min', 'ffmpeg'),
                                      ('build_sdl2_min.sh', cache/'sdl2-min', 'sdl2')):
             marker = prefix/'lib'/('libavformat.a' if attr == 'ffmpeg' else 'libSDL2.a')
+            recipe = hashlib.sha256((ROOT/'tools'/script).read_bytes().replace(b'\r\n', b'\n')).hexdigest()
+            stamp = prefix/'recipe.sha256'
+            if marker.exists() and not args.check and (not stamp.is_file() or stamp.read_text().strip() != recipe):
+                # built by an older recipe: keep the verified download, rebuild the rest
+                for old in prefix.iterdir():
+                    if not old.name.endswith(('.tar.gz', '.tar.xz')):
+                        shutil.rmtree(old) if old.is_dir() else old.unlink()
             if not marker.exists() and not args.check:  # --check only validates the toolchain
                 print('Building '+prefix.name+' (one time)...', flush=True)
                 subprocess.run(['sh', str(ROOT/'tools'/script), str(prefix)], check=True)
+                stamp.write_text(recipe+'\n')
             setattr(args, attr, prefix)
     if args.ffmpeg:
         environment['TITBIT_FFMPEG'] = str(args.ffmpeg.expanduser().resolve())
@@ -149,7 +157,8 @@ def main():
         helper = BUILD/'ms-runtime-elf/objects/vc6_native_helpers.o'
         helper.parent.mkdir(parents=True, exist_ok=True)
         stage('05 Build GNU exception state helper',
-              ['clang++-18', '-m32', '-std=c++17', '-O2', '-fno-omit-frame-pointer', '-mstackrealign',
+              ['clang++-18', '-m32', '-std=c++17', '-O2', '-ffile-prefix-map='+str(ROOT)+'=linux-port',
+               '-fno-omit-frame-pointer', '-mstackrealign',
                '-c', str(ROOT/'src/linux_runtime/vc6_native_helpers.cpp'), '-o', str(helper)])
         stage('06 Resolve source bindings and link', [sys.executable, str(ROOT/'tools/link_native.py'), '--link'])
         linked = json.loads((BUILD/'native/link-plan.json').read_text())

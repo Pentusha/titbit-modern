@@ -38,6 +38,9 @@ py -3.11 -m venv .venv
 `package.json` → `reproducible`. Для старых VC6-релизов поддерживаются прежние метаданные;
 их нужно проверять сборкой из соответствующего исторического коммита.
 
+Linux-игра (`build/titbit`) тоже собирается побайтно одинаково в любой папке: сравните
+`sha256sum build/titbit` двух сборок одного коммита с одинаковыми Clang 18 и пакетами Ubuntu 24.04.
+
 `TitbitSetup.exe` и `TitbitStudio.exe` — упакованный Python (PyInstaller), побайтно они не
 воспроизводятся. Их исходники — [`tools/titbit_setup.py`](../tools/titbit_setup.py) и
 [`editor/`](../editor/); вместо EXE можно запускать их из исходников (см. [BUILD.md](BUILD.md)).

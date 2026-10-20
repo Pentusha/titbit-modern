@@ -82,7 +82,7 @@ def main():
                 log.write_text(checked.stdout+checked.stderr)
                 return dict(result,status='error',category='verify',error=checked.stderr[-5000:])
             command=[compiler,'--target=i386-pc-windows-msvc-elf','-Wno-override-module',
-                     '-O2','-fno-omit-frame-pointer','-ffunction-sections','-fdata-sections',
+                     '-O2','-ffile-prefix-map='+str(ROOT)+'=linux-port','-fno-omit-frame-pointer','-ffunction-sections','-fdata-sections',
                      '-mstack-alignment=16','-mstackrealign',
                      '-c',str(output),'-o',str(obj.with_suffix('.new.o'))]
             built=subprocess.run(command,capture_output=True,text=True)

@@ -22,14 +22,16 @@ def main():
     pkg=subprocess.check_output(['pkg-config','--cflags',*packages],text=True) if packages else ''
     if sdl:
         pkg+=' -I'+str(Path(sdl)/'include/SDL2')+' -D_REENTRANT'
+        pkg+=' -ffile-prefix-map='+str(Path(sdl).resolve())+'=sdl2-min'      # no per-user cache path in debug info
     if prefix:
         pkg+=' -I'+str(Path(prefix)/'include')
+        pkg+=' -ffile-prefix-map='+str(Path(prefix).resolve())+'=ffmpeg-min'
     sources=['sdl_platform.c','win32_sdl.c','win32_kernel.c','win32_heap.c','win32_misc.c','win32_mixer.c','win32_host.c','gl_stdcall.c','avi_ffmpeg.c',
              'seer_call.S','ms_setjmp.S','main.c','ms_exception.cpp','crt_linux.c','crt_new.cpp','game_input_native.cpp']
     if (ROOT/'platform/ms_rtti.cpp').exists():sources.append('ms_rtti.cpp')
     for name in sources:
         command=['clang++-18' if name.endswith('.cpp') else 'clang-18','-m32',
-                 '-D_FILE_OFFSET_BITS=64','-O2','-g','-fno-omit-frame-pointer','-mstackrealign',
+                 '-D_FILE_OFFSET_BITS=64','-O2','-g','-ffile-prefix-map='+str(ROOT)+'=linux-port','-fno-omit-frame-pointer','-mstackrealign',
                  '-ffunction-sections','-fdata-sections',*shlex.split(pkg),
                  '-c',str(ROOT/'platform'/name),'-o',str(a.out/(Path(name).stem+'.o'))]
         result=subprocess.run(command,capture_output=True,text=True)
