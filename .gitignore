@@ -65,3 +65,7 @@ linux-port/game/
 
 linux-port/flatpak/stage/
 *.flatpak
+
+# Nix build outputs.
+/result
+/result-*

@@ -1,0 +1,35 @@
+diff --git a/portable/include/crt/malloc.h b/portable/include/crt/malloc.h
+--- a/portable/include/crt/malloc.h
++++ b/portable/include/crt/malloc.h
+@@ -7,5 +7,11 @@ TB_EXTERN_C_END
+ #define __mingw_aligned_malloc _aligned_malloc
+ #define __mingw_aligned_free _aligned_free
++#else
++/* Clang's intrinsic headers parse these helpers even when they are unused. */
++TB_EXTERN_C_BEGIN
++void *__mingw_aligned_malloc(size_t,size_t);
++void __mingw_aligned_free(void*);
++TB_EXTERN_C_END
+ #endif
+ #define _alloca __builtin_alloca
+ #define alloca __builtin_alloca
+diff --git a/portable/include/win32/windows.h b/portable/include/win32/windows.h
+--- a/portable/include/win32/windows.h
++++ b/portable/include/win32/windows.h
+@@ -1,5 +1,16 @@
+ #ifndef TITBIT_PORTABLE_WINDOWS_H
+ #define TITBIT_PORTABLE_WINDOWS_H
++#include <_mingw.h>
++/* MinGW 13 assumes that every MSVC-compatible frontend supports constexpr.
++ * The recovered source deliberately uses C++98, including with Clang. */
++#if defined(__cplusplus) && __cplusplus < 201103L
++#undef __MINGW_CXX11_CONSTEXPR
++#define __MINGW_CXX11_CONSTEXPR
++#endif
++#if defined(__cplusplus) && __cplusplus < 201402L
++#undef __MINGW_CXX14_CONSTEXPR
++#define __MINGW_CXX14_CONSTEXPR
++#endif
+ #include_next <windows.h>
+ /* The recovered string views declare the Win32 functions with nonvolatile
+  * LONG pointers. Keep those external stdcall imports instead of MinGW's
