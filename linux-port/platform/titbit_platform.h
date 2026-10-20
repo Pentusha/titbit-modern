@@ -31,6 +31,7 @@ void *tb_gl_context(TBWindow *window);
 int tb_gl_make_current(TBWindow *window,void *context);
 void tb_gl_delete_context(void *context);
 void *tb_gl_proc(const char *name);
+void tb_gl_viewport(int x,int y,int width,int height);
 void tb_swap(TBWindow *window);
 typedef struct TBFrameStats {int32_t width,height;uint64_t pixels,nonblack;double mean_red,mean_green,mean_blue;uint32_t color_bins;} TBFrameStats;
 int tb_read_frame_pixels(unsigned char *rgba,size_t capacity,int *width,int *height);
