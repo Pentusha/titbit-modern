@@ -170,7 +170,12 @@ SoundFocusPrefix *__cdecl CreateStream_00429ee0(const char *name) {
 
 // Script DeleteStream(stream)
 void __cdecl DeleteStream_0042a060(SoundFocusPrefix *sound) {
+#ifdef TITBIT_PORTABLE_HEADERS
+ // One object was allocated. Modern delete[] would read an array cookie.
+ delete sound;
+#else
  if (sound) delete[] sound;
+#endif
 }
 
 // Script STREAM.SetSync(object)

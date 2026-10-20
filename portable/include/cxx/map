@@ -1,0 +1,36 @@
+#ifndef TITBIT_CXX_MAP
+#define TITBIT_CXX_MAP
+#include <memory>
+#include <utility>
+#include <functional>
+namespace std {
+// An ordered node sequence is sufficient for XML namespace contexts (typically
+// only a few bindings). Inserting keeps iterator/reference stability.
+template<class K,class V,class C=less<K>,class A=allocator<pair<const K,V> > >class multimap {
+ struct node {node*next;node*prev;pair<const K,V> value;node(const pair<const K,V>&v):next(0),prev(0),value(v){}};
+ A alloc_;node*first_;node*last_;size_t size_;
+public:
+ typedef pair<const K,V> value_type;typedef K key_type;typedef V mapped_type;typedef size_t size_type;
+ class iterator {node*p;public:iterator(node*v=0):p(v){}value_type&operator*()const{return p->value;}value_type*operator->()const{return &p->value;}iterator&operator++(){p=p->next;return *this;}iterator operator++(int){iterator r=*this;++*this;return r;}bool operator==(iterator v)const{return p==v.p;}bool operator!=(iterator v)const{return p!=v.p;}friend class multimap;};
+ typedef iterator const_iterator;
+ multimap():alloc_(),first_(0),last_(0),size_(0){}multimap(const multimap&v):alloc_(),first_(0),last_(0),size_(0){for(iterator i=v.begin();i!=v.end();++i)insert(*i);}~multimap(){clear();}
+ multimap&operator=(const multimap&v){if(this!=&v){multimap copy(v);swap(copy);}return *this;}
+ iterator begin()const{return iterator(first_);}iterator end()const{return iterator();}size_t size()const{return size_;}bool empty()const{return !size_;}
+ iterator insert(const value_type&v){C compare;node*where=first_;while(where&&!compare(v.first,where->value.first))where=where->next;node*p=new node(v);p->next=where;p->prev=where?where->prev:last_;if(p->prev)p->prev->next=p;else first_=p;if(where)where->prev=p;else last_=p;++size_;return iterator(p);}
+ iterator find(const K&key)const{C c;for(node*p=first_;p;p=p->next)if(!c(p->value.first,key)&&!c(key,p->value.first))return iterator(p);return end();}
+ iterator lower_bound(const K&key)const{C c;node*p=first_;while(p&&c(p->value.first,key))p=p->next;return iterator(p);}
+ iterator upper_bound(const K&key)const{C c;node*p=first_;while(p&&!c(key,p->value.first))p=p->next;return iterator(p);}
+ pair<iterator,iterator>equal_range(const K&key)const{return make_pair(lower_bound(key),upper_bound(key));}
+ void erase(iterator it){node*p=it.p;if(p->prev)p->prev->next=p->next;else first_=p->next;if(p->next)p->next->prev=p->prev;else last_=p->prev;delete p;--size_;}
+ size_t erase(const K&key){size_t n=0;for(iterator i=find(key);i!=end();i=find(key)){erase(i);++n;}return n;}
+ void clear(){while(first_)erase(begin());}
+ void swap(multimap&v){std::swap(first_,v.first_);std::swap(last_,v.last_);std::swap(size_,v.size_);}
+};
+template<class K,class V,class C=less<K>,class A=allocator<pair<const K,V> > >class map:public multimap<K,V,C,A> {
+ typedef multimap<K,V,C,A> base;
+public:typedef typename base::iterator iterator;typedef typename base::value_type value_type;
+ pair<iterator,bool>insert(const value_type&v){iterator i=this->find(v.first);if(i!=this->end())return make_pair(i,false);return make_pair(base::insert(v),true);}
+ V&operator[](const K&k){return insert(value_type(k,V())).first->second;}
+};
+}
+#endif

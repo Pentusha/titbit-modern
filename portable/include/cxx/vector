@@ -1,0 +1,34 @@
+#ifndef TITBIT_CXX_VECTOR
+#define TITBIT_CXX_VECTOR
+#include <memory>
+#include <iterator>
+#include <stdexcept>
+#include <utility>
+#include <titbit_traits>
+namespace std {
+template<class T,class A=allocator<T> > class vector {
+ A alloc_;T*first_;T*last_;T*limit_;
+ void grow(size_t n){if(n<=capacity())return;size_t cap=capacity()?capacity()*2:4;if(cap<n)cap=n;T*p=alloc_.allocate(cap);size_t count=0;try{for(T*i=first_;i!=last_;++i,++count)new(p+count)T(*i);}catch(...){while(count)(p+--count)->~T();alloc_.deallocate(p,cap);throw;}size_t old=size();clear();if(first_)alloc_.deallocate(first_,capacity());first_=p;last_=p+old;limit_=p+cap;}
+public:
+ typedef T value_type;typedef A allocator_type;typedef T*iterator;typedef const T*const_iterator;typedef T&reference;typedef const T&const_reference;typedef size_t size_type;typedef ptrdiff_t difference_type;typedef std::reverse_iterator<iterator> reverse_iterator;typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+ explicit vector(const A&a=A()):alloc_(a),first_(0),last_(0),limit_(0){}
+ explicit vector(size_t n,const T&v=T(),const A&a=A()):alloc_(a),first_(0),last_(0),limit_(0){resize(n,v);}
+ vector(const vector&v):alloc_(),first_(0),last_(0),limit_(0){reserve(v.size());for(const_iterator p=v.begin();p!=v.end();++p)push_back(*p);}
+ template<class I>vector(I a,I b,typename _tb_enable_if<!_tb_integer<I>::value,int>::type=0):alloc_(),first_(0),last_(0),limit_(0){for(;a!=b;++a)push_back(*a);}
+ ~vector(){clear();if(first_)alloc_.deallocate(first_,capacity());}
+ vector&operator=(const vector&v){if(this!=&v){vector copy(v);swap(copy);}return *this;}
+ iterator begin(){return first_;}const_iterator begin()const{return first_;}iterator end(){return last_;}const_iterator end()const{return last_;}
+ reverse_iterator rbegin(){return reverse_iterator(end());}const_reverse_iterator rbegin()const{return const_reverse_iterator(end());}reverse_iterator rend(){return reverse_iterator(begin());}const_reverse_iterator rend()const{return const_reverse_iterator(begin());}
+ size_t size()const{return first_?last_-first_:0;}size_t capacity()const{return first_?limit_-first_:0;}bool empty()const{return first_==last_;}size_t max_size()const{return alloc_.max_size();}
+ T&operator[](size_t i){return first_[i];}const T&operator[](size_t i)const{return first_[i];}T&at(size_t i){if(i>=size())throw out_of_range("vector position");return first_[i];}const T&at(size_t i)const{if(i>=size())throw out_of_range("vector position");return first_[i];}
+ T&front(){return *first_;}const T&front()const{return *first_;}T&back(){return last_[-1];}const T&back()const{return last_[-1];}
+ void clear(){while(last_!=first_)(--last_)->~T();}void reserve(size_t n){grow(n);}void push_back(const T&v){T copy(v);grow(size()+1);new(last_)T(copy);++last_;}void pop_back(){(--last_)->~T();}
+ void resize(size_t n,const T&v=T()){while(size()>n)pop_back();T copy(v);grow(n);while(size()<n){new(last_)T(copy);++last_;}}
+ iterator insert(iterator p,const T&v){size_t at=first_?p-first_:0;T copy(v);grow(size()+1);p=first_+at;if(p==last_){new(last_)T(copy);}else{new(last_)T(last_[-1]);for(T*i=last_-1;i!=p;--i)*i=*(i-1);*p=copy;}++last_;return p;}
+ void insert(iterator p,size_t n,const T&v){size_t at=first_?p-first_:0;T copy(v);while(n--)insert(begin()+at++,copy);}template<class I>typename _tb_enable_if<!_tb_integer<I>::value,void>::type insert(iterator p,I a,I b){size_t at=first_?p-first_:0;for(;a!=b;++a)insert(begin()+at++,*a);}
+ iterator erase(iterator p){return erase(p,p+1);}iterator erase(iterator a,iterator b){size_t at=a-first_;T*out=a;for(T*i=b;i!=last_;++i,++out)*out=*i;while(last_!=out)(--last_)->~T();return first_+at;}
+ void assign(size_t n,const T&v){T copy(v);clear();resize(n,copy);}template<class I>typename _tb_enable_if<!_tb_integer<I>::value,void>::type assign(I a,I b){clear();for(;a!=b;++a)push_back(*a);}
+ void swap(vector&v){std::swap(first_,v.first_);std::swap(last_,v.last_);std::swap(limit_,v.limit_);}
+};
+}
+#endif

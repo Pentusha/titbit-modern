@@ -33,7 +33,6 @@ sh start-game.sh --data /path/to/game
 ## Сборка
 
 ```sh
-export TITBIT_VC6=/path/to/VC98
 python3 tools/build_linux.py --minimal --test-runtime
 ```
 
@@ -45,8 +44,9 @@ python3 tools/build_linux.py --minimal --test-runtime
 
 32-битная компоновка объектов и виртуальных таблиц Microsoft сохранена:
 Clang формирует LLVM IR, адаптер переводит обработку исключений в DWARF,
-затем LLVM выпускает Linux ELF. Заголовки установленного VC98 нужны при
-сборке; Windows CRT-библиотеки в ELF не линкуются.
+затем LLVM выпускает Linux ELF. **VC6 не нужен ни для сборки, ни для запуска.**
+Win32-объявления берутся из открытого mingw-w64, совместимые классы — из
+авторского слоя `portable/`. Windows CRT-библиотеки в ELF не линкуются.
 
 SDL2 обслуживает окно, ввод и PCM-звук; OpenGL — исходный рендер;
 FFmpeg — AVI. Оригинальные исходники Windows находятся в отдельном дереве.
@@ -65,7 +65,7 @@ sh tools/start_studio.sh --archive /path/to/game/QUEST.EZD
 
 ```sh
 python3 tools/check_initializers.py
-python3 tools/check_cpp_runtime.py --vc98 "$TITBIT_VC6"
+python3 tools/check_cpp_runtime.py
 OPT_LEVEL=2 sh probes/run_verified.sh
 python3 tools/headless_probe.py --data /path/to/game --frames 50
 ```

@@ -1,0 +1,20 @@
+#ifndef TITBIT_CXX_ALGORITHM
+#define TITBIT_CXX_ALGORITHM
+#include <utility>
+namespace std {
+template<class T> const T& min(const T&a,const T&b){return b<a?b:a;}
+template<class T> const T& max(const T&a,const T&b){return a<b?b:a;}
+template<class I,class O> O copy(I a,I b,O o){while(a!=b)*o++=*a++;return o;}
+template<class I,class O> O copy_backward(I a,I b,O o){while(a!=b)*--o=*--b;return o;}
+template<class I,class T> void fill(I a,I b,const T&v){while(a!=b)*a++=v;}
+template<class I,class N,class T> I fill_n(I a,N n,const T&v){while(n-->0)*a++=v;return a;}
+template<class I,class T> I find(I a,I b,const T&v){while(a!=b&&!(*a==v))++a;return a;}
+template<class I,class P> I find_if(I a,I b,P p){while(a!=b&&!p(*a))++a;return a;}
+template<class I,class F> F for_each(I a,I b,F f){while(a!=b)f(*a++);return f;}
+template<class I> void reverse(I a,I b){while(a!=b&&a!=--b){swap(*a,*b);++a;}}
+template<class I,class T> I remove(I a,I b,const T&v){I o=a;for(;a!=b;++a)if(!(*a==v))*o++=*a;return o;}
+template<class I,class P> I remove_if(I a,I b,P p){I o=a;for(;a!=b;++a)if(!p(*a))*o++=*a;return o;}
+template<class I,class C> void sort(I a,I b,C c){for(I i=a;i!=b;++i)for(I j=i;j!=a&&c(*j,*(j-1));--j)swap(*j,*(j-1));}
+template<class I> void sort(I a,I b){for(I i=a;i!=b;++i)for(I j=i;j!=a&&*j<*(j-1);--j)swap(*j,*(j-1));}
+}
+#endif

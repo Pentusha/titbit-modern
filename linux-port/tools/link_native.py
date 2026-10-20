@@ -186,7 +186,7 @@ def main():
     crt.update({'_filbuf':'tb_crt_filbuf','_flsbuf':'tb_crt_flsbuf','_fileno':'tb_crt_fileno',
                 '_filelength':'tb_crt_filelength','_errno':'tb_crt_errno','_iob':'tb_crt_iob',
                 '_pctype':'tb_crt_pctype','_isctype':'tb_crt_isctype','__mb_cur_max':'tb_crt_mb_cur_max',
-                '_strdup':'strdup','_purecall':'titbit_purecall'})
+                '_strdup':'strdup','_itoa':'tb_crt_itoa','_purecall':'titbit_purecall'})
     crt.update({'_setjmp3':'titbit_setjmp3','longjmp':'titbit_longjmp'})
     special={'??2@YAPAXI@Z':'titbit_operator_new','??3@YAXPAX@Z':'titbit_operator_delete',
              '??_U@YAPAXI@Z':'titbit_operator_new','??_V@YAXPAX@Z':'titbit_operator_delete',

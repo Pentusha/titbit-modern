@@ -7,24 +7,24 @@
 ## Инструменты
 
 - **Windows 10/11 x64** и **Python 3.11 x64**.
-- **Visual C++ 6.0 SP6**, x86: `Bin/CL.EXE`, `LINK.EXE`, `LIB.EXE`,
-  `CVTRES.EXE`, `ML.EXE` (MASM с `/coff`), `Include`, `ATL/Include` и `Lib`.
-  Нужны `LIBC.LIB`, `LIBCP.LIB` и штатные Win32/OpenGL/DirectInput/VfW библиотеки.
-  MASM при необходимости устанавливается отдельно.
-- Windows SDK и современная Visual Studio **не нужны**: ресурсы (иконка, диалоги, строки,
-  версия) компилирует `tools/rc_compile.py` — результат байт в байт совпадает с `rc.exe`.
+- **LLVM-MinGW x86-64**: распакуйте официальный [архив](https://github.com/mstorsjo/llvm-mingw/releases/tag/20240619)
+  `llvm-mingw-20240619-ucrt-x86_64.zip` (Clang 18.1.8). Он содержит Clang и открытые Win32-заголовки.
+- **Visual Studio 2022 Build Tools**: компонент «Разработка классических приложений на C++»,
+  инструменты MSVC x86/x64 и Windows SDK. Подходит и установленная Visual Studio Community.
+  Сборочный скрипт находит инструменты автоматически; IDE запускать не требуется.
+- Ресурсы компилирует `tools/rc_compile.py`; системный `rc.exe` не требуется.
 
-Инструменты Microsoft и их исходники в проект не включены.
-`TITBIT_VC6` должен указывать именно на установленный **VC98**:
-C-рантайм берётся из `LIBC.LIB`, C++-рантайм и STL — из `LIBCP.LIB`
-и штатных заголовков. Оригинальный `titbit.exe` для сборки не нужен.
+**VC6 не нужен.** Строки, контейнеры и используемый набор ATL предоставляет авторский
+слой `portable/`. C runtime и обработка исключений линкуются из современных
+`libcmt`, `libvcruntime` и `libucrt`. Инструменты Microsoft в репозиторий не включены;
+оригинальный `titbit.exe` для сборки не нужен.
 
 ## Подготовка
 
 ```powershell
 git clone https://github.com/offx366/titbit-modern.git
 cd titbit-modern
-$env:TITBIT_VC6 = 'C:\Program Files (x86)\Microsoft Visual Studio\VC98'
+$env:TITBIT_LLVM = 'C:\Tools\llvm-mingw-20240619-ucrt-x86_64'
 py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
@@ -33,10 +33,10 @@ py -3.11 -m venv .venv
 
 ```powershell
 .\.venv\Scripts\python.exe tools/build_modern.py --check
-.\.venv\Scripts\python.exe tools/build_modern.py --fresh
+.\.venv\Scripts\python.exe tools/build_modern.py --fresh --test-runtime
 ```
 
-Результат в `build/modern/`:
+Результат в `build/modern-portable/` (прежний `build/modern/` сохраняется):
 
 - `TitbitModern.exe` — игра с `TITBIT_COMPAT`.
 - `TitbitSettings.exe` — настройки экрана.
@@ -44,6 +44,9 @@ py -3.11 -m venv .venv
 
 Игра остаётся 32-битным приложением. Portable-оболочки Setup и Studio
 собираются для 64-битной Windows.
+
+`--test-runtime` запускает консольные проверки строк, контейнеров, исключений,
+Win32 ABI и файлового ввода-вывода. Игровые данные для них не нужны.
 
 ### Добавить игровые данные
 
@@ -62,10 +65,10 @@ py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe tools/titbit_setup.py --inspect 'D:\Images\Titbit.iso'
 
 # Импортировать в папку сборки:
-.\.venv\Scripts\python.exe tools/titbit_setup.py --import 'D:\Images\Titbit.iso' --dest build/modern
+.\.venv\Scripts\python.exe tools/titbit_setup.py --import 'D:\Images\Titbit.iso' --dest build/modern-portable
 
 # Проверить готовую папку:
-.\.venv\Scripts\python.exe tools/titbit_setup.py --verify build/modern
+.\.venv\Scripts\python.exe tools/titbit_setup.py --verify build/modern-portable
 ```
 
 Можно указать CD, ISO или набор IMG/CUE/CCD. Исходник не меняется.
@@ -97,7 +100,7 @@ py -3.11 -m venv .venv
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements-build.txt
-.\.venv\Scripts\python.exe tools/package_portable.py --game-build build/modern
+.\.venv\Scripts\python.exe tools/package_portable.py --game-build build/modern-portable
 ```
 
 Упаковщик собирает **TitbitSetup.exe** и **TitbitStudio.exe** через PyInstaller,
@@ -108,16 +111,31 @@ py -3.11 -m venv .venv
 они есть в папке сборки. Игрок распаковывает ZIP и добавляет свои данные
 через TitbitSetup. Python и зависимости Studio уже упакованы в программы.
 
-## Вариант без слоя совместимости
+## Исходная логика без слоя совместимости
+
+Те же современные инструменты, без VC6:
 
 ```powershell
-.\.venv\Scripts\python.exe tools/build_original.py --fresh
+.\.venv\Scripts\python.exe tools/build_original.py --fresh --test-runtime
 ```
 
-Результат — `build/original/titbit.exe`, без `TITBIT_COMPAT`.
-Сохраняются исходные требования к диску, видео и Win32 API; это вариант для
-исследования оригинала. Штатный рантайм берётся из установленного VC6,
-побайтное совпадение с дисковым EXE не обещается.
+Результат — `build/original-portable/titbit.exe`, без `TITBIT_COMPAT`.
+Компоновка проверяется отдельно; для игры на современных системах используйте
+совместимый `TitbitModern.exe`. Здесь сохраняются исходные требования к диску,
+видеокодекам и Win32 API; побайтное совпадение с дисковым EXE не обещается.
+
+## Историческая сборка VC6 (необязательно)
+
+Для исследования прежней сборки сохранён отдельный путь. Только он требует
+установленного VC6 SP6 с MASM, `Include`, `ATL/Include`, `LIBC.LIB` и `LIBCP.LIB`:
+
+```powershell
+$env:TITBIT_VC6 = 'C:\Program Files (x86)\Microsoft Visual Studio\VC98'
+.\.venv\Scripts\python.exe tools/build_original.py --legacy-vc6 --fresh
+```
+
+Результат — `build/original/titbit.exe`. Штатный рантайм этого исторического
+варианта берётся из установленного VC6. Обычные сборки эту установку не читают.
 
 ## Проверки
 
@@ -138,21 +156,22 @@ $env:TITBIT_GAME = 'D:\Games\Titbit'
 .\.venv\Scripts\python.exe -m unittest discover -s editor -p 'test_*.py'
 ```
 
-Без архива проверки оригинальных ресурсов пропускаются. Проверенные запуски,
-контрольные суммы и ограничения: [VALIDATION.md](VALIDATION.md).
+Без архива проверки оригинальных ресурсов пропускаются. Проверенные запуски
+без VC6, контрольные суммы и ограничения: [VALIDATION-NO-VC6.md](VALIDATION-NO-VC6.md).
+Исторический экспорт VC6: [VALIDATION.md](VALIDATION.md).
 
 Без `--fresh` сборка использует кеш с проверкой команд, объектов, исходников
 и заголовков; LINK запускается заново. `/FORCE` не используется.
 `config/source-build.json` содержит рецепты сборки и символы,
 без машинного кода или данных исходного EXE.
 
-Сборка воспроизводима: в заголовок EXE записывается время коммита (или `SOURCE_DATE_EPOCH`),
-поэтому один и тот же коммит с теми же файлами VC6 даёт побайтно одинаковые `TitbitModern.exe`
-и `TitbitSettings.exe`. Сравнить свою сборку с релизом: `tools/verify_release.py`, см. [VERIFY.md](VERIFY.md).
+В заголовок EXE записывается время коммита (или `SOURCE_DATE_EPOCH`). Для воспроизведения
+бинарника нужны одинаковые исходники, версия Clang, открытые Win32-заголовки и библиотеки
+MSVC/Windows SDK; их хэши записываются в `build-info.json`.
 Номер версии для всех EXE и пакетов — в файле `VERSION`.
 
 ## Linux
 
 Нативная сборка выполняется отдельно из `linux-port/` средствами Clang/LLVM.
-Зависимости, внешний VC98 SDK и проверочные команды:
+Зависимости и проверочные команды (VC6 и Windows SDK не нужны):
 [linux-port/docs/BUILD-LINUX.md](../linux-port/docs/BUILD-LINUX.md).

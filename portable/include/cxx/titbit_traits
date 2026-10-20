@@ -1,0 +1,13 @@
+#ifndef TITBIT_CXX_TRAITS
+#define TITBIT_CXX_TRAITS
+namespace std {
+template<bool B,class T=void>struct _tb_enable_if {};
+template<class T>struct _tb_enable_if<true,T>{typedef T type;};
+template<class T>struct _tb_integer {enum {value=0};};
+#define TITBIT_INTEGER(T) template<>struct _tb_integer<T>{enum{value=1};};
+TITBIT_INTEGER(bool) TITBIT_INTEGER(char) TITBIT_INTEGER(signed char) TITBIT_INTEGER(unsigned char)
+TITBIT_INTEGER(short) TITBIT_INTEGER(unsigned short) TITBIT_INTEGER(int) TITBIT_INTEGER(unsigned int)
+TITBIT_INTEGER(long) TITBIT_INTEGER(unsigned long) TITBIT_INTEGER(long long) TITBIT_INTEGER(unsigned long long)
+#undef TITBIT_INTEGER
+}
+#endif

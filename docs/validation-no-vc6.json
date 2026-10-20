@@ -1,0 +1,297 @@
+{
+  "date": "2026-10-20",
+  "requiresVC6": false,
+  "scope": "Initial gameplay route, save/load, source ABI and Studio; not a full playthrough",
+  "sourceDateEpoch": 1792439158,
+  "windows": {
+    "compiler": "LLVM-MinGW 20240619 / Clang 18.1.8",
+    "msvc": "14.44.35207",
+    "windowsSDK": "10.0.18362.0",
+    "sourceUnits": 340,
+    "gameSHA256": "2d83222bf7a977618cc3f749dfa03bc56372fea374142103615d7f9d5d046216",
+    "settingsSHA256": "e3de82fbec50778f5e61d1096c614ee7ed6870d6ec92ab780fe645e744ee421f",
+    "repeatBuildIdentical": true,
+    "tools": {
+      "clang++.exe": "2e1c3555b5c733d619b62f1f35d6defb5358cf94a01b2263b81f9ecfc0e9e08a",
+      "link.exe": "e2b4b442c1fbc9359c3a474343d8fd6691edc70ab310263c30613ed3d8939a78",
+      "lib.exe": "78981c7d4cb4776a9b94baeb860e03c599f3c7dcc006aed3762341182a99ed9a",
+      "cvtres.exe": "11ec0d229fa767bcb82df4c92020cb5df77771040371eadf8a77287a55e293f6",
+      "ml.exe": "199deea2abf6496c6826348a3cade5a1919021b300bf540a75f29956b2472878"
+    },
+    "libraries": [
+      {
+        "name": "KERNEL32.LIB",
+        "sha256": "fbf0fce30057df4ad7ecff14dfa4acbef9a17dea7db535835a23406ba8f7c45a"
+      },
+      {
+        "name": "USER32.LIB",
+        "sha256": "fd5c99de4f19e9df4d0bbc0203c09c62886b1928cd529a6338140ff6d36c6dd0"
+      },
+      {
+        "name": "GDI32.LIB",
+        "sha256": "6983a371e4943aa316555e8e145a0ce957cb139aa3c77a2c68234282a5eec6be"
+      },
+      {
+        "name": "OLE32.LIB",
+        "sha256": "28242dc4dae2cfc4a10ad7aacf2277d6bbf6980492a33fa566d84c533b0789b8"
+      },
+      {
+        "name": "WINMM.LIB",
+        "sha256": "8781805122daae09259a19d3cbde04e7b91b2a8642b49eadbc70f4fc6819902d"
+      },
+      {
+        "name": "COMCTL32.LIB",
+        "sha256": "3a5b0814d682520255444c07f19085ab2a7664bff9a177ccecdc5450745c75f2"
+      },
+      {
+        "name": "SHELL32.LIB",
+        "sha256": "d8c90b0156588088130e5c420ffaa5810aafbeb3b699eb0c079ce342fe0880b0"
+      },
+      {
+        "name": "OPENGL32.LIB",
+        "sha256": "68023e5bdf6be04b3209db17f2e9c03206d4f5ecc69591a3abc59e4c9eaaaadd"
+      },
+      {
+        "name": "GLU32.LIB",
+        "sha256": "2f93d3d318796c2a245ac1aaae0ff95c4b83f0bfe5d02f6cee9b397a7dbd8387"
+      },
+      {
+        "name": "ADVAPI32.LIB",
+        "sha256": "7df875fe8a83c33cf2bbac10d4d2841d66cdf795001a4db10d2a143ecb904641"
+      },
+      {
+        "name": "VFW32.LIB",
+        "sha256": "b911e84a1a3baecce53892958b84ef79340455063b89f31e657e8d5f008bbf6f"
+      },
+      {
+        "name": "libcmt.lib",
+        "sha256": "5dc019251678b8f594266f310606c51e33762d63ee7f819fcf97f305086ff7f9"
+      },
+      {
+        "name": "libvcruntime.lib",
+        "sha256": "12fd364452cf2d5df1def84e87e51fc605f00fa16f2568611c2c12f058682c14"
+      },
+      {
+        "name": "legacy_stdio_definitions.lib",
+        "sha256": "3e240836c53a478ceea66c292739e814870d5f274626e4bf7952435badd99bae"
+      },
+      {
+        "name": "legacy_stdio_wide_specifiers.lib",
+        "sha256": "a1489a18d76b3a6d946ea896aa7846967aa1db0d3c93c25e3e7376d37989b157"
+      },
+      {
+        "name": "libucrt.lib",
+        "sha256": "eda67f9802dda5292a70dab3781eb6ccdf98f347568bb7f8503217f17f2acc5b"
+      }
+    ],
+    "headers": {
+      "mingw-w64": "7c6e44631cf7141834f062cb8eb974646a90c290a4958e0e8072216eb5798be8",
+      "clang-resource": "d2c735c748d68311713487c1129ff14b66204f53f8d72e511890ac0e838597cb"
+    },
+    "runtimeTestPassed": true,
+    "originalLogicBuild": {
+      "compat": false,
+      "sourceUnits": 333,
+      "gameSHA256": "b1f05a14874675724f3a1ec81a101624f06bec510b2198ef768938e0b9950ece",
+      "runtimeTestPassed": true,
+      "gameLaunched": false
+    },
+    "gameTests": {
+      "newgame-physical": {
+        "outcome": "alive",
+        "log": [
+          "   6.3s checkpoint 01-logos",
+          "   7.5s until menu: reached",
+          "  10.2s checkpoint 02-menu",
+          "  12.3s checkpoint 03-menu-hover",
+          "  13.6s click 250,207",
+          "  19.3s checkpoint 04-newgame-5s",
+          "  31.1s until street: reached",
+          "  34.8s checkpoint 05-first-scene",
+          "  36.1s click 512,600",
+          "  41.7s checkpoint 06-click-ground",
+          "  43.0s click 700,650",
+          "  48.6s checkpoint 07-click-right",
+          "  49.9s click 330,640",
+          "  55.6s checkpoint 08-click-left",
+          "  66.2s checkpoint 09-end"
+        ],
+        "screenGuard": {
+          "samples": 326,
+          "clean": true,
+          "events": []
+        },
+        "report": "build/no-vc6-windows-tests/newgame-physical/result.json"
+      },
+      "save-load": {
+        "outcome": "alive",
+        "log": [
+          "   6.5s until menu: reached",
+          "   7.8s click 250,207",
+          "  26.2s until street: reached",
+          "  28.9s checkpoint 01-street",
+          "  30.1s click 600,650",
+          "  36.9s key 0x1b",
+          "  39.5s checkpoint 02-save-menu",
+          "  40.8s click 250,323",
+          "  43.5s checkpoint 03-save-slots",
+          "  44.7s click 300,60",
+          "  48.4s checkpoint 04-after-save",
+          "  49.6s click 500,620",
+          "  54.4s key 0x1b",
+          "  57.7s click 250,380",
+          "  60.3s checkpoint 05-load-slots",
+          "  61.6s click 300,60",
+          "  68.2s checkpoint 06-after-load"
+        ],
+        "screenGuard": {
+          "samples": 335,
+          "clean": true,
+          "events": []
+        },
+        "report": "build/no-vc6-windows-tests/save-load/result.json"
+      }
+    },
+    "report": "build/modern-portable/build-info.json"
+  },
+  "linux": {
+    "host": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "toolchain": {
+      "clang-18": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+      "clang++-18": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+      "opt-18": "Ubuntu LLVM version 18.1.3",
+      "llvm-ar-18": "Ubuntu LLVM version 18.1.3",
+      "nm": "GNU nm (GNU Binutils for Ubuntu) 2.42",
+      "objcopy": "GNU objcopy (GNU Binutils for Ubuntu) 2.42",
+      "pkg-config": "1.8.1"
+    },
+    "sourceUnits": 335,
+    "gameSHA256": "6baaf68a761b6901dcf48c7ba7e400325ed713e43d0c16376eccbfc6c8abadd3",
+    "frames": 20000,
+    "seconds": 247.28,
+    "exitCode": 0,
+    "passed": true,
+    "scenesLoaded": [
+      "startup.XML",
+      "introvzlab.xml",
+      "intro.xml",
+      "menu.xml",
+      "intro2.XML",
+      "sumerki_entrance.XML",
+      "sumerki_entrance.XML"
+    ],
+    "report": "linux-port/build/no-vc6-gameplay/report.json",
+    "cleanExport": {
+      "gameSHA256": "6ea1ec1c2d4c8d0fa247df210d26a12c6b52d43b65f2f56a75fb7476df0947bf",
+      "frames": 4500,
+      "exitCode": 0,
+      "passed": true,
+      "trace": "strace -f -e trace=openat",
+      "legacySDKOpenCount": 0,
+      "searchedNames": [
+        "VC98",
+        "msvc6.5pp",
+        "msvc600-reference",
+        "nt5-crt-reference",
+        "opennt-reference",
+        "public-vc98"
+      ],
+      "report": "linux-port/build/no-vc6-clean-smoke/report.json"
+    },
+    "audio": {
+      "report": "linux-port/build/no-vc6-audio/report.json",
+      "devices": [
+        {
+          "device": 1,
+          "driver": "dummy",
+          "rate": 22050,
+          "channels": 1,
+          "bits": 16,
+          "format": "S16LE",
+          "bytes": 0,
+          "samples": 0,
+          "nonZeroSamples": 0,
+          "peak": 0,
+          "rms": 0.0,
+          "writeError": false,
+          "closed": true
+        },
+        {
+          "device": 2,
+          "driver": "dummy",
+          "rate": 44100,
+          "channels": 2,
+          "bits": 16,
+          "format": "S16LE",
+          "bytes": 6840320,
+          "samples": 3420160,
+          "nonZeroSamples": 3237145,
+          "peak": 32768,
+          "rms": 6795.324132,
+          "writeError": false,
+          "closed": true
+        }
+      ]
+    }
+  },
+  "studio": {
+    "windowsTests": 28,
+    "linuxTests": 28,
+    "browser": {
+      "selectionInGameCamera": true,
+      "animationPlayback": true,
+      "numericTransform": true,
+      "undo": true,
+      "projectSave": true
+    },
+    "http": {
+      "ok": true,
+      "python": "3.12.3",
+      "platform": "linux",
+      "scenes": 70,
+      "assets": 2119,
+      "routes": {
+        "mesh": {
+          "asset": "acid.MEAT",
+          "bytes": 566454
+        },
+        "animation": {
+          "asset": "acid_dance.EZA",
+          "bytes": 853053
+        },
+        "texture": {
+          "asset": "acid_golova.tga",
+          "bytes": 393697
+        }
+      },
+      "projectSave": true,
+      "crossOriginRefused": true,
+      "archiveSHA256": "bc214d2862997c27b7db627154dfcb31a526c789f364e9e7060c58522b9e03fb"
+    },
+    "packagedWindows": {
+      "ok": true,
+      "executableSHA256": "53a66cd05c672092f087729cd34fbfd11b9dac4eca444430e3a8946114796756",
+      "hiddenDesktop": true,
+      "scenes": 70,
+      "objects": 18,
+      "bindAddress": "127.0.0.1",
+      "archiveUnchanged": true
+    },
+    "browserScreenshot": "linux-port/build/no-vc6-studio-ui.png"
+  },
+  "toolsTests": {
+    "run": 31,
+    "skipped": 2,
+    "failed": 0
+  },
+  "linuxToolsTests": {
+    "run": 25,
+    "skipped": 2,
+    "failed": 0
+  },
+  "preservation": {
+    "previousSourceCommit": "02d2a30c0085871c01da34448fc3299b9395bdd0",
+    "backup": "build/preserved-before-no-vc6-20261020 (workspace root)",
+    "manifestVerified": true
+  }
+}

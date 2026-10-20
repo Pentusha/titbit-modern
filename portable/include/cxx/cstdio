@@ -1,0 +1,5 @@
+#ifndef TITBIT_CXX_CSTDIO
+#define TITBIT_CXX_CSTDIO
+#include <stdio.h>
+namespace std {using ::FILE;using ::fpos_t;using ::fopen;using ::fclose;using ::fread;using ::fwrite;using ::fseek;using ::ftell;using ::fflush;using ::fgetc;using ::fputc;using ::fgets;using ::fputs;using ::ungetc;using ::remove;using ::rename;using ::printf;using ::sprintf;using ::snprintf;using ::fprintf;using ::vfprintf;using ::vsprintf;using ::feof;using ::ferror;using ::clearerr;using ::fgetpos;using ::fsetpos;}
+#endif

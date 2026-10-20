@@ -12,10 +12,18 @@ Frame_0040b090::Frame_0040b090() {}
 Component_0040b0f0::Component_0040b0f0() { field8 = 0; owner = 0; }
 
 // vtable 0x4cd454: ctor 0x405e90, dtor 0x405f10, deleting 0x405e70
+#ifdef TITBIT_PORTABLE_HEADERS
+// Complete 0x38-byte array element allocated by BuildFaces.
+class Triangle { public: Vec3Z a,b,c,normal; float d; virtual ~Triangle(); };
+#endif
 class Model_00405e90 : public Node_00405160 {
 public:
  int pad14;
+#ifdef TITBIT_PORTABLE_HEADERS
+ Triangle *parts;
+#else
  struct Part { virtual ~Part(); } *parts;     // 0x18, array-deleted
+#endif
  void *buffer;                               // 0x1c
  int pad20, count;                           // 0x20, 0x24
  Frame_0040b090 frameA, frameB;              // 0x28, 0x64

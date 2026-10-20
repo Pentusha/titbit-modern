@@ -1,0 +1,9 @@
+#ifndef TITBIT_CXX_FUNCTIONAL
+#define TITBIT_CXX_FUNCTIONAL
+namespace std {
+template<class T> struct less {bool operator()(const T&a,const T&b)const{return a<b;}};
+template<class T> struct equal_to {bool operator()(const T&a,const T&b)const{return a==b;}};
+template<class R,class T> struct mem_fun_t {typedef R(T::*F)();F f;explicit mem_fun_t(F v):f(v){} R operator()(T*p)const{return (p->*f)();}};
+template<class R,class T> mem_fun_t<R,T> mem_fun(R(T::*f)()){return mem_fun_t<R,T>(f);}
+}
+#endif

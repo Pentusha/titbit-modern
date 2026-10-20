@@ -1,0 +1,20 @@
+#ifndef TITBIT_CXX_LIST
+#define TITBIT_CXX_LIST
+#include <memory>
+namespace std {
+template<class T,class A=allocator<T> >class list {
+ struct node {node *next,*prev;T value;explicit node(const T&v):next(0),prev(0),value(v){}};
+ node *first_,*last_;size_t size_;A alloc_;
+public:
+ class iterator {node *p;public:iterator(node*v=0):p(v){}T&operator*()const{return p->value;}T*operator->()const{return &p->value;}iterator&operator++(){p=p->next;return *this;}iterator operator++(int){iterator r=*this;++*this;return r;}bool operator==(iterator v)const{return p==v.p;}bool operator!=(iterator v)const{return p!=v.p;}friend class list;};
+ typedef iterator const_iterator;
+ list():first_(0),last_(0),size_(0),alloc_(){}list(const list&v):first_(0),last_(0),size_(0),alloc_(){for(iterator i=v.begin();i!=v.end();++i)push_back(*i);}~list(){clear();}
+ list&operator=(const list&v){if(this!=&v){clear();for(iterator i=v.begin();i!=v.end();++i)push_back(*i);}return *this;}
+ iterator begin()const{return iterator(first_);}iterator end()const{return iterator();}size_t size()const{return size_;}bool empty()const{return !size_;}
+ void push_back(const T&v){node*p=new node(v);p->prev=last_;if(last_)last_->next=p;else first_=p;last_=p;++size_;}
+ iterator erase(iterator v){node*p=v.p;node*n=p->next;if(p->prev)p->prev->next=n;else first_=n;if(n)n->prev=p->prev;else last_=p->prev;delete p;--size_;return iterator(n);}
+ void remove(const T&v){iterator i=begin();while(i!=end()){if(*i==v)i=erase(i);else++i;}}void clear(){while(first_)erase(begin());}
+ T&front(){return first_->value;}T&back(){return last_->value;}
+};
+}
+#endif

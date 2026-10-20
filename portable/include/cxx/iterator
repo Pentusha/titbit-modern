@@ -1,0 +1,20 @@
+#ifndef TITBIT_CXX_ITERATOR
+#define TITBIT_CXX_ITERATOR
+#include <cstddef>
+namespace std {
+struct input_iterator_tag{};struct output_iterator_tag{};struct forward_iterator_tag:input_iterator_tag{};struct bidirectional_iterator_tag:forward_iterator_tag{};struct random_access_iterator_tag:bidirectional_iterator_tag{};
+template<class C,class T,class D=ptrdiff_t,class P=T*,class R=T&> struct iterator {typedef C iterator_category;typedef T value_type;typedef D difference_type;typedef P pointer;typedef R reference;};
+template<class I> struct iterator_traits {typedef typename I::value_type value_type;typedef typename I::difference_type difference_type;};
+template<class T> struct iterator_traits<T*> {typedef T value_type;typedef ptrdiff_t difference_type;};
+template<class I> class reverse_iterator {
+ I current;
+public:typedef typename iterator_traits<I>::value_type value_type;typedef ptrdiff_t difference_type;
+ reverse_iterator():current(){} explicit reverse_iterator(I p):current(p){}template<class J>reverse_iterator(const reverse_iterator<J>&p):current(p.base()){}
+ I base()const{return current;}value_type& operator*()const{I p=current;return *--p;}value_type*operator->()const{return &operator*();}
+ reverse_iterator&operator++(){--current;return *this;}reverse_iterator operator++(int){reverse_iterator v=*this;--current;return v;}reverse_iterator&operator--(){++current;return *this;}
+ bool operator==(const reverse_iterator&v)const{return current==v.current;}bool operator!=(const reverse_iterator&v)const{return current!=v.current;}
+};
+template<class I> ptrdiff_t distance(I a,I b){ptrdiff_t n=0;while(a!=b){++a;++n;}return n;}
+template<class I,class N> void advance(I&i,N n){while(n>0){++i;--n;}while(n<0){--i;++n;}}
+}
+#endif

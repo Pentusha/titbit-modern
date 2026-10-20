@@ -27,9 +27,12 @@ def preflight(vc98, environment):
         raise RuntimeError('The native game target requires x86 Linux; run this command inside WSL Ubuntu.')
     if sys.version_info < (3, 10):
         raise RuntimeError('Python 3.10 or newer is required.')
-    for directory in ('Include', 'ATL/Include'):
-        if not (vc98/directory).is_dir():
-            raise RuntimeError('VC98 header directory not found: '+str(vc98/directory))
+    if vc98:
+        for directory in ('Include', 'ATL/Include'):
+            if not (vc98/directory).is_dir():
+                raise RuntimeError('VC98 header directory not found: '+str(vc98/directory))
+    elif not Path('/usr/i686-w64-mingw32/include/windows.h').is_file():
+        raise RuntimeError('Open Win32 headers missing: install mingw-w64-i686-dev (no VC6 SDK is needed).')
     versions = {}
     for tool in ('clang-18', 'clang++-18', 'opt-18', 'llvm-ar-18', 'nm', 'objcopy', 'pkg-config'):
         path = shutil.which(tool)
@@ -58,8 +61,8 @@ def write_report(path, report):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--vc98', type=Path, default=os.environ.get('TITBIT_VC6'),
-                        help='User-installed VC98 directory containing Include and ATL/Include')
+    parser.add_argument('--vc98', type=Path,
+                        help='Optional reference build with legacy VC98 headers; normal builds do not use VC6')
     parser.add_argument('--jobs', type=int, default=4)
     parser.add_argument('--ffmpeg', type=Path, default=os.environ.get('TITBIT_FFMPEG'),
                         help='Prefix of the minimal static FFmpeg from tools/build_ffmpeg_min.sh (fewer runtime libraries)')
@@ -70,12 +73,11 @@ def main():
     parser.add_argument('--check', action='store_true', help='Check toolchain and ELF32 execution without rebuilding')
     parser.add_argument('--test-runtime', action='store_true', help='Also execute string/EH/locale/FILE32 checks')
     args = parser.parse_args()
-    if not args.vc98:
-        parser.error('Set TITBIT_VC6 or pass --vc98 /path/to/VC98')
     if args.jobs < 1 or args.jobs > 64:
         parser.error('--jobs must be between 1 and 64')
-    vc98 = args.vc98.expanduser().resolve()
-    environment = dict(os.environ, TITBIT_VC6=str(vc98))
+    vc98 = args.vc98.expanduser().resolve() if args.vc98 else None
+    environment = dict(os.environ)
+    environment.pop('TITBIT_VC6', None)
     if args.minimal:
         # outside the repository: autotools (SDL2) cannot build in paths with spaces
         cache = Path(os.environ.get('XDG_CACHE_HOME') or Path.home()/'.cache')/'titbit'
@@ -131,8 +133,10 @@ def main():
             raise RuntimeError(name+' failed; see '+str(log))
 
     try:
-        frontend = [sys.executable, str(ROOT/'tools/compile_ms_ir.py'), '--vc98', str(vc98),
+        frontend = [sys.executable, str(ROOT/'tools/compile_ms_ir.py'),
                     '--with-runtime', '--jobs', str(args.jobs)]
+        if vc98:
+            frontend += ['--vc98', str(vc98)]
         for source in EXTRA_SOURCES:
             frontend += ['--extra-source', source]
         stage('01 Source to Microsoft ABI LLVM IR', frontend)
@@ -158,7 +162,7 @@ def main():
             raise RuntimeError('Link output is not a native little-endian ELF32 Intel 80386 executable.')
         if args.test_runtime:
             stage('07 Verify native CRT and C++ header ABI',
-                  [sys.executable, str(ROOT/'tools/check_cpp_runtime.py'), '--vc98', str(vc98)])
+                  [sys.executable, str(ROOT/'tools/check_cpp_runtime.py')]+(['--vc98', str(vc98)] if vc98 else []))
         report.update(status='complete', seconds=round(time.monotonic()-started, 2),
                       output={'path': str(executable.relative_to(ROOT)),
                               'sha256': hashlib.sha256(executable.read_bytes()).hexdigest()})

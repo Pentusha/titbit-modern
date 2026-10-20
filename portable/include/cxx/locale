@@ -1,0 +1,33 @@
+#ifndef TITBIT_CXX_LOCALE
+#define TITBIT_CXX_LOCALE
+#include <stdexcept>
+#include <ctype.h>
+namespace std {
+class locale {
+public:
+ class facet {public:explicit facet(size_t=0){}virtual ~facet(){}};
+ class id {};
+ typedef int category;
+ enum {none=0,collate=1,ctype=2,monetary=4,numeric=8,time=16,messages=32,all=63};
+ locale(){} explicit locale(const char *name){if(name&&*name&&strcmp(name,"C")&&strcmp(name,"POSIX"))throw runtime_error("unsupported locale name");}
+ locale(const locale&,const char *name,category){if(name&&*name&&strcmp(name,"C")&&strcmp(name,"POSIX"))throw runtime_error("unsupported locale name");}
+ template<class F>locale(const locale&,F*){}
+ string name()const{return string("C");}static const locale&classic(){static locale v;return v;}
+};
+struct ctype_base {
+ typedef unsigned short mask;
+ enum {space=1,print=2,cntrl=4,upper=8,lower=16,alpha=32,digit=64,punct=128,xdigit=256,alnum=alpha|digit,graph=alnum|punct};
+};
+template<class C>class ctype:public locale::facet,public ctype_base {
+public:
+ typedef C char_type;static locale::id id;
+ explicit ctype(size_t refs=0):locale::facet(refs){}
+ bool is(mask m,C c)const{unsigned v=(unsigned)c;mask flags=0;if(v==' '||(v>=9&&v<=13))flags|=space;if(v>=32&&v<127)flags|=print;if(v<32||v==127)flags|=cntrl;if(v>='A'&&v<='Z')flags|=upper|alpha;if(v>='a'&&v<='z')flags|=lower|alpha;if(v>='0'&&v<='9')flags|=digit|xdigit;if((v>='a'&&v<='f')||(v>='A'&&v<='F'))flags|=xdigit;if(v>32&&v<127&&!(flags&(alpha|digit)))flags|=punct;return (m&flags)!=0;}
+ C tolower(C c)const{return c>='A'&&c<='Z'?C(c+('a'-'A')):c;}C toupper(C c)const{return c>='a'&&c<='z'?C(c-('a'-'A')):c;}
+ C widen(char c)const{return (unsigned char)c;}char narrow(C c,char fallback)const{return (unsigned)c<256?char(c):fallback;}
+};
+template<class C>locale::id ctype<C>::id;
+template<class F>const F&use_facet(const locale&,F* =0,bool=true){static F value;return value;}
+template<class F>bool has_facet(const locale&,F* =0){return true;}
+}
+#endif

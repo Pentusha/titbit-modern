@@ -1,0 +1,13 @@
+#ifndef TITBIT_CXX_STDEXCEPT
+#define TITBIT_CXX_STDEXCEPT
+#include <exception>
+#include <string>
+namespace std {
+class logic_error:public exception {public:explicit logic_error(const string&s):exception(s.c_str()){} explicit logic_error(const char*s):exception(s){} };
+class runtime_error:public exception {public:explicit runtime_error(const string&s):exception(s.c_str()){} explicit runtime_error(const char*s):exception(s){} };
+class length_error:public logic_error{public:explicit length_error(const string&s):logic_error(s){}explicit length_error(const char*s):logic_error(s){}};
+class out_of_range:public logic_error{public:explicit out_of_range(const string&s):logic_error(s){}explicit out_of_range(const char*s):logic_error(s){}};
+class invalid_argument:public logic_error{public:explicit invalid_argument(const string&s):logic_error(s){}explicit invalid_argument(const char*s):logic_error(s){}};
+class range_error:public runtime_error{public:explicit range_error(const string&s):runtime_error(s){}};
+}
+#endif

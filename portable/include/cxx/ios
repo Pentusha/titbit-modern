@@ -1,0 +1,37 @@
+#ifndef TITBIT_CXX_IOS
+#define TITBIT_CXX_IOS
+#include <cstddef>
+#include <locale>
+namespace std {
+typedef long streamoff;typedef long streamsize;typedef long streampos;
+class ios_base {
+public:
+ typedef int iostate;typedef int openmode;typedef int seekdir;typedef int fmtflags;
+ enum {goodbit=0,eofbit=1,failbit=2,badbit=4};
+ enum {in=1,out=2,ate=4,app=8,trunc=16,binary=32};
+ enum {beg=0,cur=1,end=2};
+ enum {skipws=1,dec=2,hex=4,oct=8,unitbuf=16};
+ class failure:public runtime_error{public:explicit failure(const string&s):runtime_error(s){} };
+protected:
+ iostate state_,except_;fmtflags flags_;streamsize precision_,width_;locale locale_;
+public:
+ ios_base():state_(goodbit),except_(goodbit),flags_(skipws|dec),precision_(6),width_(0){}virtual ~ios_base(){}
+ bool good()const{return state_==goodbit;}bool eof()const{return (state_&eofbit)!=0;}bool bad()const{return (state_&badbit)!=0;}bool fail()const{return (state_&(badbit|failbit))!=0;}
+ operator void*()const{return fail()?0:(void*)this;}bool operator!()const{return fail();}iostate rdstate()const{return state_;}
+ void clear(iostate v=goodbit){state_=v;if(v&except_)throw failure("stream state error");}void setstate(iostate v){clear(state_|v);}
+ iostate exceptions()const{return except_;}void exceptions(iostate v){except_=v;clear(state_);}
+ fmtflags flags()const{return flags_;}fmtflags flags(fmtflags f){fmtflags old=flags_;flags_=f;return old;}fmtflags setf(fmtflags f){fmtflags old=flags_;flags_|=f;return old;}void unsetf(fmtflags f){flags_&=~f;}
+ streamsize precision()const{return precision_;}streamsize precision(streamsize v){streamsize old=precision_;precision_=v;return old;}streamsize width()const{return width_;}streamsize width(streamsize v){streamsize old=width_;width_=v;return old;}
+ locale getloc()const{return locale_;}locale imbue(const locale&v){locale old=locale_;locale_=v;return old;}
+};
+template<class C,class Tr>class basic_streambuf;
+template<class C,class Tr=char_traits<C> >class basic_ios:public ios_base {
+ basic_streambuf<C,Tr>*buffer_;C fill_;
+public:
+ explicit basic_ios(basic_streambuf<C,Tr>*p=0):buffer_(p),fill_(' '){}
+ void init(basic_streambuf<C,Tr>*p){buffer_=p;clear(p?goodbit:badbit);}basic_streambuf<C,Tr>*rdbuf()const{return buffer_;}basic_streambuf<C,Tr>*rdbuf(basic_streambuf<C,Tr>*p){basic_streambuf<C,Tr>*old=buffer_;buffer_=p;clear();return old;}
+ C fill()const{return fill_;}C fill(C v){C old=fill_;fill_=v;return old;}
+};
+typedef basic_ios<char>ios;typedef basic_ios<wchar_t>wios;
+}
+#endif

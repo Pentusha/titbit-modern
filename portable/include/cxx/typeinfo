@@ -1,0 +1,7 @@
+#ifndef TITBIT_CXX_TYPEINFO
+#define TITBIT_CXX_TYPEINFO
+#include <exception>
+#include <string.h>
+class type_info {public:virtual ~type_info(){}bool operator==(const type_info&v)const{return !strcmp(raw_name(),v.raw_name());}bool operator!=(const type_info&v)const{return !(*this==v);}const char*name()const{return raw_name();}const char*raw_name()const{return decorated_;}private:mutable char*name_;char decorated_[1];};
+namespace std {using ::type_info;class bad_cast:public exception{public:virtual const char*what()const{return "bad cast";}};class bad_typeid:public exception{public:virtual const char*what()const{return "bad typeid";}};}
+#endif

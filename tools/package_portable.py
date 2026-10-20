@@ -83,7 +83,7 @@ def assemble(game_build, tool_build, output, version=VERSION):
         (package/'config').mkdir()
         shutil.copy2(BASE/'config/assets.json',package/'config/assets.json')
         docs = package/'docs';docs.mkdir()
-        for name in ('GETTING_STARTED.md','ASSETS.md','BUILD.md','VALIDATION.md','VERIFY.md','validation.json'):
+        for name in ('GETTING_STARTED.md','ASSETS.md','BUILD.md','VALIDATION.md','VALIDATION-NO-VC6.md','VERIFY.md','validation.json','validation-no-vc6.json'):
             shutil.copy2(BASE/'docs'/name,docs/name)
         shutil.copytree(BASE/'docs/images',docs/'images')
         shutil.copytree(BASE/'docs/licenses',docs/'licenses')
@@ -122,10 +122,10 @@ def assemble(game_build, tool_build, output, version=VERSION):
         info=game_build/'build-info.json'
         if info.is_file():
             built=json.loads(info.read_text(encoding='utf-8'))
-            # TitbitModern.exe and TitbitSettings.exe rebuild byte for byte from sourceCommit
-            # with the same VC6 files: tools/verify_release.py compares them.
-            metadata['reproducible']={'sourceDateEpoch':built.get('sourceDateEpoch'),'vc6Tools':built.get('tools'),
-                                      'vc6Libraries':built.get('libraries')}
+            metadata['reproducible']={'sourceDateEpoch':built.get('sourceDateEpoch'),
+                                      'tools':built.get('tools'),'libraries':built.get('libraries'),
+                                      'headers':built.get('headers'),
+                                      'runtime':built.get('runtime'),'requiresVC6':built.get('requiresVC6',True)}
         (package/'package.json').write_text(json.dumps(metadata,indent=2)+'\n',encoding='utf8')
         paths=sorted(p for p in package.rglob('*') if p.is_file())
         for p in paths:
@@ -144,7 +144,7 @@ def assemble(game_build, tool_build, output, version=VERSION):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--game-build',type=Path,default=BASE/'build/modern')
+    parser.add_argument('--game-build',type=Path,default=BASE/'build/modern-portable')
     parser.add_argument('--out',type=Path,default=BASE/'dist')
     parser.add_argument('--version',default=VERSION)
     args=parser.parse_args()

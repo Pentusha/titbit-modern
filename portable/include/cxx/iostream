@@ -1,0 +1,5 @@
+#ifndef TITBIT_CXX_IOSTREAM
+#define TITBIT_CXX_IOSTREAM
+#include <istream>
+#include <ostream>
+#endif

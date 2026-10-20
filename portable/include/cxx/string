@@ -1,0 +1,86 @@
+// Independently authored byte-string implementation. The 32-bit object retains
+// the observed allocator/pointer/length/capacity layout used by engine structs.
+// Storage has the historical owner byte at data[-1], but copies own their data.
+#ifndef TITBIT_CXX_STRING
+#define TITBIT_CXX_STRING
+#include <memory>
+#include <utility>
+#include <titbit_traits>
+#include <string.h>
+namespace std {
+void __cdecl _Xlen(); void __cdecl _Xran();
+template<class C> struct char_traits {
+ typedef C char_type;typedef int int_type;
+ static void assign(C&a,const C&b){a=b;}
+ static bool eq(C a,C b){return a==b;}static bool lt(C a,C b){return a<b;}
+ static size_t length(const C*p){size_t n=0;while(p[n])++n;return n;}
+ static int compare(const C*a,const C*b,size_t n){for(size_t i=0;i<n;++i){if(a[i]<b[i])return -1;if(b[i]<a[i])return 1;}return 0;}
+ static C *copy(C*d,const C*s,size_t n){if(n)memcpy(d,s,n*sizeof(C));return d;}
+ static C *move(C*d,const C*s,size_t n){if(n)memmove(d,s,n*sizeof(C));return d;}
+ static C *assign(C*d,size_t n,C c){for(size_t i=0;i<n;++i)d[i]=c;return d;}
+ static const C *find(const C*p,size_t n,const C&c){for(size_t i=0;i<n;++i)if(p[i]==c)return p+i;return 0;}
+ static int_type eof(){return -1;}static int_type to_int_type(C c){return sizeof(C)==1?(unsigned char)c:(unsigned int)c;}
+ static C to_char_type(int_type c){return C(c);}static bool eq_int_type(int_type a,int_type b){return a==b;}
+ static int_type not_eof(int_type c){return c==-1?0:c;}
+};
+template<class C,class Tr=char_traits<C>,class A=allocator<C> > class basic_string {
+ A alloc_; C *ptr_; size_t length_;size_t capacity_;
+ static const C *empty_data(){static const C nil[2]={0,0};return nil+1;}
+ void release(){if(ptr_)::operator delete(ptr_-1);ptr_=0;length_=capacity_=0;}
+ void ensure(size_t n){if(n<=capacity_)return;if(n>max_size())_Xlen();size_t cap=capacity_?capacity_+capacity_/2:15;if(cap<n)cap=n;C*p=(C*)::operator new((cap+2)*sizeof(C));*p++=0;if(length_)Tr::copy(p,ptr_,length_);p[length_]=0;if(ptr_)::operator delete(ptr_-1);ptr_=p;capacity_=cap;}
+public:
+ typedef C value_type;typedef Tr traits_type;typedef A allocator_type;typedef size_t size_type;typedef ptrdiff_t difference_type;typedef C*iterator;typedef const C*const_iterator;typedef C&reference;typedef const C&const_reference;
+ static const size_type npos=size_type(-1);
+ basic_string():alloc_(),ptr_(0),length_(0),capacity_(0){}
+ explicit basic_string(const A&a):alloc_(a),ptr_(0),length_(0),capacity_(0){}
+ basic_string(const C*s,const A&a=A()):alloc_(a),ptr_(0),length_(0),capacity_(0){assign(s);}
+ basic_string(const C*s,size_t n,const A&a=A()):alloc_(a),ptr_(0),length_(0),capacity_(0){assign(s,n);}
+ basic_string(size_t n,C c,const A&a=A()):alloc_(a),ptr_(0),length_(0),capacity_(0){assign(n,c);}
+ basic_string(const basic_string&s):alloc_(),ptr_(0),length_(0),capacity_(0){assign(s.data(),s.size());}
+ basic_string(const basic_string&s,size_t pos,size_t n=npos,const A&a=A()):alloc_(a),ptr_(0),length_(0),capacity_(0){assign(s,pos,n);}
+ template<class I> basic_string(I a,I b,typename _tb_enable_if<!_tb_integer<I>::value,int>::type=0):alloc_(),ptr_(0),length_(0),capacity_(0){for(;a!=b;++a)push_back(*a);}
+ ~basic_string(){release();}
+ basic_string&operator=(const basic_string&s){if(this!=&s)assign(s.data(),s.size());return *this;}
+ basic_string&operator=(const C*s){return assign(s);}basic_string&operator=(C c){return assign(1,c);}
+ const C*c_str()const{return ptr_?ptr_:empty_data();}const C*data()const{return c_str();}
+ size_t size()const{return length_;}size_t length()const{return length_;}bool empty()const{return !length_;}size_t capacity()const{return capacity_;}size_t max_size()const{return size_t(-1)/sizeof(C)-2;}
+ A get_allocator()const{return alloc_;}
+ iterator begin(){return ptr_?ptr_:const_cast<C*>(empty_data());}const_iterator begin()const{return data();}iterator end(){return begin()+length_;}const_iterator end()const{return data()+length_;}
+ C&operator[](size_t i){return begin()[i];}const C&operator[](size_t i)const{return data()[i];}C&at(size_t i){if(i>=length_)_Xran();return ptr_[i];}const C&at(size_t i)const{if(i>=length_)_Xran();return ptr_[i];}
+ void reserve(size_t n=0){ensure(n);}void clear(){length_=0;if(ptr_)ptr_[0]=0;}
+ void resize(size_t n,C c=C()){if(n>length_){size_t old=length_;ensure(n);Tr::assign(ptr_+old,n-old,c);}length_=n;if(ptr_)ptr_[n]=0;}
+ basic_string&assign(const C*s){return assign(s,Tr::length(s));}
+ basic_string&assign(const C*s,size_t n){basic_string hold;if(ptr_&&s>=ptr_&&s<=ptr_+length_){hold.assign(s,n);s=hold.data();}ensure(n);if(n)Tr::copy(ptr_,s,n);length_=n;if(ptr_)ptr_[n]=0;return *this;}
+ basic_string&assign(const basic_string&s,size_t p=0,size_t n=npos){if(p>s.size())_Xran();if(n>s.size()-p)n=s.size()-p;return assign(s.data()+p,n);}
+ basic_string&assign(size_t n,C c){ensure(n);if(n)Tr::assign(ptr_,n,c);length_=n;if(ptr_)ptr_[n]=0;return *this;}
+ template<class I> typename _tb_enable_if<!_tb_integer<I>::value,basic_string&>::type assign(I a,I b){clear();for(;a!=b;++a)push_back(*a);return *this;}
+ basic_string&append(const C*s,size_t n){basic_string hold;if(ptr_&&s>=ptr_&&s<=ptr_+length_){hold.assign(s,n);s=hold.data();}if(n>max_size()-length_)_Xlen();ensure(length_+n);if(n)Tr::copy(ptr_+length_,s,n);length_+=n;if(ptr_)ptr_[length_]=0;return *this;}
+ basic_string&append(const C*s){return append(s,Tr::length(s));}basic_string&append(const basic_string&s){return append(s.data(),s.size());}
+ basic_string&append(const basic_string&s,size_t p,size_t n=npos){if(p>s.size())_Xran();if(n>s.size()-p)n=s.size()-p;return append(s.data()+p,n);}
+ basic_string&append(size_t n,C c){size_t old=length_;resize(length_+n,c);(void)old;return *this;}
+ basic_string&operator+=(const C*s){return append(s);}basic_string&operator+=(const basic_string&s){return append(s);}basic_string&operator+=(C c){push_back(c);return *this;}void push_back(C c){append(&c,1);}
+ basic_string&erase(size_t p=0,size_t n=npos){if(p>length_)_Xran();if(n>length_-p)n=length_-p;if(ptr_)Tr::move(ptr_+p,ptr_+p+n,length_-p-n+1);length_-=n;return *this;}
+ iterator erase(iterator p){size_t n=p-begin();erase(n,1);return begin()+n;}iterator erase(iterator a,iterator b){size_t n=a-begin();erase(n,b-a);return begin()+n;}
+ basic_string&replace(size_t p,size_t n,const C*s,size_t count){if(p>length_)_Xran();basic_string copy(s,count);if(n>length_-p)n=length_-p;if(count>max_size()-(length_-n))_Xlen();size_t total=length_-n+count;if(!total){clear();return *this;}ensure(total);Tr::move(ptr_+p+count,ptr_+p+n,length_-p-n);if(count)Tr::copy(ptr_+p,copy.data(),count);length_=total;ptr_[total]=0;return *this;}
+ basic_string&replace(size_t p,size_t n,const C*s){return replace(p,n,s,Tr::length(s));}basic_string&replace(size_t p,size_t n,const basic_string&s){return replace(p,n,s.data(),s.size());}
+ basic_string&insert(size_t p,const C*s){return replace(p,0,s);}basic_string&insert(size_t p,const basic_string&s){return replace(p,0,s);}basic_string&insert(size_t p,size_t n,C c){basic_string s(n,c);return replace(p,0,s);}
+ basic_string substr(size_t p=0,size_t n=npos)const{if(p>length_)_Xran();if(n>length_-p)n=length_-p;return basic_string(data()+p,n);}
+ int compare(const basic_string&s)const{return compare(0,length_,s.data(),s.size());}int compare(const C*s)const{return compare(0,length_,s,Tr::length(s));}
+ int compare(size_t p,size_t n,const basic_string&s)const{return compare(p,n,s.data(),s.size());}
+ int compare(size_t p,size_t n,const C*s,size_t count)const{if(p>length_)_Xran();if(n>length_-p)n=length_-p;size_t m=n<count?n:count;int r=Tr::compare(data()+p,s,m);return r?r:n<count?-1:n>count?1:0;}
+ size_t find(const C*s,size_t p,size_t n)const{if(n>length_)return npos;for(size_t i=p;i<=length_-n;++i)if(!Tr::compare(data()+i,s,n))return i;return npos;}
+ size_t find(const C*s,size_t p=0)const{return find(s,p,Tr::length(s));}size_t find(const basic_string&s,size_t p=0)const{return find(s.data(),p,s.size());}size_t find(C c,size_t p=0)const{return find(&c,p,1);}
+ size_t rfind(C c,size_t p=npos)const{if(!length_)return npos;if(p>=length_)p=length_-1;do{if(data()[p]==c)return p;}while(p--);return npos;}
+ size_t find_first_of(C c,size_t p=0)const{return find(c,p);}size_t find_first_of(const C*s,size_t p=0)const{for(;p<length_;++p)if(Tr::find(s,Tr::length(s),data()[p]))return p;return npos;}
+ size_t find_last_of(C c,size_t p=npos)const{return rfind(c,p);}size_t find_last_of(const C*s,size_t p=npos)const{if(!length_)return npos;if(p>=length_)p=length_-1;do{if(Tr::find(s,Tr::length(s),data()[p]))return p;}while(p--);return npos;}
+ size_t find_first_not_of(const C*s,size_t p=0)const{for(;p<length_;++p)if(!Tr::find(s,Tr::length(s),data()[p]))return p;return npos;}
+ size_t copy(C*d,size_t n,size_t p=0)const{if(p>length_)_Xran();if(n>length_-p)n=length_-p;Tr::copy(d,data()+p,n);return n;}
+ void swap(basic_string&s){std::swap(ptr_,s.ptr_);std::swap(length_,s.length_);std::swap(capacity_,s.capacity_);}
+};
+template<class C,class T,class A> const size_t basic_string<C,T,A>::npos;
+typedef basic_string<char> string;typedef basic_string<wchar_t> wstring;
+template<class C,class T,class A> bool operator==(const basic_string<C,T,A>&a,const basic_string<C,T,A>&b){return !a.compare(b);}template<class C,class T,class A> bool operator!=(const basic_string<C,T,A>&a,const basic_string<C,T,A>&b){return a.compare(b)!=0;}template<class C,class T,class A> bool operator<(const basic_string<C,T,A>&a,const basic_string<C,T,A>&b){return a.compare(b)<0;}template<class C,class T,class A> bool operator>(const basic_string<C,T,A>&a,const basic_string<C,T,A>&b){return a.compare(b)>0;}template<class C,class T,class A> bool operator<=(const basic_string<C,T,A>&a,const basic_string<C,T,A>&b){return a.compare(b)<=0;}template<class C,class T,class A> bool operator>=(const basic_string<C,T,A>&a,const basic_string<C,T,A>&b){return a.compare(b)>=0;}
+template<class C,class T,class A> bool operator==(const basic_string<C,T,A>&a,const C*b){return !a.compare(b);}template<class C,class T,class A> bool operator==(const C*a,const basic_string<C,T,A>&b){return !b.compare(a);}template<class C,class T,class A> bool operator!=(const basic_string<C,T,A>&a,const C*b){return a.compare(b)!=0;}template<class C,class T,class A> bool operator!=(const C*a,const basic_string<C,T,A>&b){return b.compare(a)!=0;}
+template<class C,class T,class A> basic_string<C,T,A> operator+(const basic_string<C,T,A>&a,const basic_string<C,T,A>&b){basic_string<C,T,A> r(a);return r+=b;}template<class C,class T,class A> basic_string<C,T,A> operator+(const basic_string<C,T,A>&a,const C*b){basic_string<C,T,A> r(a);return r+=b;}template<class C,class T,class A> basic_string<C,T,A> operator+(const C*a,const basic_string<C,T,A>&b){basic_string<C,T,A> r(a);return r+=b;}template<class C,class T,class A> basic_string<C,T,A> operator+(const basic_string<C,T,A>&a,C b){basic_string<C,T,A> r(a);return r+=b;}
+}
+#endif

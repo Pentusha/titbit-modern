@@ -69,7 +69,8 @@ bool ObservedPickingScene::Send(ObservedPickingMessage *input) {
 }
 
 ObservedPickingNode *ObservedPickingScene::Resolve(ObservedPickingMessage *message) {
- for (int i = 0; i < lists[0].size; ++i) {
+ int i;
+ for (i = 0; i < lists[0].size; ++i) {
   ObservedPickingNode *p = Find(lists[0].data[i], (const char *)message->reserved0);
   if (p) return p;
  }

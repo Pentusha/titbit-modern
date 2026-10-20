@@ -46,6 +46,10 @@ bool __cdecl uncaught_exception() { return titbit_native_uncaught_exception(); }
 void __cdecl _Xlen() { throw length_error("string too long"); }
 void __cdecl _Xran() { throw out_of_range("invalid string position"); }
 
+#ifdef TITBIT_PORTABLE_HEADERS
+} // namespace std; portable locale and streams are implemented in project headers.
+#else
+
 static bool supported_locale(const char *name) {
  return !name || !*name || !strcmp(name, "C") || !strcmp(name, "POSIX");
 }
@@ -193,3 +197,4 @@ extern "C" _Cvtvec __cdecl _Getcvt() {
  _Cvtvec value = {0, 0};
  return value;
 }
+#endif

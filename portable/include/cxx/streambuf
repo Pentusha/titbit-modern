@@ -1,0 +1,20 @@
+#ifndef TITBIT_CXX_STREAMBUF
+#define TITBIT_CXX_STREAMBUF
+#include <ios>
+namespace std {
+template<class C,class Tr=char_traits<C> >class basic_streambuf {
+public:
+ typedef C char_type;typedef typename Tr::int_type int_type;
+ virtual ~basic_streambuf(){}
+ int_type sbumpc(){return uflow();}int_type sgetc(){return underflow();}int_type sputc(C c){return overflow(Tr::to_int_type(c));}
+ streamsize sgetn(C*p,streamsize n){return xsgetn(p,n);}streamsize sputn(const C*p,streamsize n){return xsputn(p,n);}int pubsync(){return sync();}
+ streampos pubseekoff(streamoff off,ios_base::seekdir dir,ios_base::openmode mode=ios_base::in|ios_base::out){return seekoff(off,dir,mode);}streampos pubseekpos(streampos p,ios_base::openmode mode=ios_base::in|ios_base::out){return seekoff(p,ios_base::beg,mode);}
+protected:
+ virtual int_type underflow(){return Tr::eof();}virtual int_type uflow(){return Tr::eof();}virtual int_type overflow(int_type=Tr::eof()){return Tr::eof();}
+ virtual streamsize xsgetn(C*p,streamsize n){streamsize i=0;for(;i<n;++i){int_type c=uflow();if(Tr::eq_int_type(c,Tr::eof()))break;p[i]=Tr::to_char_type(c);}return i;}
+ virtual streamsize xsputn(const C*p,streamsize n){streamsize i=0;for(;i<n;++i)if(Tr::eq_int_type(overflow(Tr::to_int_type(p[i])),Tr::eof()))break;return i;}
+ virtual int sync(){return 0;}virtual streampos seekoff(streamoff,ios_base::seekdir,ios_base::openmode){return -1;}
+};
+typedef basic_streambuf<char>streambuf;
+}
+#endif

@@ -1,0 +1,20 @@
+#ifndef TITBIT_CXX_ISTREAM
+#define TITBIT_CXX_ISTREAM
+#include <streambuf>
+namespace std {
+template<class C,class Tr=char_traits<C> >class basic_istream:virtual public basic_ios<C,Tr> {
+ streamsize count_;
+public:
+ typedef typename Tr::int_type int_type;
+ explicit basic_istream(basic_streambuf<C,Tr>*p=0):basic_ios<C,Tr>(p),count_(0){this->init(p);}
+ basic_istream&read(C*p,streamsize n){count_=this->rdbuf()?this->rdbuf()->sgetn(p,n):0;if(count_!=n)this->setstate(ios_base::eofbit|ios_base::failbit);return *this;}
+ streamsize gcount()const{return count_;}
+ int_type get(){count_=0;int_type c=this->rdbuf()?this->rdbuf()->sbumpc():Tr::eof();if(Tr::eq_int_type(c,Tr::eof()))this->setstate(ios_base::eofbit|ios_base::failbit);else count_=1;return c;}
+ basic_istream&get(C&c){int_type v=get();if(!Tr::eq_int_type(v,Tr::eof()))c=Tr::to_char_type(v);return *this;}
+ int_type peek(){int_type c=this->rdbuf()?this->rdbuf()->sgetc():Tr::eof();if(Tr::eq_int_type(c,Tr::eof()))this->setstate(ios_base::eofbit);return c;}
+ basic_istream&seekg(streamoff n,ios_base::seekdir dir){if(!this->rdbuf()||this->rdbuf()->pubseekoff(n,dir,ios_base::in)==-1)this->setstate(ios_base::failbit);return *this;}basic_istream&seekg(streampos n){return seekg(n,ios_base::beg);}streampos tellg(){return this->rdbuf()?this->rdbuf()->pubseekoff(0,ios_base::cur,ios_base::in):-1;}
+ basic_istream&operator>>(basic_string<C,Tr>&s){s.clear();const ctype<C>&ct=use_facet(this->getloc(),(ctype<C>*)0);int_type c=peek();while(!Tr::eq_int_type(c,Tr::eof())&&ct.is(ctype_base::space,Tr::to_char_type(c))){get();c=peek();}while(!Tr::eq_int_type(c,Tr::eof())&&!ct.is(ctype_base::space,Tr::to_char_type(c))){s.push_back(Tr::to_char_type(get()));c=peek();}if(s.empty())this->setstate(ios_base::failbit);return *this;}
+};
+typedef basic_istream<char>istream;typedef basic_istream<wchar_t>wistream;
+}
+#endif

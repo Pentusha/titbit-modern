@@ -11,7 +11,7 @@
 
 // Verified reconstruction excerpt: the nonvirtual Init and three data members
 // are selected from pinned WTL7.5 build5333; original target version is unknown.
-// ATL CComModule/base implementation comes unchanged from installed VC6.5 SDK.
+// ATL base: project-owned portable adapter, or installed SDK in legacy builds.
 #ifndef TITBIT_APP_MODULE_H
 #define TITBIT_APP_MODULE_H
 #ifndef _ATL_MIN_CRT

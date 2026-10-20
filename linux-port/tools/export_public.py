@@ -7,8 +7,8 @@ from pathlib import Path
 import shutil
 
 ROOT=Path(__file__).resolve().parents[1]
-DIRECTORIES=('config','docs','editor','platform','probes','src','third_party','tools')
-FILES=('README.md','.gitignore','requirements-studio.txt','start-game.sh','Start Linux.cmd','THIRD_PARTY_NOTICES.md')
+DIRECTORIES=('config','docs','editor','flatpak','platform','portable','probes','src','third_party','tools')
+FILES=('README.md','.gitignore','requirements-studio.txt','requirements-tools.txt','start-game.sh','Start Linux.cmd','THIRD_PARTY_NOTICES.md')
 RUNTIME=('crt_*','stl_*','eh_*','iostream_*','cpp_eh*','locale_*','msvcrt_*')
 ARTIFACTS={'.o','.obj','.a','.so','.exe','.dll','.lib','.pdb','.pyc','.ppm','.ll','.bc','.map','.log','.pid','.sav','.ezd','.avi','.iso','.img','.cue','.ccd','.sub','.dmp','.meat','.eza','.tga','.cab','.hdr'}
 
@@ -30,9 +30,11 @@ def export(destination):
     destination.mkdir(parents=True,exist_ok=True)
     copied=[]
     for name in DIRECTORIES:
-        for source in sorted((ROOT/name).rglob('*')):
+        folder=ROOT/name
+        if name=='portable' and not folder.is_dir():folder=ROOT.parent/name
+        for source in sorted(folder.rglob('*')):
             if not source.is_file() or source.is_symlink():continue
-            relative=source.relative_to(ROOT)
+            relative=Path(name)/source.relative_to(folder)
             if excluded(relative):continue
             with source.open('rb') as stream:magic=stream.read(4)
             if magic==b'\x7fELF' or magic[:2]==b'MZ':continue

@@ -1,0 +1,10 @@
+#ifndef TITBIT_CXX_QUEUE
+#define TITBIT_CXX_QUEUE
+#include <deque>
+namespace std {
+template<class T,class C=deque<T> >class queue {
+protected:C c;
+public:typedef T value_type;typedef size_t size_type;explicit queue(const C&v=C()):c(v){}bool empty()const{return c.empty();}size_t size()const{return c.size();}T&front(){return c.front();}const T&front()const{return c.front();}T&back(){return c.back();}const T&back()const{return c.back();}void push(const T&v){c.push_back(v);}void pop(){c.pop_front();}
+};
+}
+#endif

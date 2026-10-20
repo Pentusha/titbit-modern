@@ -42,6 +42,13 @@ def main():
         if path.suffix=='.sh' or path.name=='Makefile':payload=payload.replace(b'\r\n',b'\n')
         files[relative.as_posix()]=payload
     files['titbit']=binary
+    # A Git checkout shares the portable ABI layer with the Windows build.
+    # Standalone Linux packages/exports carry that same source layer locally.
+    portable=source/'portable' if (source/'portable').is_dir() else source.parent/'portable'
+    for path in sorted(portable.rglob('*')):
+        if path.is_file() and not path.is_symlink():
+            relative=Path('portable')/path.relative_to(portable)
+            if not excluded(relative):files[relative.as_posix()]=path.read_bytes()
     if a.tools.is_file():
         tools=a.tools.read_bytes()
         if tools[:5]!=b'\x7fELF\x02':raise ValueError('Expected x86-64 ELF titbit-tools')

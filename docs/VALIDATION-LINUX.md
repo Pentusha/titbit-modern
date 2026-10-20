@@ -1,5 +1,7 @@
 # Linux preview 1 — область проверки
 
+Проверка нового toolchain без VC6: [VALIDATION-NO-VC6.md](VALIDATION-NO-VC6.md).
+
 Среда: Ubuntu 24.04 / WSL2, x86-64, библиотеки i386; SDL2, Mesa OpenGL,
 FFmpeg 6.1. Выходной файл — нативный ELF32/i386. Wine и оригинальный EXE
 не используются. Игровые данные импортируются из пользовательской копии.

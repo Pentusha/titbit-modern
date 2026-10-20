@@ -1,0 +1,20 @@
+#ifndef TITBIT_CXX_NEW
+#define TITBIT_CXX_NEW
+#include <cstddef>
+#include <exception>
+namespace std {
+ struct nothrow_t {};
+ extern const nothrow_t nothrow;
+ class bad_alloc : public exception {
+ public: bad_alloc() {} virtual ~bad_alloc() {} virtual const char *what() const {return "allocation failed";}
+ };
+}
+void *operator new(size_t);
+void *operator new[](size_t);
+void operator delete(void *) throw();
+void operator delete[](void *) throw();
+inline void *operator new(size_t, void *p) throw() {return p;}
+inline void *operator new[](size_t, void *p) throw() {return p;}
+inline void operator delete(void *, void *) throw() {}
+inline void operator delete[](void *, void *) throw() {}
+#endif

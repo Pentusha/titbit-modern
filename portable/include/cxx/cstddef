@@ -1,0 +1,6 @@
+// Authored C++ compatibility surface for the reconstructed game.
+#ifndef TITBIT_CXX_CSTDDEF
+#define TITBIT_CXX_CSTDDEF
+#include <stddef.h>
+namespace std { using ::size_t; using ::ptrdiff_t; }
+#endif

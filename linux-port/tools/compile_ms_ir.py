@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Compile source recipes to MSVC-ABI LLVM IR using a user-installed VC98 SDK.
+"""Compile source to Microsoft-layout LLVM IR with open Win32/portable headers.
 
-The SDK stays external. A case-insensitive VFS overlay adapts its real headers
-to Linux without changing or redistributing the installation.
+VC6 is not a normal build input. --vc98 is an explicit, optional historical
+comparison mode; it is never inferred from the user's environment.
 """
 import argparse
 from collections import Counter
@@ -115,7 +115,7 @@ def sdk_overlay(sdk, out):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--vc98', type=Path, default=os.environ.get('TITBIT_VC6'))
+    parser.add_argument('--vc98', type=Path, help='Optional legacy-header comparison build; normal builds use portable headers')
     parser.add_argument('--compiler', default='clang++-18')
     parser.add_argument('--jobs', type=int, default=4)
     parser.add_argument('--filter', default='')
@@ -124,15 +124,15 @@ def main():
     parser.add_argument('--extra-source', action='append', default=[])
     parser.add_argument('--out', type=Path)
     args = parser.parse_args()
-    if args.vc98 is None or not (args.vc98/'Include').is_dir():
+    sdk = args.vc98.resolve() if args.vc98 else None
+    if sdk and not (sdk/'Include').is_dir():
         parser.error('--vc98 must point to an installed VC98 directory')
-    sdk = args.vc98.resolve()
     out = (args.out or ROOT/('build/ms-runtime-ir' if args.runtime_only else 'build/ms-ir')).resolve()
     out.mkdir(parents=True, exist_ok=True)
     compiler = shutil.which(args.compiler)
     if not compiler:
         parser.error('Compiler not found: '+args.compiler)
-    overlay = sdk_overlay(sdk, out)
+    overlay = sdk_overlay(sdk, out) if sdk else None
     configuration = json.loads((ROOT/'config/source-build.json').read_text())
     recipes = configuration['recipes']
     if args.runtime_only:
@@ -145,8 +145,17 @@ def main():
             '-fms-compatibility-version=12.0', '-fdeclspec', '-DTITBIT_SOURCE_LINK',
             '-O2', '-fno-strict-aliasing', '-fno-omit-frame-pointer', '-fdelayed-template-parsing',
             '-ffunction-sections', '-fdata-sections', '-ferror-limit=16',
-            '-Wno-ignored-attributes', '-Wno-pragma-pack', '-Wno-microsoft-cast',
-            '-ivfsoverlay', str(overlay)]
+            '-Wno-ignored-attributes', '-Wno-pragma-pack', '-Wno-microsoft-cast']
+    portable = ROOT/'portable' if (ROOT/'portable').is_dir() else ROOT.parent/'portable'
+    if sdk:
+        base += ['-ivfsoverlay', str(overlay)]
+    else:
+        resource = subprocess.check_output([compiler, '-print-resource-dir'], text=True).strip()
+        base += ['-nostdinc', '-DTITBIT_PORTABLE_HEADERS', '-fgnuc-version=4.2.1',
+                 '-D__MINGW32__', '-D__i386__', '-D_X86_',
+                 '-I', str(portable/'include/win32'), '-I', str(portable/'include/cxx'),
+                 '-I', str(portable/'include/crt'), '-isystem', resource+'/include',
+                 '-isystem', '/usr/i686-w64-mingw32/include']
     start = time.monotonic()
 
     def compile_one(row):
@@ -190,7 +199,8 @@ extern "C" long __stdcall DirectInputCreateA(void *instance, unsigned version, v
         folders = [source.parent, ROOT/'src/lanes/include']+[ROOT/p for p in row.get('includes', [])]
         if source.name == 'dom_parser.cpp':
             folders += [ROOT/'src/lanes/engine41/cpxml43/xmlincl', ROOT/'src/lanes/engine41/cpxml43/xmlincl/SAX']
-        folders += [sdk/'Include', sdk/'ATL/Include']
+        if sdk:
+            folders += [sdk/'Include', sdk/'ATL/Include']
         for folder in folders:
             command += ['-I', str(folder)]
         ir = out/(key+'.ll')
@@ -227,7 +237,7 @@ extern "C" long __stdcall DirectInputCreateA(void *instance, unsigned version, v
         for error in row.get('errors', []):
             error_counts[re.sub(r'^.*?:\d+:\d+: (?:fatal )?error: ', '', error)] += 1
     report = {'compiler': subprocess.check_output([compiler, '--version'], text=True).splitlines()[0],
-              'target': 'i386-pc-windows-msvc / LLVM IR', 'sdk': str(sdk), 'sourceLink': True,
+              'target': 'i386-pc-windows-msvc / LLVM IR', 'sdk': str(sdk) if sdk else 'project-owned portable headers', 'sourceLink': True,
               'compat': False, 'translationUnits': len(rows), 'seconds': round(time.monotonic()-start, 2),
               'summary': dict(Counter(row.get('category', 'compiled') for row in rows)),
               'errorHistogram': dict(error_counts.most_common()), 'rows': sorted(rows, key=lambda row: row['source'])}

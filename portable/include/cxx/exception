@@ -1,0 +1,22 @@
+#ifndef TITBIT_CXX_EXCEPTION
+#define TITBIT_CXX_EXCEPTION
+typedef const char * __exString;
+class exception {
+public:
+ exception();
+ explicit exception(const __exString&);
+ exception(const exception&);
+ exception& operator=(const exception&);
+ virtual ~exception();
+ virtual __exString what() const;
+protected:
+ const char *_m_what;
+ int _m_doFree;
+};
+namespace std {
+ using ::exception;
+ bool __cdecl uncaught_exception();
+ typedef void (__cdecl *terminate_handler)();
+ void __cdecl terminate();
+}
+#endif

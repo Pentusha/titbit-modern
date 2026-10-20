@@ -18,14 +18,15 @@ sha256sum -c Titbit-0.3.1-linux-x86.tar.gz.sha256
 ## 2. EXE собран именно из этого кода
 
 `TitbitModern.exe` и `TitbitSettings.exe` воспроизводимы побайтно: та же версия исходников и
-те же файлы Visual C++ 6.0 дают тот же SHA-256. Время в заголовке EXE берётся из времени коммита,
+те же версии Clang, Win32-заголовков, MSVC Build Tools и Windows SDK дают тот же SHA-256.
+Время в заголовке EXE берётся из времени коммита,
 а не из часов вашего компьютера.
 
 ```powershell
 git clone https://github.com/offx366/titbit-modern.git
 cd titbit-modern
 git checkout <sourceCommit из package.json>
-$env:TITBIT_VC6 = 'C:\Program Files (x86)\Microsoft Visual Studio\VC98'
+$env:TITBIT_LLVM = 'C:\Tools\llvm-mingw-20240619-ucrt-x86_64'
 py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe tools/build_modern.py --fresh
@@ -33,8 +34,9 @@ py -3.11 -m venv .venv
 ```
 
 `verify_release.py` проверяет архив по `SHA256SUMS.txt` и сравнивает оба EXE с вашей сборкой.
-Если хэши разошлись, он покажет причину: другой сервис-пак VC6 (`CL.EXE`, `LIBC.LIB`, …) даёт
-другие байты — хэши файлов VC6, которыми собран релиз, записаны в `package.json` → `reproducible`.
+Если хэши разошлись, скрипт сравнит хэши инструментов и библиотек с
+`package.json` → `reproducible`. Для старых VC6-релизов поддерживаются прежние метаданные;
+их нужно проверять сборкой из соответствующего исторического коммита.
 
 `TitbitSetup.exe` и `TitbitStudio.exe` — упакованный Python (PyInstaller), побайтно они не
 воспроизводятся. Их исходники — [`tools/titbit_setup.py`](../tools/titbit_setup.py) и

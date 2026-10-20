@@ -1,0 +1,20 @@
+#ifndef TITBIT_CXX_OSTREAM
+#define TITBIT_CXX_OSTREAM
+#include <streambuf>
+#include <stdio.h>
+namespace std {
+template<class C,class Tr=char_traits<C> >class basic_ostream:virtual public basic_ios<C,Tr> {
+public:
+ explicit basic_ostream(basic_streambuf<C,Tr>*p=0):basic_ios<C,Tr>(p){this->init(p);}
+ basic_ostream&put(C c){if(!this->rdbuf()||Tr::eq_int_type(this->rdbuf()->sputc(c),Tr::eof()))this->setstate(ios_base::badbit);return *this;}
+ basic_ostream&write(const C*p,streamsize n){if(!this->rdbuf()||this->rdbuf()->sputn(p,n)!=n)this->setstate(ios_base::badbit);return *this;}
+ basic_ostream&flush(){if(!this->rdbuf()||this->rdbuf()->pubsync())this->setstate(ios_base::badbit);return *this;}
+ basic_ostream&operator<<(const C*p){return write(p,Tr::length(p));}basic_ostream&operator<<(C c){return put(c);}basic_ostream&operator<<(const basic_string<C,Tr>&s){return write(s.data(),s.size());}
+ basic_ostream&operator<<(int v){return number(v);}basic_ostream&operator<<(unsigned v){char b[32];sprintf(b,"%u",v);return ascii(b);}basic_ostream&operator<<(long v){char b[32];sprintf(b,"%ld",v);return ascii(b);}basic_ostream&operator<<(unsigned long v){char b[32];sprintf(b,"%lu",v);return ascii(b);}basic_ostream&operator<<(double v){char b[128];sprintf(b,"%.*g",(int)this->precision(),v);return ascii(b);}
+ basic_ostream&operator<<(basic_ostream&(*f)(basic_ostream&)){return f(*this);}
+private:basic_ostream&number(int v){char b[32];sprintf(b,"%d",v);return ascii(b);}basic_ostream&ascii(const char*p){while(*p)put(C(*p++));return *this;}
+};
+template<class C,class T>basic_ostream<C,T>&endl(basic_ostream<C,T>&s){s.put(C('\n'));return s.flush();}template<class C,class T>basic_ostream<C,T>&flush(basic_ostream<C,T>&s){return s.flush();}
+typedef basic_ostream<char>ostream;typedef basic_ostream<wchar_t>wostream;
+}
+#endif

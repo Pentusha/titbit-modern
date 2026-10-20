@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Compile source-generated MSVC-layout LLVM IR to native ELF32 objects.
 
-The installed Windows SDK is a frontend input only. This stage consumes LLVM IR,
-translates Windows funclet EH to DWARF, and generates ELF directly with Clang.
+This stage consumes source-generated LLVM IR, translates Windows funclet EH to
+DWARF, and generates ELF directly with Clang. No Windows SDK is needed.
 """
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed

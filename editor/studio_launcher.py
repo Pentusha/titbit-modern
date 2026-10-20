@@ -22,7 +22,8 @@ if sys.stderr is None or sys.stdout is None:
     sys.stderr = sys.stderr or _log
 HERE = pathlib.Path(sys.executable if getattr(sys, 'frozen', False) else __file__).resolve().parent
 CONFIG = HERE/'TitbitStudio.json'
-CANDIDATES = [HERE, HERE.parent, HERE/'game', HERE.parent/'build/modern', pathlib.Path.cwd(),
+CANDIDATES = [HERE, HERE.parent, HERE/'game', HERE.parent/'build/modern-portable',
+              HERE.parent/'build/modern', pathlib.Path.cwd(),
               pathlib.Path(r'C:\Games\Titbit'), pathlib.Path(r'C:\Games\Ядерный Титбит'),
               pathlib.Path(r'C:\Program Files (x86)\Buka\Titbit'), pathlib.Path(r'C:\Program Files\Buka\Titbit'),
               pathlib.Path(r'C:\Program Files (x86)\Бука\Ядерный Титбит'), pathlib.Path(r'C:\Program Files\Бука\Ядерный Титбит')]

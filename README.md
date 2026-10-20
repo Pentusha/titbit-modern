@@ -101,6 +101,9 @@ flatpak run io.github.offx366.Titbit
 Каждая из **4 955** функций игры переписана на C/C++, собрана тем же компилятором, что и
 в 2003 году (Visual C++ 6.0), и сверена с оригинальным EXE.
 
+Ниже — результаты исходного восстановления. Актуальные совместимые сборки используют
+современные компиляторы; их машинный код отличается от проверочной VC6-сборки.
+
 | | Байт кода | |
 |---|---|---|
 | Совпадает с оригиналом **байт в байт** | 633 954 | **80,6 %** |
@@ -127,34 +130,39 @@ flowchart LR
 
 ## Сборка из исходников
 
-Для обеих платформ нужен **Visual C++ 6.0 SP6** — в Windows им собирается игра, в Linux берутся
-только его заголовки (`VC98/Include`, `VC98/ATL/Include`). Инструменты Microsoft и данные игры
-в репозиторий не входят.
+**VC6 больше не требуется.** Linux собирается Clang 18 с открытыми Win32-заголовками
+mingw-w64. Windows использует LLVM-MinGW и современные MSVC Build Tools / Windows SDK.
+Общий слой `portable/` сохраняет необходимые форматы объектов восстановленного движка.
+Данные игры и инструменты Microsoft в репозиторий не входят.
 
 <details>
 <summary><b>Windows</b></summary>
 
-Нужны только Python 3.11 и VC6 SP6 с MASM (`ML.EXE`). Windows SDK и современная Visual Studio не нужны.
+Нужны Python 3.11, [LLVM-MinGW 20240619](https://github.com/mstorsjo/llvm-mingw/releases/tag/20240619)
+(`ucrt-x86_64.zip`) и Visual Studio 2022 Build Tools с компонентом C++ x86/x64 и Windows SDK.
+LLVM-MinGW распакуйте, например, в `C:\Tools`; IDE запускать не требуется.
 
 ```powershell
 git clone https://github.com/offx366/titbit-modern.git
 cd titbit-modern
-$env:TITBIT_VC6 = 'C:\Program Files (x86)\Microsoft Visual Studio\VC98'
+$env:TITBIT_LLVM = 'C:\Tools\llvm-mingw-20240619-ucrt-x86_64'
 py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe tools/build_modern.py --check   # проверка инструментов
-.\.venv\Scripts\python.exe tools/build_modern.py --fresh
+.\.venv\Scripts\python.exe tools/build_modern.py --fresh --test-runtime
 ```
 
-Результат — `build/modern/TitbitModern.exe` и `TitbitSettings.exe`. Данные игры добавьте
-`python tools/titbit_setup.py`. Portable-пакет как в Releases (с TitbitSetup и TitbitStudio):
+Результат — `build/modern-portable/TitbitModern.exe` и `TitbitSettings.exe`.
+Импорт данных: `python tools/titbit_setup.py --import "D:\Titbit.iso" --dest build/modern-portable`.
+Portable-пакет как в Releases (с TitbitSetup и TitbitStudio):
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements-build.txt
-.\.venv\Scripts\python.exe tools/package_portable.py --game-build build/modern
+.\.venv\Scripts\python.exe tools/package_portable.py --game-build build/modern-portable
 ```
 
-Подробно: [docs/BUILD.md](docs/BUILD.md).
+Подробно: [docs/BUILD.md](docs/BUILD.md). Проверки сборок без VC6:
+[docs/VALIDATION-NO-VC6.md](docs/VALIDATION-NO-VC6.md).
 
 </details>
 
@@ -165,11 +173,10 @@ Ubuntu 24.04 x86-64 (или WSL2). Сборка: Clang/LLVM 18 → ELF32, без
 
 ```bash
 sudo dpkg --add-architecture i386 && sudo apt update
-sudo apt install git curl python3 clang-18 llvm-18 lld-18 gcc-multilib g++-multilib pkg-config libsdl2-dev:i386 libgl1-mesa-dev:i386 libglu1-mesa-dev:i386 zlib1g-dev:i386
+sudo apt install git curl python3 clang-18 llvm-18 lld-18 gcc-multilib g++-multilib pkg-config mingw-w64-i686-dev libsdl2-dev:i386 libgl1-mesa-dev:i386 libglu1-mesa-dev:i386 zlib1g-dev:i386
 
 git clone https://github.com/offx366/titbit-modern.git
 cd titbit-modern/linux-port
-export TITBIT_VC6="/path/to/VC98"   # в WSL: "/mnt/c/Program Files (x86)/Microsoft Visual Studio/VC98"
 python3 tools/build_linux.py --minimal --check   # проверка инструментов
 python3 tools/build_linux.py --minimal --jobs "$(nproc)" --test-runtime
 ```

@@ -1,0 +1,29 @@
+#ifndef TITBIT_CXX_MEMORY
+#define TITBIT_CXX_MEMORY
+#include <new>
+#include <stdlib.h>
+#include <limits.h>
+namespace std {
+template<class T> class allocator {
+public:
+ typedef T value_type; typedef T *pointer; typedef const T *const_pointer;
+ typedef T& reference; typedef const T& const_reference;
+ typedef size_t size_type; typedef ptrdiff_t difference_type;
+ template<class U> struct rebind {typedef allocator<U> other;};
+ allocator() {} template<class U> allocator(const allocator<U>&) {}
+ T *allocate(size_t n, const void * = 0) {if(n > size_t(-1)/sizeof(T)) throw bad_alloc(); return (T*)::operator new(n*sizeof(T));}
+ void deallocate(T *p, size_t) {::operator delete(p);}
+ void construct(T *p, const T& value) {new(p) T(value);}
+ void destroy(T *p) {p->~T();}
+ size_t max_size() const {return size_t(-1)/sizeof(T);}
+};
+template<class T> class auto_ptr {
+ T *p;
+public:
+ explicit auto_ptr(T *v=0):p(v) {} auto_ptr(auto_ptr& v):p(v.release()) {} ~auto_ptr(){delete p;}
+ auto_ptr& operator=(auto_ptr& v){reset(v.release()); return *this;}
+ T& operator*() const{return *p;} T *operator->() const{return p;} T *get() const{return p;}
+ T *release(){T *v=p;p=0;return v;} void reset(T *v=0){if(p!=v){delete p;p=v;}}
+};
+}
+#endif

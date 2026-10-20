@@ -12,9 +12,13 @@ void *__cdecl memmove(void *, const void *, unsigned);
 void *__cdecl operator new(unsigned);
 void __cdecl operator delete(void *);
 
+#ifdef TITBIT_PORTABLE_HEADERS
+#include "../include/ptr_array_construct.h"
+#else
 template<class T> inline void __stdcall ConstructElements_004120d0(T *p, int n) {
  if (p && n) memset(p, 0, n * sizeof(T));
 }
+#endif
 template<class T> inline void __stdcall DestructElements_004120c0(T *, int) {}
 
 template<class T> class PtrArray {

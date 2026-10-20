@@ -1,0 +1,25 @@
+#ifndef TITBIT_CXX_FSTREAM
+#define TITBIT_CXX_FSTREAM
+#include <istream>
+#include <ostream>
+#include <stdio.h>
+namespace std {
+template<class C,class Tr=char_traits<C> >class basic_filebuf:public basic_streambuf<C,Tr> {
+ FILE*file_;
+public:
+ typedef typename Tr::int_type int_type;
+ basic_filebuf():file_(0){}~basic_filebuf(){close();}bool is_open()const{return file_!=0;}
+ basic_filebuf*open(const char*name,ios_base::openmode flags){if(file_)return 0;bool r=(flags&ios_base::in)!=0,w=(flags&ios_base::out)!=0,a=(flags&ios_base::app)!=0,t=(flags&ios_base::trunc)!=0;const char*mode=a?(r?"a+b":"ab"):t||(!r&&w)?(r?"w+b":"wb"):w?"r+b":"rb";file_=fopen(name,mode);if(file_&&(flags&ios_base::ate)&&fseek(file_,0,SEEK_END)){fclose(file_);file_=0;}return file_?this:0;}
+ basic_filebuf*close(){if(!file_)return 0;FILE*p=file_;file_=0;return fclose(p)==0?this:0;}
+protected:
+ int_type uflow(){if(!file_)return Tr::eof();if(sizeof(C)==1)return fgetc(file_);C c;if(fread(&c,sizeof(C),1,file_)!=1)return Tr::eof();return c;}
+ int_type underflow(){if(!file_)return Tr::eof();long p=ftell(file_);int_type c=uflow();if(p>=0)fseek(file_,p,SEEK_SET);return c;}
+ int_type overflow(int_type c=Tr::eof()){if(!file_)return Tr::eof();if(Tr::eq_int_type(c,Tr::eof()))return fflush(file_)==0?Tr::not_eof(c):Tr::eof();C value=Tr::to_char_type(c);return fwrite(&value,sizeof(C),1,file_)==1?c:Tr::eof();}
+ streamsize xsgetn(C*p,streamsize n){return file_?(streamsize)fread(p,sizeof(C),n,file_):0;}streamsize xsputn(const C*p,streamsize n){return file_?(streamsize)fwrite(p,sizeof(C),n,file_):0;}int sync(){return file_?fflush(file_):-1;}
+ streampos seekoff(streamoff off,ios_base::seekdir dir,ios_base::openmode){return file_&&fseek(file_,off,dir)==0?ftell(file_):-1;}
+};
+template<class C,class Tr=char_traits<C> >class basic_ifstream:public basic_istream<C,Tr>{basic_filebuf<C,Tr>file_;public:basic_ifstream():basic_ios<C,Tr>(&file_),basic_istream<C,Tr>(&file_){}explicit basic_ifstream(const char*n,ios_base::openmode f=ios_base::in):basic_ios<C,Tr>(&file_),basic_istream<C,Tr>(&file_){open(n,f);}void open(const char*n,ios_base::openmode f=ios_base::in){this->clear(file_.open(n,f|ios_base::in)?ios_base::goodbit:ios_base::failbit);}void close(){if(!file_.close())this->setstate(ios_base::failbit);}bool is_open()const{return file_.is_open();}};
+template<class C,class Tr=char_traits<C> >class basic_ofstream:public basic_ostream<C,Tr>{basic_filebuf<C,Tr>file_;public:basic_ofstream():basic_ios<C,Tr>(&file_),basic_ostream<C,Tr>(&file_){}explicit basic_ofstream(const char*n,ios_base::openmode f=ios_base::out):basic_ios<C,Tr>(&file_),basic_ostream<C,Tr>(&file_){open(n,f);}void open(const char*n,ios_base::openmode f=ios_base::out){this->clear(file_.open(n,f|ios_base::out)?ios_base::goodbit:ios_base::failbit);}void close(){if(!file_.close())this->setstate(ios_base::failbit);}bool is_open()const{return file_.is_open();}};
+typedef basic_ifstream<char>ifstream;typedef basic_ofstream<char>ofstream;
+}
+#endif
