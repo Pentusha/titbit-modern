@@ -13,6 +13,7 @@
           builtins.elem (inputs.nixpkgs.lib.getName package) [
             "titbit"
             "titbit-tools"
+            "titbit-data"
           ];
       };
       formatter = pkgs.nixfmt;
