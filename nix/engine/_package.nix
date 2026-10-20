@@ -109,6 +109,10 @@ stdenv.mkDerivation {
   checkPhase = ''
     runHook preCheck
     python3 ${./tests/launcher.py} ${./titbit.sh} ${stdenv.shell}
+    ${stdenv.cc}/bin/clang -m32 $(pkg-config --cflags sdl2) \
+      platform/presentation_smoke.c platform/sdl_platform.c \
+      $(pkg-config --libs sdl2) -lGL -lm -lpthread -o build/presentation-smoke
+    ./build/presentation-smoke
     python3 tools/check_cpp_runtime.py
     ./build/titbit --help
     runHook postCheck
@@ -118,6 +122,7 @@ stdenv.mkDerivation {
     runHook preInstall
     install -Dm755 build/titbit "$out/libexec/titbit"
     install -Dm755 build/cpp-runtime-test/smoke "$out/libexec/titbit-runtime-smoke"
+    install -Dm755 build/presentation-smoke "$out/libexec/titbit-display-smoke"
     mkdir -p "$out/bin"
     substitute ${./titbit.sh} "$out/bin/titbit" \
       --subst-var-by shell ${stdenv.shell} \

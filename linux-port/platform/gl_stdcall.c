@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "titbit_platform.h"
 #if defined(__i386__)
 #define WAPI __attribute__((stdcall))
 #else
@@ -63,7 +64,7 @@ VOID_WRAP(glMultMatrixf,(const GLfloat *a),(a))
 VOID_WRAP(glBegin,(GLenum a),(a))
 VOID_WRAP(glVertex3fv,(const GLfloat *a),(a))
 VOID_WRAP(glEnd,(void),())
-VOID_WRAP(glViewport,(GLint a,GLint b,GLsizei c,GLsizei d),(a,b,c,d))
+void WAPI tb_gl_stdcall_glViewport(GLint x,GLint y,GLsizei width,GLsizei height) {tb_gl_viewport(x,y,width,height);}
 VOID_WRAP(glDisable,(GLenum a),(a))
 VOID_WRAP(glClear,(GLbitfield a),(a))
 VOID_WRAP(glEnable,(GLenum a),(a))

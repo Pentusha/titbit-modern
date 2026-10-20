@@ -41,8 +41,12 @@ int main(int argc,char **argv) {
     for(int i=1;i<argc;++i) {
         if(!strcmp(argv[i],"--data") && i+1<argc) {
             if(chdir(argv[++i])) {perror("--data");return 2;}
+        } else if(!strcmp(argv[i],"--windowed")) {
+            setenv("TITBIT_FULLSCREEN","0",1);
+        } else if(!strcmp(argv[i],"--fullscreen")) {
+            setenv("TITBIT_FULLSCREEN","1",1);
         } else if(!strcmp(argv[i],"--help")) {
-            puts("titbit [--data GAME_DIRECTORY]");return 0;
+            puts("titbit [--data GAME_DIRECTORY] [--windowed | --fullscreen]\nF11 / Alt+Enter: toggle fullscreen");return 0;
         } else {fprintf(stderr,"Unknown argument: %s\n",argv[i]);return 2;}
     }
     if (!tb_init()) {fprintf(stderr,"SDL: %s\n",tb_error());return 1;}
