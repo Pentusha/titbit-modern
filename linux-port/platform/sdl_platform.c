@@ -1,6 +1,7 @@
 #define _XOPEN_SOURCE 700
 #define _FILE_OFFSET_BITS 64
 #include "titbit_platform.h"
+#include "presentation.h"
 #include <SDL.h>
 #include <GL/gl.h>
 #include <ctype.h>
@@ -16,8 +17,33 @@
 #include <pthread.h>
 #include <math.h>
 
-struct TBWindow { SDL_Window *window; SDL_GLContext context; struct TBWindow *next; };
+struct TBWindow { SDL_Window *window; SDL_GLContext context; struct TBWindow *next;
+ int logical_width,logical_height,presentation,viewport[4];int64_t relative_x,relative_y;
+};
 static TBWindow *windows;
+static TBWindow *event_window(uint32_t id) {
+ SDL_Window *native=id?SDL_GetWindowFromID(id):SDL_GL_GetCurrentWindow();
+ for(TBWindow *w=windows;w;w=w->next)if(w->window&&w->window==native)return w;
+ return NULL;
+}
+static void apply_viewport(void) {
+ TBWindow *w=event_window(0);if(!w||!SDL_GL_GetCurrentContext())return;
+ int width,height;SDL_GL_GetDrawableSize(w->window,&width,&height);
+ TBViewport vp=tb_fit_viewport(width,height,w->logical_width,w->logical_height);
+ if(vp.width<=0||vp.height<=0)return;
+ int *v=w->viewport;
+ glViewport(vp.x+(int64_t)v[0]*vp.width/w->logical_width,vp.y+(int64_t)v[1]*vp.height/w->logical_height,
+            (int64_t)v[2]*vp.width/w->logical_width,(int64_t)v[3]*vp.height/w->logical_height);
+}
+void tb_gl_viewport(int x,int y,int width,int height) {
+ TBWindow *w=event_window(0);if(!w){glViewport(x,y,width,height);return;}
+ w->viewport[0]=x;w->viewport[1]=y;w->viewport[2]=width;w->viewport[3]=height;apply_viewport();
+}
+static TBViewport mouse_viewport(TBWindow *w) {
+ int width,height;SDL_GetWindowSize(w->window,&width,&height);
+ return tb_fit_viewport(width,height,w->logical_width,w->logical_height);
+}
+#ifndef __EMSCRIPTEN__
 struct AudioItem { TBWaveHeader *header; unsigned offset; struct AudioItem *next; };
 struct TBAudio { SDL_AudioDeviceID device; SDL_AudioSpec spec; struct AudioItem *first,*last; unsigned volume;
  FILE *capture_file;char *capture_base;unsigned capture_id,capture_peak;int capture_error;
@@ -29,6 +55,9 @@ static unsigned capture_sequence;
 static void audio_capture_shutdown(void);
 static unsigned master_volume=65535;
 static int master_mute;
+#else
+static void audio_capture_shutdown(void) {}
+#endif
 static TBInput input_state;
 static int initialized;
 static SDL_Surface *project_icon;
@@ -39,6 +68,11 @@ int tb_init(void) {
  if(SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS|SDL_INIT_TIMER)!=0)return 0;
  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,2);
  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,1);
+#ifdef __EMSCRIPTEN__
+ SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,2);
+ SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,0);
+ SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,SDL_GL_CONTEXT_PROFILE_ES);
+#endif
  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,24);
  initialized=1;return 1;
@@ -48,18 +82,39 @@ TBWindow *tb_window_create(const char *title,int width,int height,int fullscreen
  TBWindow *w;
  if(!tb_init())return NULL;
  w=calloc(1,sizeof(*w));if(!w)return NULL;
- w->window=SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,width,height,
- SDL_WINDOW_OPENGL|SDL_WINDOW_HIDDEN|(fullscreen?SDL_WINDOW_FULLSCREEN_DESKTOP:0));
+ w->logical_width=width;w->logical_height=height;w->presentation=fullscreen;
+ w->viewport[2]=width;w->viewport[3]=height;
+ const char *preference=getenv("TITBIT_FULLSCREEN");
+ int start_fullscreen=fullscreen&&(!preference||strcmp(preference,"0"));
+#ifdef __EMSCRIPTEN__
+ start_fullscreen=0;
+ /* WinMM creates invisible message windows. Only the game window owns the
+  * browser canvas; SDL would resize that same canvas for each helper HWND. */
+ if(!fullscreen){w->next=windows;windows=w;return w;}
+#endif
+ unsigned window_flags=SDL_WINDOW_OPENGL|SDL_WINDOW_HIDDEN|SDL_WINDOW_ALLOW_HIGHDPI;
+#ifndef __EMSCRIPTEN__
+ if(fullscreen)window_flags|=SDL_WINDOW_RESIZABLE;
+#endif
+ /* Browser CSS scales the presentation; retain the engine's 1024x768 input
+  * and rendering coordinates. SDL probes CSS using a temporary 1x1 canvas. */
+ if(start_fullscreen)window_flags|=SDL_WINDOW_FULLSCREEN_DESKTOP;
+ w->window=SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,width,height,window_flags);
  if(!w->window){free(w);return NULL;}w->next=windows;windows=w;return w;
 }
 void tb_window_destroy(TBWindow *w) { TBWindow **p=&windows;if(!w)return;while(*p&&*p!=w)p=&(*p)->next;if(*p)*p=w->next;if(w->context)SDL_GL_DeleteContext(w->context);SDL_DestroyWindow(w->window);free(w); }
-int tb_window_show(TBWindow *w,int show) { if(!w)return 0;if(show)SDL_ShowWindow(w->window);else SDL_HideWindow(w->window);return 1; }
+int tb_window_show(TBWindow *w,int show) { if(!w)return 0;if(!w->window)return 1;if(show)SDL_ShowWindow(w->window);else SDL_HideWindow(w->window);return 1; }
 int tb_window_move(TBWindow *w,int x,int y,int width,int height) {
  if(!w||width<=0||height<=0)return 0;
+ if(!w->window)return 1;
+ /* The reconstructed focus handler requests the desktop resolution. Keep
+  * its logical game canvas separate from the user's window placement. */
+ if(w->presentation)return 1;
  SDL_SetWindowPosition(w->window,x,y);SDL_SetWindowSize(w->window,width,height);return 1;
 }
 int tb_window_focus(TBWindow *w) {
  if(!w)return 0;
+ if(!w->window)return 1;
  SDL_RaiseWindow(w->window);return SDL_SetWindowInputFocus(w->window)==0;
 }
 int tb_window_opengl(TBWindow *w) { return w&&(SDL_GetWindowFlags(w->window)&SDL_WINDOW_OPENGL)!=0; }
@@ -70,15 +125,15 @@ void *tb_project_icon(void) {
  SDL_FillRect(project_icon,&bar,0xff121a1e);SDL_FillRect(project_icon,&stem,0xff121a1e);return project_icon;
 }
 void *tb_arrow_cursor(void) { if(!tb_init())return NULL;if(!arrow_cursor)arrow_cursor=SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);return arrow_cursor; }
-void tb_window_icon(TBWindow *window,void *icon) { if(window&&icon)SDL_SetWindowIcon(window->window,icon); }
+void tb_window_icon(TBWindow *window,void *icon) { if(window&&window->window&&icon)SDL_SetWindowIcon(window->window,icon); }
 int tb_display_mode(int index,int *width,int *height,int *refresh,int *bits) {
  SDL_DisplayMode mode;if(!tb_init())return 0;
  if((index<0?SDL_GetDesktopDisplayMode(0,&mode):SDL_GetDisplayMode(0,index,&mode))!=0)return 0;
  *width=mode.w;*height=mode.h;*refresh=mode.refresh_rate;*bits=SDL_BITSPERPIXEL(mode.format);return 1;
 }
-void tb_window_size(TBWindow *w,int *width,int *height) { if(w)SDL_GetWindowSize(w->window,width,height); }
+void tb_window_size(TBWindow *w,int *width,int *height) { if(w){if(w->presentation||!w->window){*width=w->logical_width;*height=w->logical_height;}else SDL_GetWindowSize(w->window,width,height);} }
 void *tb_gl_context(TBWindow *w) { if(!w)return NULL;if(!w->context)w->context=SDL_GL_CreateContext(w->window);return w->context; }
-int tb_gl_make_current(TBWindow *w,void *context) { return SDL_GL_MakeCurrent(w?w->window:NULL,context)==0; }
+int tb_gl_make_current(TBWindow *w,void *context) { int ok=SDL_GL_MakeCurrent(w?w->window:NULL,context)==0;if(ok&&context)apply_viewport();return ok; }
 void tb_gl_delete_context(void *context) { TBWindow *w;for(w=windows;w;w=w->next)if(w->context==context)w->context=NULL;if(context)SDL_GL_DeleteContext(context); }
 void *tb_gl_proc(const char *name) { return SDL_GL_GetProcAddress(name); }
 static void capture_selected_frame(void);
@@ -128,19 +183,37 @@ static unsigned vk(SDL_Keycode k) {
 }
 int tb_poll_event(TBEvent *out) {
  SDL_Event e;
+ /* Resize and DPI changes must update GL before the next game frame even
+  * though the original engine ignores WM_SIZE. */
+ apply_viewport();
  while(SDL_PollEvent(&e)) {
   memset(out,0,sizeof(*out));out->time=e.common.timestamp;
   if(e.type==SDL_QUIT){out->message=0x12;return 1;}
   if(e.type==SDL_KEYDOWN||e.type==SDL_KEYUP){unsigned sc=dik(e.key.keysym.scancode);int down=e.type==SDL_KEYDOWN;
+   TBWindow *w=event_window(e.key.windowID);
+   if(w&&w->presentation&&(e.key.keysym.sym==SDLK_F11||(e.key.keysym.sym==SDLK_RETURN&&(e.key.keysym.mod&KMOD_ALT)))){
+    if(down&&!e.key.repeat){uint32_t flags=SDL_GetWindowFlags(w->window);SDL_SetWindowFullscreen(w->window,(flags&SDL_WINDOW_FULLSCREEN)?0:SDL_WINDOW_FULLSCREEN_DESKTOP);apply_viewport();}
+    continue;
+   }
    if(sc)input_state.keys[sc]=down?0x80:0;
    out->wparam=vk(e.key.keysym.sym);
    if(!out->wparam&&e.key.keysym.scancode>=SDL_SCANCODE_A&&e.key.keysym.scancode<=SDL_SCANCODE_Z)out->wparam='A'+e.key.keysym.scancode-SDL_SCANCODE_A;
    if(!out->wparam)continue;
    out->message=down?0x100:0x101;
    out->lparam=(intptr_t)(1u|((sc&0xff)<<16)|(down?(e.key.repeat?0x40000000u:0):0xc0000000u));return 1;}
-  if(e.type==SDL_MOUSEMOTION){input_state.dx+=e.motion.xrel;input_state.dy+=e.motion.yrel;
+  if(e.type==SDL_MOUSEMOTION){TBWindow *w=event_window(e.motion.windowID);
+   if(w&&w->presentation){TBViewport vp=mouse_viewport(w);int x,y;
+    tb_map_mouse(vp,e.motion.x,e.motion.y,w->logical_width,w->logical_height,&x,&y);e.motion.x=x;e.motion.y=y;
+    if(vp.width>0&&vp.height>0){w->relative_x+=(int64_t)e.motion.xrel*w->logical_width;w->relative_y+=(int64_t)e.motion.yrel*w->logical_height;
+     e.motion.xrel=w->relative_x/vp.width;e.motion.yrel=w->relative_y/vp.height;w->relative_x%=vp.width;w->relative_y%=vp.height;}
+   }
+   input_state.dx+=e.motion.xrel;input_state.dy+=e.motion.yrel;
    out->message=0x200;out->x=e.motion.x;out->y=e.motion.y;out->lparam=(e.motion.x&65535)|((e.motion.y&65535)<<16);return 1;}
   if(e.type==SDL_MOUSEBUTTONDOWN||e.type==SDL_MOUSEBUTTONUP){unsigned button=e.button.button;int down=e.type==SDL_MOUSEBUTTONDOWN;
+   TBWindow *w=event_window(e.button.windowID);if(w&&w->presentation){int x,y;
+    int inside=tb_map_mouse(mouse_viewport(w),e.button.x,e.button.y,w->logical_width,w->logical_height,&x,&y);
+    if(!inside&&down)continue;e.button.x=x;e.button.y=y;
+   }
    if(button==SDL_BUTTON_LEFT)input_state.buttons[0]=down?0x80:0;
    if(button==SDL_BUTTON_RIGHT)input_state.buttons[1]=down?0x80:0;
    if(button==SDL_BUTTON_MIDDLE)input_state.buttons[2]=down?0x80:0;
@@ -158,6 +231,7 @@ int tb_poll_event(TBEvent *out) {
 }
 void tb_input_read(TBInput *out,int reset) { *out=input_state;if(reset)input_state.dx=input_state.dy=input_state.wheel=0; }
 
+#ifndef __EMSCRIPTEN__
 static void audio_capture_report(TBAudio *audio,int closed) {
  if(!audio->capture_base)return;
  char path[4096];if(snprintf(path,sizeof(path),"%s.json",audio->capture_base)>=(int)sizeof(path))return;
@@ -239,6 +313,8 @@ unsigned tb_audio_master_get(void) { return __atomic_load_n(&master_volume,__ATO
 int tb_audio_master_set(unsigned volume) { if(volume>65535)return 0;__atomic_store_n(&master_volume,volume,__ATOMIC_RELEASE);return 1; }
 int tb_audio_mute_get(void) { return __atomic_load_n(&master_mute,__ATOMIC_ACQUIRE); }
 int tb_audio_mute_set(int mute) { __atomic_store_n(&master_mute,mute!=0,__ATOMIC_RELEASE);return 1; }
+
+#endif
 
 int tb_read_frame_pixels(unsigned char *rgba,size_t capacity,int *width,int *height) {
  SDL_Window *window=SDL_GL_GetCurrentWindow();int w,h;GLint old_buffer,old_pack,row_length,skip_rows,skip_pixels;GLboolean double_buffer;

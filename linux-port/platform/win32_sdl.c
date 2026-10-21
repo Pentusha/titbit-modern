@@ -44,7 +44,9 @@ BOOL WAPI UnregisterClassA(const char *name,HANDLE instance){(void)instance;if(!
 HANDLE WAPI CreateWindowExA(DWORD ex,const char *cls,const char *title,DWORD style,int x,int y,int width,int height,HANDLE parent,HANDLE menu,HANDLE instance,void *param){
  (void)ex;(void)style;(void)x;(void)y;(void)parent;(void)menu;(void)instance;(void)param;
  WNDPROC proc=NULL;void *icon=NULL;for(unsigned i=0;i<32;i++)if(registered_classes[i].name&&cls&&!strcmp(registered_classes[i].name,cls)){proc=registered_classes[i].proc;icon=registered_classes[i].icon;break;}
- if(!proc){last_error=1407;return NULL;}TBWindow *window=tb_window_create(title,width>0?width:1,height>0?height:1,0);if(!window)return NULL;
+ if(!proc){last_error=1407;return NULL;}
+ int game_canvas=!parent&&cls&&!strcmp(cls,"OpenGL");
+ TBWindow *window=tb_window_create(title,width>0?width:1,height>0?height:1,game_canvas);if(!window)return NULL;
  WindowRecord *record=malloc(sizeof(*record));if(!record){tb_window_destroy(window);last_error=8;return NULL;}*record=(WindowRecord){window,proc,window_records};window_records=record;
  tb_window_icon(window,icon);
  if(width>0&&height>0)main_window=window;

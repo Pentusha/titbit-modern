@@ -4,6 +4,8 @@
 в WSL2. Код сохраняет четырёхбайтовые указатели и Microsoft C++ ABI оригинала.
 Wine и оригинальный EXE при сборке не используются.
 
+Для Nix и NixOS: [сборка и установка через flake](NIX.md).
+
 ## Зависимости
 
 Для Ubuntu 24.04:
@@ -96,6 +98,11 @@ flatpak install --user flathub org.freedesktop.Platform//25.08 org.freedesktop.S
 python3 tools/titbit_setup.py --import /path/to/disc.iso --dest "$HOME/.local/share/titbit/game"
 ./build/titbit --data "$HOME/.local/share/titbit/game"
 ```
+
+Игра запускается на весь экран, сохраняя пропорции оригинального холста 4:3.
+На широком мониторе по бокам остаются чёрные поля. F11 или Alt+Enter переключают
+полный экран и окно; `--windowed` запускает сразу в изменяемом окне,
+`--fullscreen` — на весь экран. Координаты мыши учитывают масштаб и поля.
 
 Импорт поддерживает установленную игру, каталог диска и ISO/IMG/CUE/CCD. Все 19
 файлов проверяются по SHA256. Оригинальные данные в репозиторий не включены.
