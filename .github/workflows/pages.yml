@@ -2,7 +2,6 @@ name: Browser game / GitHub Pages
 
 on:
   push:
-    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -11,10 +10,12 @@ permissions:
 
 concurrency:
   group: pages-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   build:
+    # Own branches are checked on push; pull_request adds coverage for forks.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:

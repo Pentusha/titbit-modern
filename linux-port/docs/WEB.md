@@ -49,7 +49,7 @@ AVI должны лежать рядом с архивом. Сервер слу�
 ## Публикация на GitHub Pages
 
 Workflow `.github/workflows/pages.yml` собирает движок через закреплённое
-окружение `nix develop .#web`. В pull request он проверяет сборку, аудиопроцессор,
+окружение `nix develop .#web`. При push и внешних pull request он проверяет сборку, аудиопроцессор,
 ABI и запуск в Chromium на обычном HTTP-сервере без COOP/COEP, по пути
 `/titbit-modern/`. После push в `main` успешная сборка публикуется на Pages.
 Ручной `workflow_dispatch` также публикует только ветку `main`.
