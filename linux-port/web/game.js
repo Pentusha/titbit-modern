@@ -14,6 +14,9 @@ const saves = new SaveStore();
 let pendingSaves = Promise.resolve(), restoring = false;
 let engine, running = false;
 let bundledFiles = [];
+const requiredVideos = ['acid.avi', 'belka.avi', 'belka2.avi', 'buh.avi', 'buh2.avi',
+  'buka.avi', 'cat_1.avi', 'cat_2.avi', 'dans.avi', 'dost.avi', 'fon.avi',
+  'gameboom.avi', 'gameover.avi', 'happyend.avi', 'intro.avi', 'intro2.avi', 'porno.avi', 'vzlab.avi'];
 window.titbitFrames = 0;
 const logLimit = 120000;
 let logHistory = '', logPending = [], logPendingSize = 0, logTimer;
@@ -90,6 +93,15 @@ async function play(bytes, remoteVideos = null) {
 }
 archive.addEventListener('change', () => { start.disabled = !engine || !archive.files.length; });
 start.addEventListener('click', async () => {
+  if (!bundledFiles.length) {
+    const selected = new Set(Array.from(videos.files, file => file.name.toLowerCase()));
+    const missing = requiredVideos.filter(name => !selected.has(name));
+    if (missing.length) {
+      message(`Выберите все 18 AVI из папки игры. Не хватает: ${missing.join(', ')}.`);
+      videos.focus();
+      return;
+    }
+  }
   start.disabled = true;
   try {
     if (bundledFiles.length) {

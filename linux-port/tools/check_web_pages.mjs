@@ -67,6 +67,19 @@ try {
       assert.equal(await page.evaluate(() => titbit.titbitAudio.ready), true);
       assert.deepEqual(errors, []);
     }
+    if (!bundled) {
+      await page.locator('#archive').setInputFiles({name: 'QUEST.ezd', mimeType: 'application/octet-stream', buffer: Buffer.from([101,122,100,255])});
+      await page.locator('#start').click();
+      assert.match(await page.locator('#status').textContent(), /Выберите все 18 AVI/);
+      assert.equal(await page.evaluate(() => titbitFrames), 0);
+      assert.equal(await page.locator('#file-pickers').isVisible(), true);
+      assert.equal(await page.locator('#start').isEnabled(), true);
+      await page.locator('#videos').setInputFiles({name: 'BUKA.AVI', mimeType: 'video/x-msvideo', buffer: Buffer.from([1])});
+      await page.locator('#start').click();
+      const missing = await page.locator('#status').textContent();
+      assert.ok(missing.includes('intro2.avi') && !missing.includes('buka.avi'));
+      assert.equal(await page.evaluate(() => titbitFrames), 0);
+    }
     assert.deepEqual(uploads, [], 'No game data or saves should be uploaded');
     await context.close();
   }
