@@ -129,7 +129,8 @@ def main():
             '-sFORCE_FILESYSTEM=1','-sEXIT_RUNTIME=0','-sASSERTIONS=2',
             *sorted(native.glob('*.o')),*direct,linked/'dispatch.o',library,*video_libraries,
             '-Wl,--error-limit=0','-o',args.out/'titbit.js'])
-    for name in ('game.html', 'game.js', 'browser_start.scv', 'saves.js', 'audio-worklet.js'):
+    for name in ('game.html', 'game.js', 'browser_start.scv', 'saves.js', 'audio-worklet.js',
+                 'bootstrap.js', 'isolation-worker.js'):
         shutil.copy2(ROOT/'web'/name, args.out/name)
     print('Browser engine:', args.out)
 

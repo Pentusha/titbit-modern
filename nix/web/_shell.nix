@@ -65,6 +65,9 @@ pkgs.mkShellNoCC {
   TITBIT_LLVM_CONFIG = llvmConfig;
   TITBIT_NATIVE_CXX = "${toolchain.clang}/bin/clang++";
   TITBIT_WIN32_HEADERS = "${win32Headers}/include";
+  TITBIT_PLAYWRIGHT_MODULE = "${pkgs.playwright-driver}/index.mjs";
+  PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright-driver.browsers-chromium}";
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1";
 
   shellHook = ''
     # Emscripten ports and additional libc variants must not write to /nix/store.
