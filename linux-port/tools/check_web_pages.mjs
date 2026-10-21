@@ -9,10 +9,16 @@ const {chromium} = await import(process.env.TITBIT_PLAYWRIGHT_MODULE || 'playwri
 const directory = resolve(process.argv[2] || '.local/pages');
 const bundled = JSON.parse(await readFile(resolve(directory, 'game-assets.json'), 'utf8')).files.length > 0;
 const prefix = '/titbit-modern/';
+let assetRequests = 0, blockAssets = false;
 const types = {'.js': 'text/javascript', '.html': 'text/html', '.wasm': 'application/wasm'};
 const server = http.createServer(async (request, response) => {
   const url = new URL(request.url, 'http://localhost');
   const relative = url.pathname.slice(prefix.length) || 'index.html';
+  if (relative.startsWith('assets/')) {
+    assetRequests++;
+    response.setHeader('Cache-Control', 'no-store');
+    if (blockAssets) { response.writeHead(503).end(); return; }
+  }
   const file = resolve(directory, relative);
   if (!url.pathname.startsWith(prefix) || !file.startsWith(directory + '/')) {
     response.writeHead(404).end(); return;
@@ -66,6 +72,18 @@ try {
       assert.equal(await page.evaluate(() => document.querySelector('#log').textContent.includes('introbuka.scv compiled')), true);
       assert.equal(await page.evaluate(() => titbit.titbitAudio.ready), true);
       assert.deepEqual(errors, []);
+      const coldRequests = assetRequests;
+      blockAssets = true;
+      await page.reload();
+      await page.waitForFunction(() => document.querySelector('#status').textContent.includes('Игра готова.'), null, {timeout: 60000});
+      await page.locator('#start').click();
+      await page.waitForFunction(() => titbitFrames > 120 || document.querySelector('#status').textContent.startsWith('Ошибка:'), null, {timeout: 60000});
+      assert.ok(await page.evaluate(() => titbitFrames > 120), await page.locator('#status').textContent());
+      assert.equal(assetRequests, coldRequests, 'Reload must launch the actual engine with no requests for bundled assets');
+      assert.equal(await page.evaluate(() => titbit.titbitAudio.ready), true);
+      assert.deepEqual(errors, []);
+      blockAssets = false;
+      console.log('Bundled game reload: no network requests for QUEST.ezd or AVI; video and audio running.');
     }
     if (!bundled) {
       await page.locator('#archive').setInputFiles({name: 'QUEST.ezd', mimeType: 'application/octet-stream', buffer: Buffer.from([101,122,100,255])});

@@ -49,7 +49,9 @@ jobs:
           fi
           python3 linux-port/tools/package_web.py --out .local/pages "${game_data_args[@]}"
       - name: Check static hosting in Chromium
-        run: nix develop .#web --command node linux-port/tools/check_web_pages.mjs .local/pages
+        run: |
+          nix develop .#web --command node linux-port/tools/check_web_pages.mjs .local/pages
+          nix develop .#web --command node linux-port/tools/check_web_assets.mjs .local/pages
       - name: Upload Pages site
         uses: actions/upload-pages-artifact@v4
         with:

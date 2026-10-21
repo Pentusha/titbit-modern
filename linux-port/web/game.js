@@ -1,5 +1,6 @@
 /* Original engine and assets stay local to this browser. */
 import { SaveStore } from './saves.js';
+import { AssetStore } from './assets.js';
 const canvas = document.querySelector('#canvas');
 const status = document.querySelector('#status');
 const start = document.querySelector('#start');
@@ -7,10 +8,14 @@ const archive = document.querySelector('#archive');
 const videos = document.querySelector('#videos');
 const log = document.querySelector('#log');
 const storage = document.querySelector('#storage');
+const assetStorage = document.querySelector('#asset-storage');
 const saveSlot = document.querySelector('#save-slot');
 const exportSave = document.querySelector('#export-save');
 const importSave = document.querySelector('#import-save');
 const saves = new SaveStore();
+const assets = new AssetStore({onStatus: message, onCacheError: () => {
+  if (assetStorage) assetStorage.textContent = 'Кэш игровых файлов недоступен. Игра запустится, но при следующем запуске может потребоваться загрузка.';
+}});
 let pendingSaves = Promise.resolve(), restoring = false;
 let engine, running = false;
 let bundledFiles = [];
@@ -49,17 +54,22 @@ function frame() {
   try { engine._titbit_web_frame(); window.titbitFrames++; requestAnimationFrame(frame); }
   catch (error) { failure(error); }
 }
-async function readRemoteFile(file) {
-  message(`Чтение ${file.name}…`);
-  const response = await fetch(file.url);
-  if (!response.ok) throw new Error(`Не удалось прочитать ${file.name}`);
-  const bytes = new Uint8Array(await response.arrayBuffer());
-  if (file.size !== undefined && bytes.length !== file.size) throw new Error(`Неверный размер ${file.name}`);
-  if (file.sha256) {
-    const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), n => n.toString(16).padStart(2, '0')).join('');
-    if (hash !== file.sha256) throw new Error(`Повреждён файл ${file.name}`);
+async function readRemoteFile(file) { return assets.read(file); }
+async function loadRemoteVideos(files) {
+  let next = 0, completed = 0, stopped = false;
+  async function worker() {
+    while (!stopped && next < files.length) {
+      const file = files[next++];
+      try {
+        engine.FS.writeFile(`/${file.name.toLowerCase()}`, await readRemoteFile(file), { canOwn: true });
+        message(`Подготовка роликов: ${++completed}/${files.length}…`);
+      } catch (error) { stopped = true; throw error; }
+    }
   }
-  return bytes;
+  // Bound simultaneous downloads and memory, especially for large AVI files.
+  const results = await Promise.allSettled(Array.from({length: Math.min(3, files.length)}, worker));
+  const failed = results.find(result => result.status === 'rejected');
+  if (failed) throw failed.reason;
 }
 async function play(bytes, remoteVideos = null) {
   start.disabled = true;
@@ -70,9 +80,7 @@ async function play(bytes, remoteVideos = null) {
     engine.FS.mkdir('/game');
     engine.FS.writeFile('/game/QUEST.ezd', bytes, { canOwn: true });
     if (remoteVideos) {
-      for (const file of remoteVideos) {
-        engine.FS.writeFile(`/${file.name.toLowerCase()}`, await readRemoteFile(file), { canOwn: true });
-      }
+      await loadRemoteVideos(remoteVideos);
     } else {
       for (const file of videos.files) {
         if (!/^[\w.-]+\.avi$/i.test(file.name)) continue;
@@ -162,7 +170,7 @@ createTitbit({ canvas, print: report, printErr: report, onPhase: message,
   };
   exportSave.disabled = importSave.disabled = false;
   start.disabled = !archive.files.length; message('Выберите QUEST.ezd и нажмите «Играть».');
-  const manifest = await fetch('game-assets.json');
+  const manifest = await fetch('game-assets.json', {cache: 'no-cache'});
   if (!manifest.ok) throw new Error('Не удалось прочитать список игровых файлов');
   const data = await manifest.json();
   if (data.version !== 1 || !Array.isArray(data.files)) throw new Error('Некорректный список игровых файлов');
@@ -176,6 +184,7 @@ createTitbit({ canvas, print: report, printErr: report, onPhase: message,
     document.querySelector('#file-pickers').hidden = true;
     start.disabled = false;
     message('Игра готова. Нажмите «Играть».');
+    if (assetStorage) assetStorage.textContent = 'Игровые файлы сохраняются в браузере для следующих запусков.';
   }
   // Explicit development server option; the archive is never part of the build.
   if (new URLSearchParams(location.search).has('local')) {

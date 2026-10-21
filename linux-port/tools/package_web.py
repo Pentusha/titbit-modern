@@ -7,7 +7,7 @@ import shutil
 import titbit_assets
 
 RUNTIME = ('game.html', 'game.js', 'bootstrap.js', 'isolation-worker.js',
-           'browser_start.scv', 'saves.js', 'audio-worklet.js', 'titbit.js', 'titbit.wasm', 'game-assets.json')
+           'browser_start.scv', 'saves.js', 'assets.js', 'audio-worklet.js', 'titbit.js', 'titbit.wasm', 'game-assets.json')
 
 
 def package(source, target, game_data=None):
