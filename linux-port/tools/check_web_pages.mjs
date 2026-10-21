@@ -7,6 +7,7 @@ import {resolve, extname} from 'node:path';
 
 const {chromium} = await import(process.env.TITBIT_PLAYWRIGHT_MODULE || 'playwright');
 const directory = resolve(process.argv[2] || '.local/pages');
+const bundled = JSON.parse(await readFile(resolve(directory, 'game-assets.json'), 'utf8')).files.length > 0;
 const prefix = '/titbit-modern/';
 const types = {'.js': 'text/javascript', '.html': 'text/html', '.wasm': 'application/wasm'};
 const server = http.createServer(async (request, response) => {
@@ -39,7 +40,8 @@ try {
     let navigations = 0;
     page.on('framenavigated', frame => { if (frame === page.mainFrame()) navigations++; });
     await page.goto(`http://127.0.0.1:${server.address().port}${prefix}${entry}`);
-    await page.waitForFunction(() => document.querySelector('#status').textContent.includes('Выберите QUEST.ezd'), null, {timeout: 60000});
+    await page.waitForFunction(bundled => document.querySelector('#status').textContent.includes(bundled ? 'Игра готова.' : 'Выберите QUEST.ezd'), bundled, {timeout: 60000});
+    assert.equal(await page.locator('#file-pickers').isHidden(), bundled);
     assert.equal(await page.evaluate(() => crossOriginIsolated), true);
     assert.equal(await page.evaluate(() => titbit.HEAPU8.buffer instanceof SharedArrayBuffer), true);
     assert.equal(await page.evaluate(() => navigator.serviceWorker.controller !== null), true);
@@ -51,13 +53,20 @@ try {
       await new SaveStore({name: 'titbit-pages-test'}).write(1, new Uint8Array(408).fill(17));
     });
     await page.reload();
-    await page.waitForFunction(() => document.querySelector('#status').textContent.includes('Выберите QUEST.ezd'), null, {timeout: 60000});
+    await page.waitForFunction(bundled => document.querySelector('#status').textContent.includes(bundled ? 'Игра готова.' : 'Выберите QUEST.ezd'), bundled, {timeout: 60000});
     assert.equal(navigations, 3);
     assert.equal(await page.evaluate(async () => {
       const {SaveStore} = await import('./saves.js');
       return (await new SaveStore({name: 'titbit-pages-test'}).read(1)).every(byte => byte === 17);
     }), true);
     assert.deepEqual(errors, []);
+    if (bundled) {
+      await page.locator('#start').click();
+      await page.waitForFunction(() => titbitFrames > 120, null, {timeout: 60000});
+      assert.equal(await page.evaluate(() => document.querySelector('#log').textContent.includes('introbuka.scv compiled')), true);
+      assert.equal(await page.evaluate(() => titbit.titbitAudio.ready), true);
+      assert.deepEqual(errors, []);
+    }
     assert.deepEqual(uploads, [], 'No game data or saves should be uploaded');
     await context.close();
   }

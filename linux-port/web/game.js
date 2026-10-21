@@ -13,6 +13,7 @@ const importSave = document.querySelector('#import-save');
 const saves = new SaveStore();
 let pendingSaves = Promise.resolve(), restoring = false;
 let engine, running = false;
+let bundledFiles = [];
 window.titbitFrames = 0;
 const logLimit = 120000;
 let logHistory = '', logPending = [], logPendingSize = 0, logTimer;
@@ -45,7 +46,19 @@ function frame() {
   try { engine._titbit_web_frame(); window.titbitFrames++; requestAnimationFrame(frame); }
   catch (error) { failure(error); }
 }
-async function play(bytes, localVideos = false) {
+async function readRemoteFile(file) {
+  message(`Чтение ${file.name}…`);
+  const response = await fetch(file.url);
+  if (!response.ok) throw new Error(`Не удалось прочитать ${file.name}`);
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  if (file.size !== undefined && bytes.length !== file.size) throw new Error(`Неверный размер ${file.name}`);
+  if (file.sha256) {
+    const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), n => n.toString(16).padStart(2, '0')).join('');
+    if (hash !== file.sha256) throw new Error(`Повреждён файл ${file.name}`);
+  }
+  return bytes;
+}
+async function play(bytes, remoteVideos = null) {
   start.disabled = true;
   try {
     if (bytes.length < 16 || bytes[0] !== 101 || bytes[1] !== 122 || bytes[2] !== 100 || bytes[3] !== 255) {
@@ -53,15 +66,9 @@ async function play(bytes, localVideos = false) {
     }
     engine.FS.mkdir('/game');
     engine.FS.writeFile('/game/QUEST.ezd', bytes, { canOwn: true });
-    if (localVideos) {
-      const listing = await fetch('/local-game/videos.json');
-      if (!listing.ok) throw new Error('Не удалось получить список видеофайлов');
-      for (const name of await listing.json()) {
-        if (!/^[\w.-]+\.avi$/i.test(name)) throw new Error('Некорректное имя видеофайла');
-        message(`Чтение ${name}…`);
-        const response = await fetch(`/local-game/${encodeURIComponent(name)}`);
-        if (!response.ok) throw new Error(`Не удалось прочитать ${name}`);
-        engine.FS.writeFile(`/${name.toLowerCase()}`, new Uint8Array(await response.arrayBuffer()), { canOwn: true });
+    if (remoteVideos) {
+      for (const file of remoteVideos) {
+        engine.FS.writeFile(`/${file.name.toLowerCase()}`, await readRemoteFile(file), { canOwn: true });
       }
     } else {
       for (const file of videos.files) {
@@ -72,9 +79,9 @@ async function play(bytes, localVideos = false) {
     const bootstrap = await fetch('browser_start.scv');
     if (!bootstrap.ok) throw new Error('Не удалось загрузить сценарий запуска');
     engine.FS.writeFile('/game/browser_start.scv', await bootstrap.text());
-    message('Загрузка первой сцены…');
+    message('Запуск игры…');
     await new Promise(resolve => requestAnimationFrame(resolve));
-    const result = engine.ccall('titbit_web_initialize', 'number', ['string'], ['sumerki_entrance.XML']);
+    const result = engine.ccall('titbit_web_initialize', 'number', ['string'], ['startup.XML']);
     if (result) throw new Error(`Инициализация движка: ${result}`);
     document.querySelector('#files').hidden = true;
     running = true; canvas.focus({ preventScroll: true }); window.scrollTo(0, 0); requestAnimationFrame(frame);
@@ -83,7 +90,13 @@ async function play(bytes, localVideos = false) {
 }
 archive.addEventListener('change', () => { start.disabled = !engine || !archive.files.length; });
 start.addEventListener('click', async () => {
-  try { await play(new Uint8Array(await archive.files[0].arrayBuffer())); }
+  start.disabled = true;
+  try {
+    if (bundledFiles.length) {
+      await play(await readRemoteFile(bundledFiles.find(file => file.name === 'QUEST.ezd')),
+        bundledFiles.filter(file => file.name !== 'QUEST.ezd'));
+    } else await play(new Uint8Array(await archive.files[0].arrayBuffer()));
+  }
   catch (error) { failure(error); }
 });
 canvas.addEventListener('contextmenu', event => event.preventDefault());
@@ -137,11 +150,30 @@ createTitbit({ canvas, print: report, printErr: report, onPhase: message,
   };
   exportSave.disabled = importSave.disabled = false;
   start.disabled = !archive.files.length; message('Выберите QUEST.ezd и нажмите «Играть».');
+  const manifest = await fetch('game-assets.json');
+  if (!manifest.ok) throw new Error('Не удалось прочитать список игровых файлов');
+  const data = await manifest.json();
+  if (data.version !== 1 || !Array.isArray(data.files)) throw new Error('Некорректный список игровых файлов');
+  if (data.files.length) {
+    const names = data.files.map(file => file.name);
+    if (names.length !== 19 || new Set(names).size !== 19 || !names.includes('QUEST.ezd') ||
+        data.files.some(file => !/^(QUEST\.ezd|[\w-]+\.avi)$/.test(file.name) ||
+          file.url !== `assets/${file.name}` || !Number.isSafeInteger(file.size) || file.size <= 0 ||
+          !/^[a-f0-9]{64}$/.test(file.sha256))) throw new Error('Некорректный список игровых файлов');
+    bundledFiles = data.files;
+    document.querySelector('#file-pickers').hidden = true;
+    start.disabled = false;
+    message('Игра готова. Нажмите «Играть».');
+  }
   // Explicit development server option; the archive is never part of the build.
   if (new URLSearchParams(location.search).has('local')) {
     message('Чтение локального архива…');
     const response = await fetch('/local-game/QUEST.ezd');
     if (!response.ok) throw new Error('Локальный архив недоступен');
-    await play(new Uint8Array(await response.arrayBuffer()), true);
+    const listing = await fetch('/local-game/videos.json');
+    if (!listing.ok) throw new Error('Не удалось получить список видеофайлов');
+    const names = await listing.json();
+    if (names.some(name => !/^[\w.-]+\.avi$/i.test(name))) throw new Error('Некорректное имя видеофайла');
+    await play(new Uint8Array(await response.arrayBuffer()), names.map(name => ({name, url: `/local-game/${encodeURIComponent(name)}`})));
   }
 }).catch(failure);

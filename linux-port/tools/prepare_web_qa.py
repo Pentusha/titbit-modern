@@ -50,6 +50,8 @@ def prepare(archive, out):
  connect.call(gain,target);gains.set(this.context,gain);}target=gain;}
  return connect.call(this,target,...args);};});
  page.titbitQa={page:p,manifest:MANIFEST,results:[],scripts:[]};
+ await p.route('**/game.js',async route=>{const response=await route.fetch();
+  await route.fulfill({response,body:(await response.text()).replace("['startup.XML']","['browser_start.scv']")});});
  await p.route('**/browser_start.scv',r=>r.fulfill({status:200,contentType:'text/plain',body:page.titbitQa.bootstrap}));
  return {scenes:page.titbitQa.manifest.scenes.length,scripts:page.titbitQa.manifest.scripts.length};
 }'''.replace('MANIFEST', json.dumps(manifest, ensure_ascii=False))

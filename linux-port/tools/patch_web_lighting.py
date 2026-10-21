@@ -20,6 +20,41 @@ def build(source: Path, output: Path):
             raise ValueError('Emscripten lighting seam changed: ' + old[:90])
         text = text.replace(old, new)
 
+    # The engine enables the OpenGL default color-material mode:
+    # FRONT_AND_BACK / AMBIENT_AND_DIFFUSE. Emscripten otherwise silently
+    # ignores GL_COLOR_MATERIAL and lights every model with ambient 0.2.
+    replace('    lightingEnabled: false,', '    lightingEnabled: false,\n    colorMaterialEnabled: false,')
+    for enabled in ('true', 'false'):
+        old = f'''        }} else if (cap == 0xB50 /* GL_LIGHTING */) {{
+          if (GLEmulation.lightingEnabled != {enabled}) {{'''
+        new = f'''        }} else if (cap == 0xB57 /* GL_COLOR_MATERIAL */) {{
+          GLEmulation.colorMaterialEnabled = {enabled};
+          GLImmediate.currentRenderer = null;
+          return;
+        }} else if (cap == 0xB50 /* GL_LIGHTING */) {{
+          if (GLEmulation.lightingEnabled != {enabled}) {{'''
+        replace(old, new)
+    replace('''        } else if (cap == 0xB50 /* GL_LIGHTING */) {
+          return GLEmulation.lightingEnabled ? 1 : 0;''', '''        } else if (cap == 0xB57 /* GL_COLOR_MATERIAL */) {
+          return GLEmulation.colorMaterialEnabled ? 1 : 0;
+        } else if (cap == 0xB50 /* GL_LIGHTING */) {
+          return GLEmulation.lightingEnabled ? 1 : 0;''')
+    replace("              vsLightingDefs += 'uniform vec4 u_materialAmbient;';", """              vsLightingDefs += 'uniform vec4 u_materialAmbient;';
+              vsLightingDefs += 'uniform float u_colorMaterialEnabled;';""")
+    replace("              vsLightingPass += '  vec3 ecNormal = normalize(u_normalMatrix * a_normal);';", """              vsLightingPass += '  vec4 materialAmbient = mix(u_materialAmbient, a_color, u_colorMaterialEnabled);';
+              vsLightingPass += '  vec4 materialDiffuse = mix(u_materialDiffuse, a_color, u_colorMaterialEnabled);';
+              vsLightingPass += '  vec3 ecNormal = normalize(u_normalMatrix * a_normal);';""")
+    for old, new, count in [('u_materialAmbient.xyz', 'materialAmbient.xyz', 2),
+                            ('u_materialDiffuse.xyz', 'materialDiffuse.xyz', 1),
+                            ('u_materialDiffuse.w', 'materialDiffuse.w', 1)]:
+        if text.count(old) != count:
+            raise ValueError('Emscripten color-material seam changed: ' + old)
+        text = text.replace(old, new)
+    replace("          this.materialAmbientLocation = GLctx.getUniformLocation(this.program, 'u_materialAmbient');", """          this.materialAmbientLocation = GLctx.getUniformLocation(this.program, 'u_materialAmbient');
+          this.colorMaterialLocation = GLctx.getUniformLocation(this.program, 'u_colorMaterialEnabled');""")
+    replace('            if (this.materialAmbientLocation) GLctx.uniform4fv(this.materialAmbientLocation, GLEmulation.materialAmbient);', '''            if (this.materialAmbientLocation) GLctx.uniform4fv(this.materialAmbientLocation, GLEmulation.materialAmbient);
+            if (this.colorMaterialLocation) GLctx.uniform1f(this.colorMaterialLocation, GLEmulation.colorMaterialEnabled ? 1 : 0);''')
+
     replace('    // TODO attenuation modes of lights', '''    lightSpotDirection: [],
     lightSpotCutoff: [],
     lightSpotExponent: [],

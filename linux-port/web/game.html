@@ -10,9 +10,12 @@ body{margin:0;background:#14171a;color:#e8e9e5;font:16px system-ui;text-align:ce
 <main>
 <h1>Ядерный Титбит</h1>
 <section id="files">
+<div id="file-pickers">
 <p>Выберите QUEST.ezd из вашей копии игры. Файл обрабатывается в браузере.</p>
-<input id="archive" type="file" accept=".ezd"><button id="start" disabled>Играть</button>
+<input id="archive" type="file" accept=".ezd">
 <p><label>Видеофайлы игры (выберите все AVI): <input id="videos" type="file" accept=".avi" multiple></label></p>
+</div>
+<button id="start" disabled>Играть</button>
 </section>
 <p id="status" role="status">Подготовка движка…</p>
 <canvas id="canvas" width="1024" height="768" tabindex="0" aria-label="Игра"></canvas>

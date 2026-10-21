@@ -1,6 +1,7 @@
 // Microsoft-layout engine boundary; the browser owns the event/frame loop.
 #include "../src/native/engine_string.h"
 #include "../src/native/picking_control_interfaces.h"
+#include <string.h>
 extern "C" {
 int CreateGameWindow(const char *, int, int);
 int InitGameInput(void *, void *);
@@ -48,9 +49,14 @@ extern "C" int titbit_web_initialize(const char *scene) {
     tb_web_phase("Открытие QUEST.ezd");
     if (!MountArchive("/game/QUEST.ezd")) return 5;
     tb_web_phase("Загрузка сцены");
-    picking_scene.Load(ObservedString("menu.xml"));
-    void *bootstrap=CreateGameObject_0040ecd0(1,"browser_start.scv",0,0,0,0,0,0);
-    ((BrowserSceneView *)&picking_scene)->AddObject_00425860(bootstrap,2);
+    // Restore the original Buka -> VZ Lab -> intro -> menu startup sequence.
+    // The explicit bootstrap entry is reserved for the scene QA harness.
+    const bool bootstrap = scene && !strcmp(scene, "browser_start.scv");
+    picking_scene.Load(ObservedString(bootstrap ? "menu.xml" : (scene ? scene : "startup.XML")));
+    if (bootstrap) {
+        void *object=CreateGameObject_0040ecd0(1,"browser_start.scv",0,0,0,0,0,0);
+        ((BrowserSceneView *)&picking_scene)->AddObject_00425860(object,2);
+    }
     SetGameSpeed(1);
     gameActive = true;
     tb_web_phase("Сцена загружена");

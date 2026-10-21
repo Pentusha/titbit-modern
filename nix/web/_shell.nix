@@ -51,6 +51,7 @@ pkgs.mkShellNoCC {
     pkgs.automake
     pkgs.libtool
     pkgs.curl
+    pkgs.aria2
     pkgs.git
     pkgs.patch
     pkgs.coreutils
