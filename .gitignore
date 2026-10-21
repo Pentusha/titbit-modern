@@ -47,6 +47,7 @@ src/leaf/FUN_004c*.c
 .env
 .env.*
 .mcp.json
+.playwright-mcp/
 
 # Original content is imported locally, never published.
 src/scripts/
@@ -65,3 +66,7 @@ linux-port/game/
 
 linux-port/flatpak/stage/
 *.flatpak
+
+# Nix build outputs.
+/result
+/result-*
